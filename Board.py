@@ -13,9 +13,6 @@ class Board:
         self.__flop2 = card2
         self.__flop3 = card3
 
-    def checkRep(self):
-        assert self.getBoard() in range(3,6)
-
     def getBoard(self):
         board = [self.__flop1, self.__flop2, self.__flop3]
         if self.__turn is not None:
@@ -33,6 +30,10 @@ class Board:
         self.__river = river
         assert len(self.getBoard()) is 5
 
+    ############# ANALYSIS METHODS #################
+
+
+
     ############# UTILITY METHODS ##################
 
     def toString(self):
@@ -49,4 +50,6 @@ class Board:
         for card in self.getBoard():
             card.draw()
 
+    def checkRep(self):
+        assert self.getBoard() in range(3,6)
 

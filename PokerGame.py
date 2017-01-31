@@ -1,7 +1,7 @@
 __author__ = 'Nick'
 
 import random
-from PokerCalculator import Card, Deck, PreflopHand, Board, Player, Account
+from PokerCalculator import Card, Deck, PreflopHand, Board, Player, Account, PokerTable
 from collections import deque
 
 boilerplate_options = {
@@ -13,9 +13,21 @@ boilerplate_options = {
     'action_timer': 30
 }
 
+gameTypes = {
+    '2NLHE': boilerplate_options,
+    '5NLHE': boilerplate_options.update({'bb': 5, 'sb': 2}),
+    '10NLHE': boilerplate_options.update({'bb': 10, 'sb': 5}),
+    '10NLHEDS': boilerplate_options.update({'bb': 10, 'sb': 5, 'ante': 2, 'max_buyin': 400}),
+    '200NLHE': boilerplate_options.update({'bb': 200, 'sb': 100}),
+    '10PLO': boilerplate_options.update({'bb': 10, 'sb': 5})
+}
+
+
 class Poker:
     __preflop = True
     __heads_up = False
+    __number_of_cards_per_hand = 2 #or 4 in Omaha or 5 in Draw or 3 in Stud
+    __state = None #should be in [Running, Wait]
 
     __max_buyin = None
     __min_buyin = None
@@ -27,19 +39,28 @@ class Poker:
     __sb_stake = None
     __ante = None
 
-    __players = None #organized as follows: [UTG, UTG2, UTG3, LOJ, HIJ, CO, BTN, SB, BB]
-    __playerMap = {}
+    #__players = None #organized as follows: [UTG, UTG2, UTG3, LOJ, HIJ, CO, BTN, SB, BB]
+    #__playerMap = {}
+    #__seats = None
+
+    __table = None
+    __btn = None #for assigning initial positions
+    __sb = None #for postflop play and posting blinds
+    __bb = None #for utility
+    __fp = None #for preflop play, basically set __first_position and call __first_position.__left to move around table for betting
 
     __deck = None
     __board = None
     __pot = 0
 
     __min_raise = None #must be at least double the last biggest bet/raise (e.g. bet to $4 over $2 BB, bet to $20 if opponent bets $10 on the flop)
-    __max_bet = None
+    __max_bet = None #mainly for Limit and PLO games
 
-    def __init__(self, players=[], **options):
-        self.__players = deque(players)
+    def __init__(self, **options):
+        #self.__players = deque(players)
+        #self.__seats = seats
         self.__deck = Deck.Deck()
+        self.__table = PokerTable.Table()
 
         self.__bb_stake = options['bb']
         self.__sb_stake = options['sb']
@@ -48,16 +69,17 @@ class Poker:
         self.__max_buyin = options['max_buyin']*options['bb']
         self.__min_buyin = options['min_buyin']*options['bb']
 
+    def checkRep(self):
+        print('checkrep')
+
     ############## Getters and Setters ##############
 
-    def getPot(self):
-        return self.__pot
+    def addToPot(self, amount):
+        self.__pot += amount
 
-    #def addToPot(self, amount):
-    #    self.__pot += amount
-
-    def getPlayers(self):
-        return self.__players
+    def givePotToPlayer(self, seat):
+        seat.getPlayer().addToStack(self.__pot)
+        self.__pot = 0
 
     ############## Custom Getters ##############
 
@@ -73,63 +95,25 @@ class Poker:
     ############## Dealing Player Hands
 
     def generateHands(self):
-        num = len(self.__players)
+        card = 1
+        active_seats = self.__table.getActiveSeats()
+        hands = {}
 
-        sb = self.__players[num - 2]
-        bb = self.__players[num - 1]
-        btn = self.__players[num - 3]
-        co = self.__players[num - 4]
-        hij = self.__players[num - 5]
-        loj = self.__players[num - 6]
-        utg3 = self.__players[num - 7]
-        utg2 = self.__players[num - 8]
-        utg = self.__players[num - 9]
+        while card <= self.__number_of_cards_per_hand:
+            iterator = 1
+            while iterator <= active_seats:
+                hands['hand' + str(iterator)] = []
+                hands['hand' + str(iterator)].append(self.__deck.getTopCard())
+                iterator += 1
+            card += 1
 
-        cards = {
-            sb: [],
-            bb: [],
-            btn: [],
-            co: [],
-            hij: [],
-            loj: [],
-            utg3: [],
-            utg2: [],
-            utg: []
-        }
-
-        cards[sb].append(self.dealCard())
-        cards[bb].append(self.dealCard())
-        cards[utg].append(self.dealCard())
-        cards[utg2].append(self.dealCard())
-        cards[utg3].append(self.dealCard())
-        cards[loj].append(self.dealCard())
-        cards[hij].append(self.dealCard())
-        cards[co].append(self.dealCard())
-        cards[btn].append(self.dealCard())
-
-        cards[sb].append(self.dealCard())
-        cards[bb].append(self.dealCard())
-        cards[utg].append(self.dealCard())
-        cards[utg2].append(self.dealCard())
-        cards[utg3].append(self.dealCard())
-        cards[loj].append(self.dealCard())
-        cards[hij].append(self.dealCard())
-        cards[co].append(self.dealCard())
-        cards[btn].append(self.dealCard())
-
-        self.dealHand(sb, cards[sb])
-        self.dealHand(bb, cards[bb])
-        self.dealHand(utg, cards[utg])
-        self.dealHand(utg2, cards[utg2])
-        self.dealHand(utg3, cards[utg3])
-        self.dealHand(loj, cards[loj])
-        self.dealHand(hij, cards[hij])
-        self.dealHand(co, cards[co])
-        self.dealHand(btn, cards[btn])
-
-    #first card goes to the SB
-    def dealCard(self):
-        return self.__deck.getTopCard()
+        first_seat = self.__sb
+        iterator = 1
+        for num in range (0, len(active_seats)):
+            cards = hands['hand{id}'.format(id=iterator)]
+            self.dealHand(first_seat.getPlayer(), cards)
+            first_seat = first_seat.getLeft()
+            iterator += 1
 
     #creates player hand, maybe make it so that the hand type (e.g. Holdem vs. Omaha) depends on how many cards are passed in
     def dealHand(self, player, cards):
@@ -143,25 +127,31 @@ class Poker:
         self.__deck.shuffleDeck()
         player_cards = {}
 
-        for player in self.__players:
-            player_cards[player] = self.__deck.getTopCard()
+        for seat in self.__seats:
+            player_cards[seat.getPlayer()] = self.__deck.getTopCard()
             #print(player)
             #print(player_cards[player])
 
         sorted_cards = sorted(player_cards.values(), reverse=True)
+        keys = sorted_cards.keys()
+        #print(keys[0])
 
-        #player_cards = sorted(player_cards, key=player.getPrimaryValue() in player_cards)
+        self.__btn = keys[0]
 
-        for player in player_cards:
-            if player_cards[player].getPrimaryValue() is sorted_cards[0]:
-                self.__playerMap['btn'] = player
+        active_seats = self.__table.getActiveSeats()
+        if active_seats is 2:
+            self.__sb = self.__btn
+        elif active_seats > 2:
+            self.__sb = self.__btn.getActiveLeft()
 
-        print(self.__playerMap['btn'])
+        self.__bb = self.__sb.getActiveLeft()
+        self.__fp = self.__bb.getActiveLeft()
 
-
+    #rotates players after each round
     def rotate_players(self):
-        self.__players.rotate(1)
-
+        self.__sb = self.__sb.getNearestLeftSeatWithActivePlayer()
+        self.__bb = self.__bb.getNearestLeftSeatWithActivePlayer()
+        self.__fp = self.__fp.getNearestLeftSeatWithActivePlayer()
 
     ######### Community Card Actions ############
 
@@ -187,28 +177,63 @@ class Poker:
 
     ############ Calling/Raising/Posting SB/BB/Ante ############
 
-    def add_to_pot(self, amount):
-        self.__pot += amount
-
     actions = ['POST_BB', 'POST_SB', 'POST_ANTE', 'YOUR_TURN']
 
     def prompt_for_bb(self):
-        print()
-
-        #if self.__bb.post_bet(self.__bb_stake):
-        #    self.__last_bet = self.__sb_stake
+        if self.__bb.getPlayer().removeFromStack(self.__bb_stake):
+            self.__pot += self.__bb_stake
+            if self.__bb_stake > self.__last_bet:
+                self.__last_bet = self.__bb_stake
+        else:
+            print()
+            #must reassign position if fails
 
     def prompt_for_sb(self):
-        print()
-        #if self.__sb.post_bet(self.__sb_stake):
-        #    self.__last_bet = self.__sb_stake
+        if self.__sb.getPlayer().removeFromStack(self.__sb_stake):
+           self.__pot += self.__sb_stake
+           if self.__sb_stake > self.__last_bet:
+                    self.__last_bet = self.__sb_stake
+        else:
+            print()
+            #must reassign position if fails
 
     def prompt_for_ante(self):
-        for player in self.__players:
-            player.post_bet(self.__ante)
+        for player in self.__table.getActivePlayers():
+            if player.removeFromStack(self.__ante):
+                self.__pot += self.__ante
+                if self.__ante > self.__last_bet:
+                    self.__last_bet = self.__ante
+
+    ########## Handles each individual round #############
+
+    def startRound(self):
+        if self.__ante > 0:
+            self.prompt_for_ante()
+        self.prompt_for_sb()
+        self.prompt_for_bb()
+
+        active_players = self.__table.getActivePlayers()
+        #condition for if active_players < 2
+
+
+
+
+    ########## Preflop Actions #############
 
     def preFlopBetting(self):
+
+
+        num = 1
+        player = self.__fp.getPlayer()
+        action = player.selectAction(self.getPublicState())
+        self.handle_action(player, action)
+
+        while num < self.__table.countActivePlayers():
+            print()
+
         print('not implemented')
+
+    ######### Postflop Actions #############
 
     def postFlopBetting(self):
         print('not implemented')
@@ -243,6 +268,23 @@ class Poker:
         self.generateFlop()
         self.__preflop = False
         self.generateTurn()
+
+    def areReady(self):
+        ready_counter = self.__table.getActiveSeats()
+        if ready_counter >= 2:
+            return True
+        else:
+            return False
+
+    def registerPlayer(self, player_id):
+        #find account in DB using 'player_id'... account = Account.findById(player_id)
+        print('register stub')
+
+        #account = Account.findById(player_id)
+        #buyin = input('How much would you like to buy in for?')
+        #player = Player(account, buyin)
+        #self.__players.add(player)
+
 
 
 

@@ -11,6 +11,8 @@ class Account:
     __balance = None
     __sprite = None
 
+
+
     def __init__(self, username, email, password, country):
         self.__username = username
         self.__email = email

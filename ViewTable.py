@@ -1,13 +1,33 @@
 __author__ = 'Nick'
 
 from tkinter import *
-
-top = Tk()
-# Code to add widgets will go here...
+from PokerCalculator import ViewTableBetting
 
 
-#used for betting/calling/folding
-frame = Frame()
-frame.pack()
+class ViewTable:
+    __parentView = None
+    __betView = None
 
-top.mainloop()
+    def __init__(self, master):
+        frame = Frame(master, anchor=SE) #set height and width of Frame relative to MasterFrame
+        frame.pack()
+        self.button = Button(frame,
+                             text="QUIT", fg="red",
+                             command=quit)
+        self.button.pack(side=LEFT)
+        self.slogan = Button(frame,
+                             text="Hello")
+        self.slogan.pack(side=LEFT)
+
+    def generateBetSlider(self):
+        #if bet > stack, only draw Call or Fold
+        #if bet < stack + min_raise > stack, only Allin or Call or Fold
+        #else, all options are available
+        print()
+
+    def removeBetSlider(self):
+        print()
+
+root = Tk()
+app = ViewTable(root)
+root.mainloop()

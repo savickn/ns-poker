@@ -3,7 +3,7 @@ __author__ = 'Nick'
 from PokerCalculator import Card, PreflopHand
 import random
 
-ace_hearts = Card.Card('Ace', 'Hearts', 14, {'secondary_value': 1})
+ace_hearts = Card.Card('Ace', 'Hearts', 14, {'low_value': 1})
 king_hearts = Card.Card('King', 'Hearts', 13)
 queen_hearts = Card.Card('Queen', 'Hearts', 12)
 jack_hearts = Card.Card('Jack', 'Hearts', 11)
@@ -16,7 +16,7 @@ five_hearts = Card.Card('Five', 'Hearts', 5)
 four_hearts = Card.Card('Four', 'Hearts', 4)
 three_hearts = Card.Card('Three', 'Hearts', 3)
 two_hearts = Card.Card('Two', 'Hearts', 2)
-ace_spades = Card.Card('Ace', 'Spades', 14, {'secondary_value': 1})
+ace_spades = Card.Card('Ace', 'Spades', 14, {'low_value': 1})
 king_spades = Card.Card('King', 'Spades', 13)
 queen_spades = Card.Card('Queen', 'Spades', 12)
 jack_spades = Card.Card('Jack', 'Spades', 11)
@@ -29,7 +29,7 @@ five_spades = Card.Card('Five', 'Spades', 5)
 four_spades = Card.Card('Four', 'Spades', 4)
 three_spades = Card.Card('Three', 'Spades', 3)
 two_spades = Card.Card('Two', 'Spades', 2)
-ace_clubs = Card.Card('Ace', 'Clubs', 14, {'secondary_value': 1})
+ace_clubs = Card.Card('Ace', 'Clubs', 14, {'low_value': 1})
 king_clubs = Card.Card('King', 'Clubs', 13)
 queen_clubs = Card.Card('Queen', 'Clubs', 12)
 jack_clubs = Card.Card('Jack', 'Clubs', 11)
@@ -42,7 +42,7 @@ five_clubs = Card.Card('Five', 'Clubs', 5)
 four_clubs = Card.Card('Four', 'Clubs', 4)
 three_clubs = Card.Card('Three', 'Clubs', 3)
 two_clubs = Card.Card('Two', 'Clubs', 2)
-ace_diamonds = Card.Card('Ace', 'Diamonds', 14, {'secondary_value': 1})
+ace_diamonds = Card.Card('Ace', 'Diamonds', 14, {'low_value': 1})
 king_diamonds = Card.Card('King', 'Diamonds', 13)
 queen_diamonds = Card.Card('Queen', 'Diamonds', 12)
 jack_diamonds = Card.Card('Jack', 'Diamonds', 11)
@@ -141,12 +141,6 @@ class Deck:
         self.__length = len(self.__cards)
         return card
 
-    def getHandCombos(self):
-        #__unsuitedCombos = None
-        #__suitedCombos = None
-        #__totalCombos = None
-        print('handcombos')
-
     def refreshLength(self):
         self.__length = len(self.__cards)
         print('refresh hand combos')
@@ -154,6 +148,47 @@ class Deck:
     def checkRep(self):
         assert self.__length <= 52 and self.__length >= 0
 
+    def generateHoldemHandCombos(self, dead_cards=[]):
+        available_cards = set(self.__cards) - set(dead_cards)
+        processed_cards = []
+
+        hands = []
+        paired_hands = []
+        suited_hands = []
+        offsuit_hands = []
+
+        for card1 in available_cards:
+            for card2 in available_cards:
+                if (card1 is not card2) and (card2 not in processed_cards):
+                    ourhand = PreflopHand.HoldemHand(card1, card2)
+                    if ourhand not in hands:
+                        hands.append(ourhand)
+            processed_cards.append(card1)
+
+        for hand in hands:
+            if hand.isPaired():
+                paired_hands.append(hand)
+            elif hand.isSuited():
+                suited_hands.append(hand)
+            else:
+                offsuit_hands.append(hand)
+
+        print(len(suited_hands)) #should be 312
+        print(len(paired_hands)) #should be 78
+        print(len(offsuit_hands)) #should be 936
+        print(len(hands)) #should be 1,326
+        return hands
+
+d = Deck()
+hands = d.generateHoldemHandCombos()
+
+
+
+
+
+
+
+#d.generateOmahaHandCombos()
 
 #d = Deck()
 #c = d.getTopCard()
@@ -165,3 +200,16 @@ class Deck:
 #c = d.getTopCard()
 #print(c.getState())
 
+
+#def generateOmahaHandCombos(self):
+#        processed_cards = []
+#        hands = []
+#        for card1 in self.__cards:
+#            for card2 in self.__cards:
+#                for card3 in self.__cards:
+#                    for card4 in self.__cards:
+#                        if (card1 not in [card2, card3, card4]) and (card2 not in [card3, card4]) and (card3 is not card4):
+#                            hand = PreflopHand.OmahaHand(card1, card2, card3, card4)
+#                            if (hand not in hands):
+#                                hands.append(hand)
+#        print(len(hands))

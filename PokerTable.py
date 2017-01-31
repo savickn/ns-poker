@@ -1,110 +1,104 @@
 __author__ = 'Nick'
 
-from PokerCalculator import PokerGame
+from PokerCalculator import Seat
 
 boilerplate_options = {
-    'ante': 0,
-    'sb': 1,
-    'bb': 2,
-    'max_buyin': 100,
-    'min_buyin': 40,
-    'action_timer': 30
-}
-
-gameTypes = {
-    '2NLHE': boilerplate_options,
-    '5NLHE': boilerplate_options.update({'bb': 5, 'sb': 2}),
-    '10NLHE': boilerplate_options.update({'bb': 10, 'sb': 5}),
-    '10NLHEDS': boilerplate_options.update({'bb': 10, 'sb': 5, 'ante': 2, 'max_buyin': 400}),
-    '200NLHE': boilerplate_options.update({'bb': 200, 'sb': 100}),
-    '10PLO': boilerplate_options.update({'bb': 10, 'sb': 5})
+    'number_of_seats': 9
 }
 
 class Table:
-    #creates an instance of the poker game (e.g. Holdem vs. Omaha)
-    __game = None
-    __game_types = ["NLHE", "PLO"]
-
     #figure out how to dynamically create Seats based on how type of table (e.g. 6-max vs. HU vs. full-ring)
     __seats = None
 
+    def __init__(self, options={}):
+        assert options['number_of_seats'] >= 2
+        self.__seats = self.setSeats(options['number_of_seats'])
+        self.checkRep()
 
-    def __init__(self):
-        self.__game = self.createGame()
+    #for debugging only
+    def getSeats(self):
+        for seat in self.__seats:
+            print(seat)
 
-    def __getPlayers(self):
+    #for initializing and changing the table's Seats
+    def setSeats(self, number_of_seats):
+        seats = []
+        iterator = 1
+        right_seat = None
+        while iterator <= number_of_seats:
+            if right_seat is not None:
+                seat = Seat.Seat(iterator, right_seat)
+                seats.append(seat)
+                right_seat.setLeft(seat) #working
+                right_seat = seat
+                iterator += 1
+            else:
+                seat = Seat.Seat(iterator)
+                seats.append(seat)
+                right_seat = seat
+                iterator += 1
+
+        first_seat = seats[0]
+        last_seat = seats[len(seats)-1]
+
+        first_seat.setRight(last_seat)
+        last_seat.setLeft(first_seat)
+
+        return tuple(seats)
+
+    def addSeat(self):
+        assert len(self.__seats) <= 10
+
+        seats = list(self.__seats)
+        first_seat = seats[0]
+        last_seat = seats[len(seats)-1]
+
+        new_seat = Seat.Seat(len(seats)+1, last_seat, first_seat)
+        seats.append(new_seat)
+        self.__seats = tuple(seats)
+
+    def removeSeat(self):
+        assert len(self.__seats) >= 2
+        print('remove seat')
+
+    #used to determine which players are involved in a hand
+    def countActivePlayers(self):
+        players = self.getActivePlayers()
+        return len(players)
+
+    def getActivePlayers(self):
         players = []
-
-        if self.__seat1 is not None:
-            players.append(self.__seat1)
-        if self.__seat2 is not None:
-            players.append(self.__seat2)
-        if self.__seat3 is not None:
-            players.append(self.__seat3)
-        if self.__seat4 is not None:
-            players.append(self.__seat4)
-        if self.__seat5 is not None:
-            players.append(self.__seat5)
-        if self.__seat6 is not None:
-            players.append(self.__seat6)
-        if self.__seat7 is not None:
-            players.append(self.__seat7)
-        if self.__seat8 is not None:
-            players.append(self.__seat8)
-        if self.__seat9 is not None:
-            players.append(self.__seat9)
-
+        for seat in self.__seats:
+            player = seat.getPlayer()
+            if player is not None and player.getStatus() is 'Active':
+                players.append(player)
         return players
 
-    #user clicks on an empty seat
-    def joinTable(self, seat, player):
-        self.seat = player
+    def getAllPlayers(self):
+        players = []
+        for seat in self.__seats:
+            player = seat.getPlayer()
+            if player is not None:
+                players.append(player)
+        return players
 
-    def createGame(self):
-        game_type = input('Please select the game type.')
-        assert game_type in self.__game_types
-
-        #for custom games
-        #options = {}
-        #options['bb'] = input('')
-        #options['sb'] = input('')
-        #options['ante'] = input('')
-        #options['max_buyin'] = input('')
-        #options['min_buyin'] = input('')
-
-        if game_type == 'NLHE':
-            #self.__game = Poker(self.__players, **options)
-            self.__game = PokerGame.Poker(self.__getPlayers(), boilerplate_options)
-            self.__game.assign_positions(self.__getPlayers())
-        elif game_type == 'PLO':
-            print('PLO not implemented')
-        else:
-            raise Exception('The game type you entered is not valid.')
-
-    def startGame(self):
-        if self.areReady():
-            self.__game.play()
-
-    def areReady(self):
-        ready_counter = 0
-        for player in self.__players:
-            if player.getStatus() is 'Active':
-                ready_counter += 1
-        if ready_counter >= 2:
-            return True
-        else:
-            return False
-
-    def registerPlayer(self, player_id):
-        #find account in DB using 'player_id'... account = Account.findById(player_id)
-        print('register stub')
-
-        #account = Account.findById(player_id)
-        #buyin = input('How much would you like to buy in for?')
-        #player = Player(account, buyin)
-        #self.__players.add(player)
+    ############## Utility Methods #################
 
     def checkRep(self):
-        print('checkrep')
+        assert len(self.__seats) >=2 and len(self.__seats) <= 9
         #assert self.__game in self.__game_types
         #also assert that there are no duplicate players
+
+    def toString(self):
+        for seat in self.__seats:
+            print(seat.toString())
+
+table = Table(boilerplate_options)
+table.toString()
+#table.getSeats()
+
+
+    #creates an instance of the poker game (e.g. Holdem vs. Omaha)
+    #__game = None
+    #__game_types = ["NLHE", "PLO"]
+    #self.__game = self.createGame()

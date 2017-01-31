@@ -4,6 +4,7 @@ from PokerCalculator import Account
 
 class Client:
     __account = None
+    __mainView = None
 
     def logIn(self):
         email = input('Please enter your email address.')

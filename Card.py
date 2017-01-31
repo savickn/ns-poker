@@ -50,47 +50,44 @@ class Card:
     __suit = None
 
     #used to represent card value (e.g. Queen = 12, King = 13, Ace = 14)
-    __primary_value = None
+    __high_value = None
 
     #used to represent a value of 1 for Aces
-    __secondary_value = None
+    __low_value = None
 
     #used to determine if card should be shown or not
     __hidden = True
 
     __sprite = None
 
-    def __init__(self, type, suit, value, options={'secondary_value':0}):
+    def __init__(self, type, suit, value, options={'low_value':None}):
         self.__type = type
         self.__suit = suit
-        self.__primary_value = value
-        self.__secondary_value = options['secondary_value']
+        self.__high_value = value
+        self.__low_value = options['low_value']
 
         self.checkRep()
 
+    def __lt__(self, other):
+        return self.getHighValue() < other.getHighValue()
+
+    def __gt__(self, other):
+        return self.getHighValue() > other.getHighValue()
+
     def checkRep(self):
-        assert self.__primary_value in range(2, 15)
-        assert self.__secondary_value in [0, 1]
+        assert self.__high_value in range(2, 15)
+        assert self.__low_value in [None, 1]
         assert self.__type in ['Ace', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King']
         assert self.__suit in ['Spades', 'Hearts', 'Clubs', 'Diamonds']
         assert self.__hidden in [True, False]
 
-    @staticmethod
-    def compare(card1, card2):
-        if card1.__primary_value > card2.__primary_value:
-            return card1
-        elif card1.__primary_value < card2.__primary_value:
-            return card2
-        else:
-            return None
-
     ########## SETTERS & GETTERS ############
 
-    def getPrimaryValue(self):
-        return self.__primary_value
+    def getHighValue(self):
+        return self.__high_value
 
-    def getSecondaryValue(self):
-        return self.__secondary_value
+    def getLowValue(self):
+        return self.__low_value
 
     def getType(self):
         return self.__type
@@ -120,3 +117,13 @@ class Card:
 
     def printAsString(self):
         print(self.toString())
+
+
+    #@staticmethod
+    #def compare(card1, card2):
+    #    if card1.__primary_value > card2.__primary_value:
+    #        return card1
+    #    elif card1.__primary_value < card2.__primary_value:
+    #        return card2
+    #    else:
+    #        return None

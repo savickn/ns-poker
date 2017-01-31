@@ -1,13 +1,20 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Card, Deck, PreflopHand, Board, Range, Avatar, Account
+from PokerCalculator import Card, Deck, PreflopHand, Board, Range, Avatar, Account, ViewTable
+
 
 class Player:
     __account = None
     __stack = None
-    __range = None
     __status = None #must be in [ACTIVE, SITTING_OUT]
     __hand = None #can be an Omaha or Texas Holdem hand
+    __tableView = None #must be initialized when Player joins using Game.getPublicInfo
+
+    __utg_range = None
+    __co_range = None
+    __btn_range = None
+    __sb_range = None
+    __bb_range = None
 
     def __init__(self, buyin, account=''):
         #self.__account = account
@@ -17,9 +24,6 @@ class Player:
         #self.__range = Range.Range()
 
         print('player init')
-
-    def checkRep(self):
-        assert self.__status in ['In Hand', 'Active', 'Sitting Out', 'Observing']
 
     ############ Setters and Getters #############
 
@@ -54,9 +58,6 @@ class Player:
         else:
             self.__status = 'Sitting_Out'
             return False
-
-
-
 
     def rebuy(self, amount):
         if self.__stack:
@@ -93,6 +94,10 @@ class Player:
 
     def _raise(self):
         print()
+
+
+    def checkRep(self):
+        assert self.__status in ['In Hand', 'Active', 'Sitting Out', 'Observing']
 
 
     ####### Graphics
