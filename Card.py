@@ -43,6 +43,12 @@ class Card_Suit(Enum):
 
 #most classes show implement Interface Drawable for setSprite() and draw() commands
 class Card:
+    #static class counter variable
+    id_counter = 0
+
+    #unique id for each card
+    __id = None
+
     #should be enum Card_Type
     __type = None
 

@@ -1,5 +1,17 @@
 __author__ = 'Nick'
 
+hand_rankings = {
+    'straight_flush': 9,
+    'quads': 8,
+    'full_house': 7,
+    'flush': 6,
+    'straight': 5,
+    'trips': 4,
+    'two_pair': 3,
+    'pair': 2,
+    'high_card': 1
+}
+
 
 class HandAnalyzer:
     __available_cards = None

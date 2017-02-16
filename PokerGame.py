@@ -74,6 +74,9 @@ class Poker:
 
     ############## Getters and Setters ##############
 
+    def getBoard(self):
+        return self.__board
+
     def addToPot(self, amount):
         self.__pot += amount
 
