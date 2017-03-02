@@ -49,10 +49,10 @@ simple_straight_hand = [
 
 complex_straight_hand = [
     Deck.ace_hearts,
-    Deck.king_spades,
-    Deck.queen_clubs,
-    Deck.jack_spades,
-    Deck.ten_spades
+    Deck.four_spades,
+    Deck.five_clubs,
+    Deck.three_spades,
+    Deck.two_spades
 ]
 
 multi_straight_hand = [
@@ -65,8 +65,58 @@ multi_straight_hand = [
     Deck.six_hearts
 ]
 
-from itertools import cycle
+from collections import deque
 
+def get_connected_collection(cards):
+    length = len(cards)
+    c5c4 = get_connected(cards[length-1], cards[length-2])
+    c4c3 = get_connected(cards[length-2], cards[length-3])
+    c3c2 = get_connected(cards[length-3], cards[length-4])
+    c2c1 = get_connected(cards[length-4], cards[length-5])
+    if(c5c4 and c4c3 and c3c2 and c2c1):
+        return True
+    else:
+        return False
+
+def check_for_straight(cards):
+    assert len(cards) in range(5, 8)
+    sorted_cards = deque(sort_cards(cards, False))
+    list_length = len(sorted_cards)
+
+    relevant_cards = []
+
+    #for card in sorted_cards:
+    #    print(card.toString())
+
+    it = 0
+    while it < list_length:
+        if get_connected_collection(sorted_cards):
+            straight = list(sorted_cards)
+            relevant_cards = straight[-5:]
+            break
+        else:
+            sorted_cards.rotate(1)
+            it += 1
+
+    for card in relevant_cards:
+        print(card.toString())
+
+    if len(relevant_cards) == 5:
+        return True
+    else:
+        return False
+
+check_for_straight(simple_straight_hand)
+print('---------')
+check_for_straight(complex_straight_hand)
+print('---------')
+check_for_straight(multi_straight_hand)
+
+
+
+
+
+from itertools import cycle
 
 #licycle = cycle(li)
 #nextelem = licycle.next()
@@ -93,40 +143,3 @@ class CircleListItem:
         __card = card
         __previous = prev
         __next = next
-
-
-
-def check_for_straight(cards):
-    assert len(cards) in range(5, 8)
-    sorted_cards = sort_cards(cards, True)
-    list_length = len(sorted_cards)
-
-    relevant_cards = []
-
-    #cl = CircleList()
-    #for card in sorted_cards:
-    #    cl.addItem(CircleListItem(card))
-
-
-    for card1 in sorted_cards:
-        temp_hand = [card1]
-
-        for card2 in sorted_cards:
-            if(card2 == card1):
-                continue
-
-
-
-        temp_hand = [card]
-        if(get_connected(card, card.next)):
-            print(card)
-            print(card.next)
-            temp_hand.append(card.next)
-        else:
-            continue
-
-
-check_for_straight(simple_straight_hand)
-#check_for_straight(complex_straight_hand)
-#check_for_straight(multi_straight_hand)
-

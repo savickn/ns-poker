@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Card, Deck, PreflopHand, Board, Range, Avatar, Account, ViewTable
+from PokerCalculator import Card, Deck, HandPreflop, Board, Range, Avatar, Account, ViewTable
 
 
 class Player:

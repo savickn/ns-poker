@@ -13,6 +13,10 @@ class HoldemHand(PreflopHand):
         self.__card1 = card1
         self.__card2 = card2
 
+    def getCards(self):
+        cards = [self.__card1, self.__card2]
+        return cards
+
     def isSuited(self):
         if self.__card1.getSuit() == self.__card2.getSuit():
             return True

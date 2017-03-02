@@ -66,20 +66,13 @@ class GtoSolver:
 
     def get_preflop_equity(self, hero, villain):
         #1 v 1 hands
+        print()
 
     def get_postflop_equity(self, hero, villain, board):
-
+        print()
 
     def get_equity_range(hero_array, villain_array):
-
-
-        def compare_hands(hero_hand, villain_hand) :
-
-
-        def compare_high_cards(hero_card, villain_card) :
-            if(hero_card.value > villain_card.value):
-                return True
-            elif()
+        print()
 
 
     ######### Community Card Actions ############

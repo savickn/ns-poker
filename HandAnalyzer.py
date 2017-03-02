@@ -1,5 +1,9 @@
 __author__ = 'Nick'
 
+from PokerCalculator import Hand, HandPair, HandQuads, HandTrips
+from PokerCalculator import Helpers
+from collections import deque
+
 hand_rankings = {
     'straight_flush': 9,
     'quads': 8,
@@ -12,48 +16,143 @@ hand_rankings = {
     'high_card': 1
 }
 
-
+#used to determine the different types of hands that can be made based on the board + hand, including the best possible hand
 class HandAnalyzer:
-    __available_cards = None
+    __hand = None
+    __board = None
+    __availableCards = None
+
     __best_hand = None
 
-    __straight_flush = False
-    __quads = False
-    __full_house = False
-    __flush = False
-    __straight = False
-    __trips = False
-    __two_pair = False
-    __pair = False
-    __nothing = True
+    #pair-type hands
+    __quads = [] #should be of type Trips
+    __full_houses = [] #should be of type Trips
+    __trips = [] #should be of type Trips
+    __two_pairs = []
+    __pairs = []
 
-    __flush_draw = False
+    #straight-flush-type hands
+    __straight_flush = None #should be of type Trips
+    __sf_gutshot = None
+    __sf_open_ender = None
+
+    #flush-type hands
+    __flushes = None #should be of type Trips
+    __flush_draws = None
+    __backdoor_flush_draws = None
+
+    #straight-type hands
+    __straight = None #should be of type Trips
     __gutshot_draw = False
     __open_ended_draw = False
     __backdoor_gutshot_draw = False
     __backdoor_open_ended_draw = False
-    __backdoor_flush_draw = False
 
-    def __init__(self, cards):
-        if len(cards) > 7 or len(cards) < 5:
-            raise Exception('HandAnalyzer failed to init')
+    __overcards = None
+    __nothing = None
 
-        self.__available_cards = cards
+    def __init__(self, hand, board):
+        self.__hand = hand
+        self.__board = board
+        self.__availableCards = board.getCards() + hand.getCards()
 
-    def get_best_hand(self):
+        self.checkRep()
+
+    def getBestHand(self):
         return self.__best_hand
 
-    def calculate_best_hand(self, *input_cards):
+    #extracts all pairs/trips/quads from availableCards
+    def analyzePairedHands(self):
+        relevant_cards = []
+
+        for card1 in self.__availableCards:
+            if card1 in relevant_cards:
+                continue
+            temp_hand = [card1]
+
+            for card2 in self.__availableCards:
+                if card2 == card1 or card2 in relevant_cards:
+                    continue
+                if (card1.getHighValue() == card2.getHighValue()):
+                    print('{card1} matched {card2}. Therefore, {card2} was added to temp_hand.'.format(card2=card2.toString(),
+                                                                                                           card1=card1.toString()))
+                    temp_hand.append(card2)
+
+            if len(temp_hand) == 2:
+                pair = HandPair.Pair(temp_hand)
+                if pair not in self.__pairs:
+                    print('{card1} makes a pair.'.format(card1=card1.toString()))
+                    self.__pairs.append(pair)
+
+            elif len(temp_hand) == 3:
+                trips = HandTrips.Trips(temp_hand)
+                if trips not in self.__trips:
+                    print('{card1} makes trips.'.format(card1=card1.toString()))
+                    self.__trips.append(trips)
+
+            elif len(temp_hand) == 4:
+                quads = HandQuads.Quads(temp_hand)
+                if quads not in self.__quads:
+                    print('{card1} makes quads.'.format(card1=card1.toString()))
+                    self.__quads.append(quads)
+            else:
+                print('{card1} does not make a pair, trips, or quads.'.format(card1=card1.toString()))
+
+    #extracts all possible straights from availableCards (required to calc possible straight_flushes)
+    def analyzeStraights(self, draws=False):
+        sorted_cards = deque(Helpers.sortCards(self.__availableCards, False))
+        list_length = len(sorted_cards)
+
+        it = 0
+        while it < list_length:
+            if Helpers.isStraight(sorted_cards):
+                straight = list(sorted_cards)
+                relevant_cards = straight[-5:]
+                break
+            else:
+                sorted_cards.rotate(1)
+                it += 1
+
+
+
+
+
+    #extracts all possible flushes from availableCards (required to calc possible straight_flushes)
+    def analyzeFlushes(self, draws=False):
+
+
+
+
+
+
+    def checkRep(self):
+        assert len(self.__availableCards) > 5
+        assert len(self.__board.getCards()) > 3
+        assert len(self.__hand.getCards()) in [2, 4]
+
+        #if len(cards) > 7 or len(cards) < 5:
+        #    raise Exception('HandAnalyzer failed to init')
+
+
+    def calculateWinner(self, hand1, hand2):
+
+
+
+    def calculateBestHand(self, *input_cards):
         if input_cards:
             cards = input_cards
         else:
             cards = self.__available_cards
 
         #used to sort hand by value
-        sorted_cards = cards.sort(key=lambda card: card.value)
+        sorted_cards = sorted(cards, key=lambda card: card.getHighValue(), reverse=True)
 
-        if self.check_for_straight_flush(sorted_cards):
-            return self.__best_hand
+        #if self.check_for_straight_flush(sorted_cards):
+        #    return self.__best_hand
+
+        bestHand = None
+        while bestHand is None:
+
 
         if self.check_for_quads(sorted_cards):
             return self.__best_hand
@@ -78,6 +177,12 @@ class HandAnalyzer:
 
         if self.calculate_high_cards(sorted_cards, 5):
             return self.__best_hand
+
+        #calculates remaining cards using symmetrical difference
+        remaining_cards = set(relevant_cards) ^ set(initial_cards)
+        remaining_cards = list(remaining_cards)
+
+        best_hand = calculate_high_cards(relevant_cards, remaining_cards)
 
     ##################### Helpers
 

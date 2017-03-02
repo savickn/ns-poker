@@ -1,7 +1,7 @@
 __author__ = 'Nick'
 
 import random
-from PokerCalculator import Card, Deck, PreflopHand, Board, Player, Account, PokerTable
+from PokerCalculator import Card, Deck, HandPreflop, Board, Player, Account, PokerTable
 from collections import deque
 
 boilerplate_options = {
@@ -26,7 +26,7 @@ gameTypes = {
 class Poker:
     __preflop = True
     __heads_up = False
-    __number_of_cards_per_hand = 2 #or 4 in Omaha or 5 in Draw or 3 in Stud
+    __cards_per_hand = 2 #or 4 in Omaha or 5 in Draw or 3 in Stud
     __state = None #should be in [Running, Wait]
 
     __max_buyin = None
@@ -46,7 +46,7 @@ class Poker:
     __table = None
     __btn = None #for assigning initial positions
     __sb = None #for postflop play and posting blinds
-    __bb = None #for utility
+    __bb = None #for posting blinds
     __fp = None #for preflop play, basically set __first_position and call __first_position.__left to move around table for betting
 
     __deck = None
@@ -102,7 +102,7 @@ class Poker:
         active_seats = self.__table.getActiveSeats()
         hands = {}
 
-        while card <= self.__number_of_cards_per_hand:
+        while card <= self.__cards_per_hand:
             iterator = 1
             while iterator <= active_seats:
                 hands['hand' + str(iterator)] = []
@@ -120,7 +120,7 @@ class Poker:
 
     #creates player hand, maybe make it so that the hand type (e.g. Holdem vs. Omaha) depends on how many cards are passed in
     def dealHand(self, player, cards):
-        hand = PreflopHand.HoldemHand(cards[0], cards[1])
+        hand = HandPreflop.HoldemHand(cards[0], cards[1])
         player.setHand(hand)
 
     ########## Positioning Players #############

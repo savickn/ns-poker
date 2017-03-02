@@ -13,11 +13,10 @@ class Board:
         self.__flop2 = card2
         self.__flop3 = card3
 
-    def getBoard(self):
+    def getCards(self):
         board = [self.__flop1, self.__flop2, self.__flop3]
         if self.__turn is not None:
             board.append(self.__turn)
-
             if self.__river is not None:
                 board.append(self.__river)
         return board

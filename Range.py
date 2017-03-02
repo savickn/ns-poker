@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-from PokerCalculator import PreflopHand, ViewRangeSelection
+from PokerCalculator import HandPreflop, ViewRangeSelection
 
 class Range:
     __range = [] #includes hands that will be played
@@ -15,7 +15,7 @@ class Range:
 
     def addHandsToRange(self, hands):
         for hand in hands:
-            if hand.instanceOf(PreflopHand):
+            if hand.instanceOf(HandPreflop):
                 print(hand.toString())
                 self.__range.append(hand)
 

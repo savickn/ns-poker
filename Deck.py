@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Card, PreflopHand
+from PokerCalculator import Card, HandPreflop
 import random
 
 ace_hearts = Card.Card('Ace', 'Hearts', 14, {'low_value': 1})
@@ -115,11 +115,10 @@ class Deck:
     __cards = None
     __length = None
 
-    def __init__(self):
-        self.__cards = deck
+    def __init__(self, dead_cards=[]):
+        self.__cards = list(set(deck) - set(dead_cards))
         self.__length = len(self.__cards)
         self.checkRep()
-        print('deck init')
 
     def shuffleDeck(self):
         self.__cards = self.shuffle(self.__cards)
@@ -160,7 +159,7 @@ class Deck:
         for card1 in available_cards:
             for card2 in available_cards:
                 if (card1 is not card2) and (card2 not in processed_cards):
-                    ourhand = PreflopHand.HoldemHand(card1, card2)
+                    ourhand = HandPreflop.HoldemHand(card1, card2)
                     if ourhand not in hands:
                         hands.append(ourhand)
             processed_cards.append(card1)
