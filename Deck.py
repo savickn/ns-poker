@@ -179,7 +179,7 @@ class Deck:
         return hands
 
 d = Deck()
-hands = d.generateHoldemHandCombos()
+#hands = d.generateHoldemHandCombos()
 
 
 

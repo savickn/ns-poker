@@ -1,35 +1,27 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Card
+from PokerCalculator import Hand
 
-#maybe add HandType parent class which implements getLength
-
-class Trips:
-    __trips = None
-    __value = None
-    __length = 3
+class Trips(Hand.Hand):
+    __prefix = 'T'
 
     def __init__(self, trips):
-        self.__trips = tuple(trips)
-        self.__value = trips[0].value
-
-        self.checkrep()
-
-    def getLength(self):
-        return self.__length
+        super().__init__(trips, trips[0].getHighValue(), 3, self.__prefix)
+        self.checkRep()
 
     @staticmethod
-    def compare(self, trips1, trips2):
-        #compares value of trips
-        if trips1.__value > trips2.__value:
-            return trips1
-        elif trips1.__value < trips2.__value:
-            return trips2
+    def compare(t1, t2):
+        if t1.getValue() > t2.getValue():
+            return t1
+        elif t1.getValue() < t2.getValue():
+            return t2
         else:
-            return 'Tied'
+            return 'Tied' #maybe return None instead
 
-    def checkrep(self):
-        assert len(self.__trips) == 3
-        #also check that hc1 and hc2 are not null
+    def checkRep(self):
+        assert len(self.getCards()) == self.getLength()
+        for card in self.getCards():
+            assert card.getHighValue() == self.getValue()
+
 
 

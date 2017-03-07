@@ -48,3 +48,13 @@ def printCards(cards):
 def sortCards(cards, reverse):
     sorted_cards = sorted(cards, key=lambda card: card.getHighValue(), reverse=reverse)
     return sorted_cards
+
+def inCollection(hand, collection):
+    state = False
+    for h in collection:
+        print('########')
+        print(hand.getIdentifier())
+        print(h.getIdentifier())
+        if h == hand:
+            state = True
+    return state

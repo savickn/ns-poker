@@ -8,10 +8,12 @@ class Board:
     __turn = None
     __river = None
 
-    def __init__(self, card1, card2, card3):
+    def __init__(self, card1, card2, card3, card4=None, card5=None):
         self.__flop1 = card1
         self.__flop2 = card2
         self.__flop3 = card3
+        self.__turn = card4
+        self.__river = card5
 
     def getCards(self):
         board = [self.__flop1, self.__flop2, self.__flop3]

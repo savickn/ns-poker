@@ -2,36 +2,23 @@ __author__ = 'Nick'
 
 from PokerCalculator import Hand
 
-class Quads(Hand):
-    __quads = None
-    __value = None
-    __length = 4
+class Quads(Hand.Hand):
+    __prefix = 'Q'
 
     def __init__(self, quads):
-        super(self)
-        self.__quads = tuple(quads)
-        self.__highCard = highCard
-        self.__value = quads[0].value
-
-        self.setIdentifier()
+        super().__init__(quads, quads[0].getHighValue(), 4, self.__prefix)
         self.checkRep()
 
-    def setIdentifier(self):
-        prefix = 'Q'
-
-
-    def getLength(self):
-        return self.__length
-
     @staticmethod
-    def compare(quads1, quads2):
-        if quads1.__value > quads2.__value:
-            return quads1
-        elif quads1.__value < quads2.__value:
-            return quads2
+    def compare(q1, q2):
+        if q1.getValue() > q2.getValue():
+            return q1
+        elif q1.getValue() < q2.getValue():
+            return q2
         else:
-            return 'Tied'
+            return 'Tied' #maybe return None instead
 
     def checkRep(self):
-        assert len(self.__quads) == 4
-        #also validate that the hand is actually quads
+        assert len(self.getCards()) == self.getLength()
+        for card in self.getCards():
+            assert card.getHighValue() == self.getValue()

@@ -24,11 +24,11 @@ class Hand:
     __length = None #length of hand (e.g. pair = 2, flush = 5)
     __identifier = None #unique for every possible hand
 
-    def __init__(self, cards, value, length):
-        print('made hand init')
-        self.__cards = tuple(cards)
-        self.__value = cards[0].value #this isnt going to work well
+    def __init__(self, cards, value, length, prefix):
+        self.__cards = list(cards)
+        self.__value = value
         self.__length = length
+        self.__identifier = self.setIdentifier(prefix)
 
     #used to check if a particular hand already exists in a collection
     def __eq__(self, other):
@@ -51,26 +51,15 @@ class Hand:
     def getIdentifier(self):
         return self.__identifier
 
-    def setIdentifier(self):
-        print('not implemented')
+    ########### SETTERS ###########
+
+    def setIdentifier(self, prefix):
+        code = 0
+        for card in self.__cards:
+            code += multipliers[card.getSuit()] + card.getHighValue()
+        return prefix + '-' + str(self.__value) + '-' + str(code)
 
 
 
 
-
-
-
-#class MadeHand:
-#    __hands = None
-#    __length = None
-
-#    def __init__(self, hands):
-#        self.__hands = tuple(hands)
-#        for hand in hands:
-#            self.__length += hand.getLength()
-
-#        self.checkrep()
-
-#    def checkrep(self):
-#        assert self.__length == 5
 
