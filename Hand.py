@@ -19,10 +19,12 @@ multipliers = {
 }
 
 class Hand:
+    __prefix = None
     __cards = None
-    __value = None #e.g. highest card in flush,
+    __value = None #e.g. highest card in flush, value of a pair, etc
     __length = None #length of hand (e.g. pair = 2, flush = 5)
     __identifier = None #unique for every possible hand
+
 
     def __init__(self, cards, value, length, prefix):
         self.__cards = list(cards)
@@ -50,6 +52,9 @@ class Hand:
 
     def getIdentifier(self):
         return self.__identifier
+
+    def getPrefix(self):
+        return self.__prefix
 
     ########### SETTERS ###########
 
