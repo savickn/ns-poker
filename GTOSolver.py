@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Deck, Board
+import Deck, Board
 
 class GtoSolver:
     __deck = None

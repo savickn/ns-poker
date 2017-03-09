@@ -1,7 +1,7 @@
 __author__ = 'Nick'
 
 import random
-from PokerCalculator import Card, Deck, HandPreflop, Board, Player, Account, PokerTable
+import Card, Deck, HandPreflop, Board, Player, Account, PokerTable
 from collections import deque
 
 boilerplate_options = {
@@ -103,20 +103,20 @@ class Poker:
         hands = {}
 
         while card <= self.__cards_per_hand:
-            iterator = 1
-            while iterator <= active_seats:
-                hands['hand' + str(iterator)] = []
-                hands['hand' + str(iterator)].append(self.__deck.getTopCard())
-                iterator += 1
+            it = 1
+            while it <= active_seats:
+                hands['hand' + str(it)] = []
+                hands['hand' + str(it)].append(self.__deck.getTopCard())
+                it += 1
             card += 1
 
         first_seat = self.__sb
-        iterator = 1
+        it = 1
         for num in range (0, len(active_seats)):
-            cards = hands['hand{id}'.format(id=iterator)]
+            cards = hands['hand{id}'.format(id=it)]
             self.dealHand(first_seat.getPlayer(), cards)
             first_seat = first_seat.getLeft()
-            iterator += 1
+            it += 1
 
     #creates player hand, maybe make it so that the hand type (e.g. Holdem vs. Omaha) depends on how many cards are passed in
     def dealHand(self, player, cards):
@@ -130,7 +130,7 @@ class Poker:
         self.__deck.shuffleDeck()
         player_cards = {}
 
-        for seat in self.__seats:
+        for seat in self.__table.getActiveSeats():
             player_cards[seat.getPlayer()] = self.__deck.getTopCard()
             #print(player)
             #print(player_cards[player])

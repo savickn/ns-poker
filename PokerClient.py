@@ -1,7 +1,8 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Account
+import Account
 
+#represents the main browser than can be used to login to an account or find games
 class Client:
     __account = None
     __mainView = None

@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Card, Deck, HandPreflop, Board, Range, Avatar, Account, ViewTable
+import Card, Deck, HandPreflop, Board, Range, Avatar, Account, ViewTable
 
 
 class Player:
@@ -8,6 +8,7 @@ class Player:
     __stack = None
     __status = None #must be in [ACTIVE, SITTING_OUT]
     __hand = None #can be an Omaha or Texas Holdem hand
+    __timeBank = None
     __tableView = None #must be initialized when Player joins using Game.getPublicInfo
 
     __utg_range = None
@@ -37,7 +38,7 @@ class Player:
         return self.__status
 
     def setStatus(self, status):
-        assert self.__status in ['In Hand', 'Active', 'Sitting Out', 'Observing']
+        assert status in ['In Hand', 'Active', 'Sitting Out', 'Observing']
         self.__status = status
 
     ############# Interact with game ##############
@@ -67,8 +68,6 @@ class Player:
         #used to ensure stack !> max_buyin
         #if stack > :
 
-    #maybe instead use generic 'post_mandatory_bet'
-
 
     def selectAction(self, state):
         #draw user input frame
@@ -96,11 +95,9 @@ class Player:
         print()
 
 
-    def checkRep(self):
-        assert self.__status in ['In Hand', 'Active', 'Sitting Out', 'Observing']
 
 
-    ####### Graphics
+    ############ GRAPHICS #############
 
     def draw_hand(self):
         self.__hand.draw()
@@ -108,6 +105,9 @@ class Player:
     def draw_avatar(self):
         self.__account.draw()
         #CANVAS.DRAW(self.__sprite)
+
+    def checkRep(self):
+        assert self.__status in ['In Hand', 'Active', 'Sitting Out', 'Observing']
 
 
 player1 = Player(200)

@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Avatar
+import Avatar
 
 class Account:
     __username = None
@@ -10,7 +10,6 @@ class Account:
     __status = None
     __balance = None
     __sprite = None
-
 
 
     def __init__(self, username, email, password, country):

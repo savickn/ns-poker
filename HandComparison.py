@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-from PokerCalculator import HandPreflop, Board, Deck, HandAnalyzer
+import HandPreflop, Board, Deck, HandAnalyzer
 
 board1 = []
 hand1 = []

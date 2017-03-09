@@ -25,11 +25,11 @@ class Board:
 
     def setTurn(self, turn):
         self.__turn = turn
-        assert len(self.getBoard()) is 4
+        assert len(self.getCards()) is 4
 
     def setRiver(self, river):
         self.__river = river
-        assert len(self.getBoard()) is 5
+        assert len(self.getCards()) is 5
 
     ############# ANALYSIS METHODS #################
 
@@ -39,7 +39,7 @@ class Board:
 
     def toString(self):
         string = ''
-        for card in self.getBoard():
+        for card in self.getCards():
             string += '{card}, '.format(card = card.toString())
         #add method to remove trailing , from string output
         return string
@@ -48,9 +48,9 @@ class Board:
         print(self.toString())
 
     def draw(self):
-        for card in self.getBoard():
+        for card in self.getCards():
             card.draw()
 
     def checkRep(self):
-        assert self.getBoard() in range(3,6)
+        assert self.getCards() in range(3,6)
 

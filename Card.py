@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Avatar
+import Avatar
 from enum import Enum
 
 card_values = {

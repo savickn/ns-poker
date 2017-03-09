@@ -5,7 +5,6 @@ class Seat:
     __player = None
     __right = None
     __left = None
-    #__role? e.g. btn vs. sb vs. bb
 
     def __init__(self, id, right=None, left=None):
         self.__id = id

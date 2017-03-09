@@ -1,24 +1,23 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Hand
+import Hand
 
 class Quads(Hand.Hand):
-    __prefix = 'Q'
 
-    def __init__(self, quads):
-        super().__init__(quads, quads[0].getHighValue(), 4, self.__prefix)
+    def __init__(self, cards, value):
+        super().__init__(cards, value, 4, 'Q')
         self.checkRep()
 
     @staticmethod
     def compare(q1, q2):
-        if q1.getValue() > q2.getValue():
+        if q1.getPrimaryValue() > q2.getPrimaryValue():
             return q1
-        elif q1.getValue() < q2.getValue():
+        elif q1.getPrimaryValue() < q2.getPrimaryValue():
             return q2
         else:
-            return 'Tied' #maybe return None instead
+            return None
 
     def checkRep(self):
         assert len(self.getCards()) == self.getLength()
         for card in self.getCards():
-            assert card.getHighValue() == self.getValue()
+            assert card.getHighValue() == self.getPrimaryValue()

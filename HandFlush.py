@@ -1,15 +1,11 @@
 __author__ = 'Nick'
 
-import Hand, Deck
+import Hand
 import Helpers
 
 class Flush(Hand.Hand):
-    __prefix = 'F'
-    __suit = None
-
-    def __init__(self, cards, value, suit):
-        super().__init__(cards, value, 5, self.__prefix)
-        self.__suit = suit
+    def __init__(self, cards, value):
+        super().__init__(cards, value, 5, 'F')
         self.checkRep()
 
     @staticmethod
@@ -24,13 +20,5 @@ class Flush(Hand.Hand):
 
     def checkRep(self):
         assert len(self.getCards()) == self.getLength()
-        for card in self.getCards():
-            assert card.getSuit() == self.__suit
+        assert Helpers.isFlush(self.getCards())
 
-
-
-#print('#############')
-#print(p.getValue())
-#print(p.getLength())
-#print(p.getCards())
-#print(p.getIdentifier())

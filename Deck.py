@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Card, HandPreflop
+import Card, HandPreflop
 import random
 
 ace_hearts = Card.Card('Ace', 'Hearts', 14, {'low_value': 1})

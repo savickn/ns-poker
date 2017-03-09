@@ -1,24 +1,32 @@
 __author__ = 'Nick'
 
-import Hand, Deck
+import Hand
 
-class Pair(Hand.Hand):
+class TwoPair(Hand.Hand):
+    __secondaryValue = None #from the lowest Pair
 
-    def __init__(self, cards, value):
-        super().__init__(cards, value, 2, 'P')
+    def __init__(self, highPair, lowPair):
+        super().__init__(highPair.getCards() + lowPair.getCards(), highPair.getPrimaryValue(), 4, 'W')
+        self.__secondaryValue = lowPair.getPrimaryValue()
         self.checkRep()
 
     @staticmethod
-    def compare(p1, p2):
-        if p1.getValue() > p2.getValue():
-            return p1
-        elif p1.getValue() < p2.getValue():
-            return p2
+    def compare(w1, w2):
+        if w1.getPrimaryValue() > w2.getPrimaryValue():
+            return w1
+        elif w1.getPrimaryValue() < w2.getPrimaryValue():
+            return w2
         else:
-            return None
+            if w1.getSecondaryValue() > w2.getSecondaryValue():
+                return w1
+            elif w1.getSecondaryValue() < w2.getSecondaryValue():
+                return w2
+            else:
+                return None
+
+    def getSecondaryValue(self):
+        return self.__secondaryValue
 
     def checkRep(self):
         assert len(self.getCards()) == self.getLength()
-        for card in self.getCards():
-            assert card.getHighValue() == self.getValue()
 

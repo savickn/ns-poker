@@ -3,38 +3,38 @@ __author__ = 'Nick'
 import Hand, Deck
 
 class Pair(Hand.Hand):
-    __prefix = 'P'
 
     def __init__(self, cards, value):
-        super().__init__(cards, value, 2, self.__prefix)
+        super().__init__(cards, value, 2, 'P')
         self.checkRep()
 
     @staticmethod
     def compare(p1, p2):
-        if p1.getValue() > p2.getValue():
+        if p1.getPrimaryValue() > p2.getPrimaryValue():
             return p1
-        elif p1.getValue() < p2.getValue():
+        elif p1.getPrimaryValue() < p2.getPrimaryValue():
             return p2
         else:
-            return 'Tied' #maybe return None instead
-
-    def getPrefix(self):
-        return self.__prefix
+            return None
 
     def checkRep(self):
         assert len(self.getCards()) == self.getLength()
         for card in self.getCards():
-            assert card.getHighValue() == self.getValue()
+            assert card.getHighValue() == self.getPrimaryValue()
 
 
-pair = [
-    Deck.ace_hearts,
-    Deck.ace_spades
+p1 = [
+    Deck.two_hearts,
+    Deck.two_spades
 ]
-p = Pair(pair)
 
-#print('#############')
-#print(p.getValue())
-#print(p.getLength())
-#print(p.getCards())
-#print(p.getIdentifier())
+p2 = [
+    Deck.five_clubs,
+    Deck.five_spades
+]
+
+pair1 = Pair(p1, p1[0].getHighValue())
+pair2 = Pair(p2, p2[0].getHighValue())
+
+#winner = Pair.compare(pair1, pair2)
+#print(winner.toString())

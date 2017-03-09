@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Seat
+import Seat
 
 boilerplate_options = {
     'number_of_seats': 9

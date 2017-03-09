@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-from PokerCalculator import HandPreflop, ViewRangeSelection
+import HandPreflop, ViewRangeSelection
 
 class Range:
     __range = [] #includes hands that will be played

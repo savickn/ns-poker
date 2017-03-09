@@ -3,7 +3,7 @@ __author__ = 'Nick'
 
 
 class Action:
-    __actor = None
+    __actor = None #should pass 'self'?
     __action = None
     __bet = None
 

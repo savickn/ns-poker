@@ -1,5 +1,7 @@
 __author__ = 'Nick'
 
+import Deck
+
 #returns true if two cards are within 1 value of each other
 def isConnected(card1, card2):
     primary_diff = abs(card1.getHighValue() - card2.getHighValue())
@@ -22,6 +24,16 @@ def isStraight(cards):
         return True
     else:
         return False
+
+#helper for checking if a collection of cards makes a flush
+def isFlush(cards):
+    suit = cards[0].getSuit()
+    for c in cards:
+        if c.getSuit() == suit:
+            continue
+        else:
+            return False
+    return True
 
 #fills a given hand with high cards and returns the resulting 5 card hand... working
 def calculateHighCards(relevant_cards, remaining_cards) :
@@ -50,11 +62,24 @@ def sortCards(cards, reverse):
     return sorted_cards
 
 def inCollection(hand, collection):
-    state = False
     for h in collection:
-        print('########')
-        print(hand.getIdentifier())
-        print(h.getIdentifier())
+        #print('########')
+        #print(hand.getIdentifier())
+        #print(h.getIdentifier())
         if h == hand:
-            state = True
-    return state
+            return True
+    return False
+
+hand = [
+    Deck.ace_hearts,
+    Deck.eight_diamonds,
+    Deck.five_clubs,
+    Deck.king_spades,
+    Deck.four_spades
+]
+
+#printCards(sortCards(hand, True))
+#printCards(sortCards(hand, False))
+
+
+
