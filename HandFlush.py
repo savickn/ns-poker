@@ -16,7 +16,9 @@ class Flush(Hand.Hand):
             elif c2.getHighValue() > c1.getHighValue():
                 return c2
             else:
-                return None
+                continue
+        return None
+
 
     def checkRep(self):
         assert len(self.getCards()) == self.getLength()

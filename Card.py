@@ -67,12 +67,16 @@ class Card:
     __sprite = None
 
     def __init__(self, type, suit, value, options={'low_value':None}):
+        self.__id = '{value}-{suit}'.format(value=value, suit=suit)
         self.__type = type
         self.__suit = suit
         self.__high_value = value
-        self.__low_value = options['low_value']
+        self.__low_value = options['low_value'] if options['low_value'] is not None else value
 
         self.checkRep()
+
+    def __eq__(self, other):
+        return self.getId() == other.getId()
 
     def __lt__(self, other):
         return self.getHighValue() < other.getHighValue()
@@ -82,12 +86,15 @@ class Card:
 
     def checkRep(self):
         assert self.__high_value in range(2, 15)
-        assert self.__low_value in [None, 1]
+        #assert self.__low_value in [None, 1]
         assert self.__type in ['Ace', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King']
         assert self.__suit in ['Spades', 'Hearts', 'Clubs', 'Diamonds']
         assert self.__hidden in [True, False]
 
     ########## SETTERS & GETTERS ############
+
+    def getId(self):
+        return self.__id
 
     def getHighValue(self):
         return self.__high_value
@@ -108,13 +115,13 @@ class Card:
         assert state in [True, False]
         self.__hidden = state
 
-    def setSprite(self):
-        self.__sprite = Avatar.Avatar('/path/to/picture')
-
     ########### GRAPHICS ##########
 
     def draw(self):
         self.__sprite.draw()
+
+    def setSprite(self):
+        self.__sprite = Avatar.Avatar('/path/to/picture')
 
     ########## UTILITY ###########
 
@@ -123,13 +130,3 @@ class Card:
 
     def printAsString(self):
         print(self.toString())
-
-
-    #@staticmethod
-    #def compare(card1, card2):
-    #    if card1.__primary_value > card2.__primary_value:
-    #        return card1
-    #    elif card1.__primary_value < card2.__primary_value:
-    #        return card2
-    #    else:
-    #        return None

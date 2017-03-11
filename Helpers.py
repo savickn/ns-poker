@@ -6,15 +6,63 @@ import Deck
 def isConnected(card1, card2):
     primary_diff = abs(card1.getHighValue() - card2.getHighValue())
     secondary_diff = None
+    #analyzing low values
     if(card1.getLowValue()):
         secondary_diff = abs(card1.getLowValue() - card2.getHighValue())
     if(card2.getLowValue()):
         secondary_diff = abs(card2.getLowValue() - card1.getHighValue())
+    #final check, or (primary_diff == 0)
     if(primary_diff == 1) or (secondary_diff == 1):
         return True
+    else:
+        return False
+
+#returns the most common suit in a collection of cards (relies on the fact that only only flush can be made at a time)
+def getRelevantSuit(cards):
+    spades = 0
+    clubs = 0
+    hearts = 0
+    diamonds = 0
+
+    for card in cards:
+        if card.getSuit() == 'Spades':
+            spades += 1
+        elif card.getSuit() == 'Diamonds':
+            diamonds += 1
+        elif card.getSuit() == 'Hearts':
+            hearts += 1
+        elif card.getSuit() == 'Clubs':
+            clubs += 1
+        else:
+            raise Exception('This card has an invalid suit.')
+
+    if (spades >= hearts) and (spades >= clubs) and (spades >= diamonds):
+        return 'Spades'
+    elif (clubs >= hearts) and (clubs >= spades) and (clubs >= diamonds):
+        return 'Clubs'
+    elif (hearts >= clubs) and (hearts >= spades) and (hearts >= diamonds):
+        return 'Hearts'
+    else:
+        return 'Diamonds'
+
+#used to remove Pairs when checking for straights, careful it could remove both Pair cards
+def removePairs(cards, suit):
+    for card in cards:
+        for card2 in cards:
+            if card == card2:
+                continue
+            if card.getHighValue() == card2.getHighValue():
+                if card.getSuit() == suit:
+                    cards.remove(card2)
+                else:
+                    cards.remove(card)
+    return cards
 
 #uses 'isConnected' to check if all cards are connected
 def isStraight(cards):
+    suit = getRelevantSuit(cards)
+    cards = removePairs(cards, suit)
+
     length = len(cards)
     c5c4 = isConnected(cards[length-1], cards[length-2])
     c4c3 = isConnected(cards[length-2], cards[length-3])
@@ -56,30 +104,65 @@ def printCards(cards):
     for card in cards:
         print(card.toString())
 
-#sorts from highest value to lowest if reverse=True
+#sorts based on a card's highValue field (highest value to lowest if reverse=True and vice versa)
 def sortCards(cards, reverse):
     sorted_cards = sorted(cards, key=lambda card: card.getHighValue(), reverse=reverse)
     return sorted_cards
 
+#sorts based on a card's lowValue field
+def lowSort(cards, reverse):
+    sorted_cards = sorted(cards, key=lambda card: card.getLowValue(), reverse=reverse)
+    return sorted_cards
+
 def inCollection(hand, collection):
     for h in collection:
-        #print('########')
-        #print(hand.getIdentifier())
-        #print(h.getIdentifier())
         if h == hand:
             return True
     return False
 
 hand = [
     Deck.ace_hearts,
-    Deck.eight_diamonds,
+    Deck.five_diamonds,
     Deck.five_clubs,
     Deck.king_spades,
     Deck.four_spades
 ]
 
+#straight flush
+board5 = [
+    Deck.ace_diamonds,
+    Deck.king_hearts,
+    Deck.king_spades,
+    Deck.queen_spades,
+    Deck.jack_spades,
+    Deck.ten_spades,
+    Deck.nine_spades
+]
+
+
 #printCards(sortCards(hand, True))
 #printCards(sortCards(hand, False))
 
 
+#print(isStraight(board5))
+
+#for card in board5:
+#    print(card.toString())
+
+
+
+
+
+#Helper function for analyzing all combinations of flushes
+#def extractFlushes(self, cards):
+#    cards.sort(key=lambda card: card.getHighValue(), reverse=True)
+#    if len(cards) == 5:
+#        self.__flushes.append(HandFlush.Flush(cards, cards[0].getHighValue()))
+#    if len(cards) == 6:
+#        self.__flushes.append(HandFlush.Flush(cards[:5], cards[0].getHighValue()))
+#        self.__flushes.append(HandFlush.Flush(cards[1:6], cards[0].getHighValue()))
+#    if len(cards) == 7:
+#        self.__flushes.append(HandFlush.Flush(cards[:5], cards[0].getHighValue()))
+#        self.__flushes.append(HandFlush.Flush(cards[1:6], cards[0].getHighValue()))
+#        self.__flushes.append(HandFlush.Flush(cards[2:7], cards[0].getHighValue()))
 

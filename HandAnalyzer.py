@@ -63,8 +63,28 @@ class HandAnalyzer:
         self.__availableCards = board + hand
         self.checkRep()
 
+    def checkRep(self):
+        #assert len(set(self.__board.getCards()) & set(self.__hand.getCards())) == 0
+        assert len(self.__board) > 3
+        assert len(self.__hand) in [2, 4]
+        assert len(self.__availableCards) > 5
+
     def getBestHand(self):
         return self.__bestHand
+
+    #determines the winner between two separate player's hands
+    def compareHands(self, hand1, hand2):
+        if handRankings[hand1.getPrefix()] > handRankings[hand2.getPrefix()]:
+            return hand1
+        elif handRankings[hand2.getPrefix()] > handRankings[hand1.getPrefix()]:
+            return hand2
+        elif handRankings[hand2.getPrefix()] == handRankings[hand1.getPrefix()]:
+            winner = hand1.compare(hand2)
+            return winner
+        else:
+            raise Exception('One or more hand prefixes is not valid.')
+
+    ############ ANALYSIS METHODS #############
 
     #extracts all pairs/trips/quads from availableCards, can prob be optimized better
     def analyzePairedHands(self):
@@ -75,7 +95,7 @@ class HandAnalyzer:
                 if card2 == card:
                     continue
                 if card.getHighValue() == card2.getHighValue():
-                    print('{card} matched {card2}. Therefore, {card2} was added to temp_hand.'.format(card=card.toString(), card2=card2.toString()))
+                    #print('{card} matched {card2}. Therefore, {card2} was added to temp_hand.'.format(card=card.toString(), card2=card2.toString()))
                     temp_hand.append(card2)
 
             if len(temp_hand) == 2:
@@ -99,21 +119,33 @@ class HandAnalyzer:
                 print('{card} does not make a pair, trips, or quads.'.format(card=card.toString()))
 
         #checks for full houses
-        if len(self.__trips) > 0 and len(self.__pairs) > 0:
+        if (len(self.__trips) == 2) or (len(self.__trips) > 0 and len(self.__pairs) > 0):
             trips = None
             pair = None
 
             for p in self.__pairs:
-                if (pair == None) or (p.getPrimaryValue() > pair.getValue()):
+                if (pair is None) or (p.getPrimaryValue() > pair.getPrimaryValue()):
                     pair = p
 
             for t in self.__trips:
-                if (trips == None) or (t.getPrimaryValue() > trips.getValue()):
+                if trips is None:
                     trips = t
 
-            if trips and pair:
-                self.__fullHouses.append(HandFH.FullHouse(trips, pair, ))
+                #replaces old 'trips' with current 'trips' if current 'trips' > old 'trips'
+                elif t.getPrimaryValue() > trips.getPrimaryValue():
+                    temp = trips
+                    trips = t
 
+                    #replaces 'pair' with the old 'trips' value if 'trips' > 'pair'
+                    if (pair is None) or (temp.getPrimaryValue() > pair.getPrimaryValue()):
+                        pair = HandPair.Pair(temp.getCards()[:2], temp.getPrimaryValue())
+
+                #replaces 'pair' with the current 'trips' value if current 'trips' < old 'trips' but also > 'pair'
+                elif (t.getPrimaryValue() < trips.getPrimaryValue()) and ((pair == None) or (t.getPrimaryValue() > pair.getPrimaryValue())):
+                    pair = HandPair.Pair(t.getCards()[:2], t.getPrimaryValue())
+
+            if trips and pair:
+                self.__fullHouses.append(HandFH.FullHouse(trips, pair))
 
         #checks for two pairs
         if len(self.__pairs) > 1:
@@ -121,48 +153,51 @@ class HandAnalyzer:
             p2 = None
 
             for p in self.__pairs:
-                if p1 == None:
+                if p1 is None:
                     p1 = p
-                elif p2 == None:
+                elif p2 is None:
+                    p2 = p
+                elif p.getPrimaryValue() > p2.getPrimaryValue():
                     p2 = p
 
+                #used to keep pairs in the correct order
+                if (p1 and p2) and (p2.getPrimaryValue() > p1.getPrimaryValue()):
+                    temp = p1
+                    p1 = p2
+                    p2 = temp
 
-            self.__twoPairs.append(HandTP.TwoPair(p1, p2))
-
-
+            if p1 and p2:
+                self.__twoPairs.append(HandTP.TwoPair(p1, p2))
 
     #extracts all possible straights from availableCards (required to calc possible straight_flushes)
     def analyzeStraights(self, draws=False):
-        sorted_cards = deque(Helpers.sortCards(self.__availableCards, False))
+        sortedDeque = deque(Helpers.sortCards(self.__availableCards, False))
 
         it = 0
-        while it < len(sorted_cards):
-            if Helpers.isStraight(sorted_cards):
-                Helpers.printCards(sorted_cards)
-                #straight = HandStraight.Straight(list(sorted_cards), )
-                #relevant_cards = straight[-5:]
-                break
+        while it < len(sortedDeque):
+            sortedCards = list(sortedDeque)
+            if Helpers.isStraight(sortedCards):
+                cards = sortedCards[-5:]
+                value = cards[-1].getHighValue()
+                straight = HandStraight.Straight(cards, value)
+
+                #ensures no duplicate straights are added
+                if not Helpers.inCollection(straight, self.__straights):
+                    self.__straights.append(straight)
             else:
-                sorted_cards.rotate(1)
-                it += 1
+                sortedDeque.rotate(1)
+            it += 1
 
+        #used to check for straight flushes
+        if len(self.__straights) > 0:
+            for s in self.__straights:
+                if Helpers.isFlush(s.getCards()):
+                    self.__straightFlushes.append(s)
 
-    #Helper function for analyzing flushes
-    def extractFlushes(self, cards):
+    #Helper function for extracting the best possible flush
+    def extractBestFlush(self, cards):
         cards.sort(key=lambda card: card.getHighValue(), reverse=True)
-        suit = cards[0].getSuit()
-        if len(cards) == 5:
-            print()
-            #self.__flushes.append(HandFlush.Flush(cards, suit))
-        if len(cards) == 6:
-            print()
-            #self.__flushes.append(HandFlush.Flush(cards[:5], suit))
-            #self.__flushes.append(HandFlush.Flush(cards[1:6], suit))
-        if len(cards) == 7:
-            print()
-            #self.__flushes.append(HandFlush.Flush(cards[:5], suit))
-            #self.__flushes.append(HandFlush.Flush(cards[1:6], suit))
-            #self.__flushes.append(HandFlush.Flush(cards[2:7], suit))
+        self.__flushes.append(HandFlush.Flush(cards[:5], cards[0].getHighValue()))
 
     #extracts all possible flushes from availableCards (required to calc possible straight_flushes)
     def analyzeFlushes(self, draws=False):
@@ -184,66 +219,34 @@ class HandAnalyzer:
                 raise Exception('This card has an invalid suit.')
 
         if(len(spades) >= 5):
-            self.extractFlushes(spades)
+            self.extractBestFlush(spades)
         elif(len(clubs) >= 5):
-            self.extractFlushes(clubs)
+            self.extractBestFlush(clubs)
         elif(len(hearts) >= 5):
-            self.extractFlushes(hearts)
+            self.extractBestFlush(hearts)
         elif(len(diamonds) >= 5 ):
-            self.extractFlushes(diamonds)
+            self.extractBestFlush(diamonds)
         else:
             print('This hand does not make a flush.')
 
-    #determines the winner between two separate player's hands
-    def compareHands(self, hand1, hand2):
-        if handRankings[hand1.getPrefix()] > handRankings[hand2.getPrefix()]:
-            return hand1
-        elif handRankings[hand2.getPrefix()] > handRankings[hand1.getPrefix()]:
-            return hand2
-        else:
-            winner = hand1.compare(hand2)
-            return winner
+    #fills a given hand with high cards and returns the resulting 5 card hand... working
+    def calculateHighCards(self, relevant_cards, remaining_cards) :
+        _relevant_cards = relevant_cards
+        _remaining_cards = remaining_cards
+        number_of_cards = len(relevant_cards) + len(remaining_cards)
+        assert(number_of_cards > 4)
 
+        _remaining_cards.sort(key=lambda card: card.getHighValue(), reverse=True)
 
-    def hasStraightFlush(self):
-        sf = None
-        for hand in self.__flushes:
-            if Helpers.isStraight(hand):
-                return
+        while len(_relevant_cards) < 5 :
+            _relevant_cards.append(_remaining_cards.pop(0))
 
-    def hasQuads(self):
-        sf = None
-        for hand in self.__flushes:
-            if Helpers.isStraight(hand):
-                self.__bestHand = hand
-                return
+        assert len(_relevant_cards) == 5
+        assert len(_remaining_cards) == number_of_cards - len(_relevant_cards)
 
-    def hasFullHouse(self):
-        sf = None
-        for hand in self.__flushes:
-            if Helpers.isStraight(hand):
-                self.__bestHand = hand
-                return
+        return _relevant_cards
 
-    def hasStraight(self):
-        sf = None
-        for hand in self.__flushes:
-            if Helpers.isStraight(hand):
-                self.__bestHand = hand
-                return
-
-    def hasFlush(self):
-        print()
-
-    def hasTrips(self):
-        print()
-
-    def hasTwoPair(self):
-        print()
-
-    def hasPair(self):
-        print()
-
+    ################# DETERMINE BEST HAND METHOD ######################
 
     #determines the best possible hand that a player's hole cards can make given the board
     def calculateBestHand(self, *input_cards):
@@ -285,27 +288,53 @@ class HandAnalyzer:
 
         #best_hand = calculate_high_cards(relevant_cards, remaining_cards)
 
-    ##################### Helpers
+    ############### Individual Hand Checks ####################
 
-    def calculateHighCards(self, made_hand, cards):
-        #while len(made_hand) < 5 :
-        #    made_hand.append(sorted_cards.pop(0))
-        return made_hand
+    def hasStraightFlush(self):
+        sf = None
+        for hand in self.__flushes:
+            if Helpers.isStraight(hand):
+                return
 
-    ####################### Individual Hand Checks
+    def hasQuads(self):
+        sf = None
+        for hand in self.__flushes:
+            if Helpers.isStraight(hand):
+                self.__bestHand = hand
+                return
 
+    def hasFullHouse(self):
+        sf = None
+        for hand in self.__flushes:
+            if Helpers.isStraight(hand):
+                self.__bestHand = hand
+                return
 
-    def checkRep(self):
-        assert len(set(self.__board) & set(self.__hand)) == 0
-        assert len(self.__board) > 3
-        assert len(self.__hand) in [2, 4]
-        assert len(self.__availableCards) > 5
+    def hasStraight(self):
+        sf = None
+        for hand in self.__flushes:
+            if Helpers.isStraight(hand):
+                self.__bestHand = hand
+                return
+
+    def hasFlush(self):
+        print()
+
+    def hasTrips(self):
+        print()
+
+    def hasTwoPair(self):
+        print()
+
+    def hasPair(self):
+        print()
+
 
     ######## PRINTING RESULTS ##############
 
     #helper for printing hand analyzes
     def printCategory(self, hands, category, abbr):
-        print('# {category}'.format(category=category))
+        print('# {category}-{count}'.format(category=category, count=len(hands)))
         it = 1
         for hand in hands:
             print('### {abbr}-{num}'.format(abbr=abbr, num=it))
@@ -331,23 +360,61 @@ class HandAnalyzer:
         self.printCategory(self.__nothing, 'Nothing', 'N')
 
 
-
 hand = [
     Deck.ace_spades,
-    Deck.ace_diamonds
+    Deck.king_diamonds
 ]
-board = [
+
+#double-trips full house
+board1 = [
     Deck.ace_hearts,
+    Deck.five_clubs,
+    Deck.ten_diamonds,
+    Deck.ten_hearts,
+    Deck.ten_clubs
+]
+
+#two pair
+board2 = [
+    Deck.king_hearts,
     Deck.five_clubs,
     Deck.six_diamonds,
     Deck.ten_hearts,
     Deck.ten_clubs
 ]
 
-ha = HandAnalyzer(hand, board)
-#ha.analyzePairedHands()
-#ha.analyzeStraights()
-#ha.analyzeFlushes()
+#flush
+board3 = [
+    Deck.king_spades,
+    Deck.five_spades,
+    Deck.six_spades,
+    Deck.ten_spades,
+    Deck.jack_spades
+]
+
+#straight
+board4 = [
+    Deck.two_spades,
+    Deck.three_clubs,
+    Deck.four_diamonds,
+    Deck.five_hearts,
+    Deck.jack_spades
+]
+
+#straight flush
+board5 = [
+    Deck.king_spades,
+    Deck.queen_spades,
+    Deck.jack_spades,
+    Deck.ten_spades,
+    Deck.nine_spades
+]
+
+
+ha = HandAnalyzer(hand, board5)
+ha.analyzePairedHands() #working
+ha.analyzeStraights() #glitchy, fails to recognize Straights/Straight Flushes when a pair is in the middle (might only choose one of the pair cards)
+ha.analyzeFlushes() #working
 ha.printAnalysis()
 
 
