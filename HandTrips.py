@@ -7,11 +7,10 @@ class Trips(Hand.Hand):
         super().__init__(cards, value, 3, 'T')
         self.checkRep()
 
-    @staticmethod
-    def compare(t1, t2):
-        if t1.getPrimaryValue() > t2.getPrimaryValue():
-            return t1
-        elif t1.getPrimaryValue() < t2.getPrimaryValue():
+    def compare(self, t2):
+        if self.getPrimaryValue() > t2.getPrimaryValue():
+            return self
+        elif self.getPrimaryValue() < t2.getPrimaryValue():
             return t2
         else:
             return None

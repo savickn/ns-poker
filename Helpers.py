@@ -47,16 +47,11 @@ def getRelevantSuit(cards):
 
 #used to remove Pairs when checking for straights, careful it could remove both Pair cards
 def removePairs(cards, suit):
+    filtered = []
     for card in cards:
-        for card2 in cards:
-            if card == card2:
-                continue
-            if card.getHighValue() == card2.getHighValue():
-                if card.getSuit() == suit:
-                    cards.remove(card2)
-                else:
-                    cards.remove(card)
-    return cards
+        if card not in filtered:
+            filtered.append(card)
+    return filtered
 
 #uses 'isConnected' to check if all cards are connected
 def isStraight(cards):
@@ -119,6 +114,13 @@ def inCollection(hand, collection):
         if h == hand:
             return True
     return False
+
+def getCollectionDiff(col1, col2):
+    diff = []
+    for c in col2:
+        if c not in col1:
+            diff.append(c)
+    return diff
 
 hand = [
     Deck.ace_hearts,

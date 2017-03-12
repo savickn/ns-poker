@@ -8,11 +8,10 @@ class Quads(Hand.Hand):
         super().__init__(cards, value, 4, 'Q')
         self.checkRep()
 
-    @staticmethod
-    def compare(q1, q2):
-        if q1.getPrimaryValue() > q2.getPrimaryValue():
-            return q1
-        elif q1.getPrimaryValue() < q2.getPrimaryValue():
+    def compare(self, q2):
+        if self.getPrimaryValue() > q2.getPrimaryValue():
+            return self
+        elif self.getPrimaryValue() < q2.getPrimaryValue():
             return q2
         else:
             return None

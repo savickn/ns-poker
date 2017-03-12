@@ -9,11 +9,10 @@ class StraightFlush(Hand.Hand):
         super().__init__(cards, value, 5, 'Z')
         self.checkRep()
 
-    @staticmethod
-    def compare(z1, z2):
-        if z1.getPrimaryValue() > z2.getPrimaryValue():
-            return z1
-        elif z1.getPrimaryValue() < z2.getPrimaryValue():
+    def compare(self, z2):
+        if self.getPrimaryValue() > z2.getPrimaryValue():
+            return self
+        elif self.getPrimaryValue() < z2.getPrimaryValue():
             return z2
         else:
             return None

@@ -31,10 +31,6 @@ class Board:
         self.__river = river
         assert len(self.getCards()) is 5
 
-    ############# ANALYSIS METHODS #################
-
-
-
     ############# UTILITY METHODS ##################
 
     def toString(self):

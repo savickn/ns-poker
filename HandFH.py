@@ -10,16 +10,15 @@ class FullHouse(Hand.Hand):
         self.__secondaryValue = pair.getPrimaryValue()
         self.checkRep()
 
-    @staticmethod
-    def compare(z1, z2):
-        if z1.getPrimaryValue() > z2.getPrimaryValue():
-            return z1
-        elif z1.getPrimaryValue() < z2.getPrimaryValue():
+    def compare(self, z2):
+        if self.getPrimaryValue() > z2.getPrimaryValue():
+            return self
+        elif self.getPrimaryValue() < z2.getPrimaryValue():
             return z2
         else:
-            if z1.getSecondaryValue() > z2.getSecondaryValue():
-                return z1
-            elif z1.getSecondaryValue() < z2.getSecondaryValue():
+            if self.getSecondaryValue() > z2.getSecondaryValue():
+                return self
+            elif self.getSecondaryValue() < z2.getSecondaryValue():
                 return z2
             else:
                 return None

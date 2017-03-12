@@ -2,10 +2,6 @@ __author__ = 'Nick'
 
 import HandPreflop, Board, Deck, HandAnalyzer
 
-board1 = []
-hand1 = []
-hand2 = []
-
 class HandData:
     __hand = None
     __iterations = 0
@@ -34,10 +30,11 @@ class HandComparison:
     __deadCards = []
     __board = None #of type Board
     __hands = [] #of type HandData
-    __handAnalyzer = None #of type HandAnalyzer
-    __iterations = 1000
+    __iterations = None
 
-    def __init__(self, hands, iterations, board=None):
+    def __init__(self, hands, iterations=1000, board=None):
+        assert len(hands) >= 2
+
         self.__board = board
         self.__iterations = iterations
 
@@ -53,21 +50,25 @@ class HandComparison:
 
     #takes availableCards and a initial board state and generates a full board
     def generateBoard(self, ac, board):
-        while len(board.getBoard()) < 5:
-            if not board:
-                board = Board.Board(ac.getTopCard(), ac.getTopCard(), ac.getTopCard())
-            elif len(self.__board.getBoard()) == 3:
-                board.setTurn(self.__deck.getTopCard())
-            elif len(self.__board.getBoard()) == 4:
-                board.setRiver(self.__deck.getTopCard())
+        if not board:
+            board = Board.Board(ac.getTopCard(), ac.getTopCard(), ac.getTopCard())
+        if board and len(board.getCards()) == 3:
+            board.setTurn(self.__deck.getTopCard())
+        if board and len(board.getCards()) == 4:
+            board.setRiver(self.__deck.getTopCard())
         return board
 
     def getWinner(self, board, hand1, hand2):
-        ha = HandAnalyzer.HandAnalyzer()
-        bh1 = ha.calculateBestHand()
-        bh2 = ha.calculateBestHand()
-        winner = ha.calculateWinner(bh1, bh2)
-        return winner
+        ha1 = HandAnalyzer.HandAnalyzer(hand1, board)
+        ha2 = HandAnalyzer.HandAnalyzer(hand2, board)
+        winner = HandAnalyzer.HandAnalyzer.compareHands(ha1.getBestHand(), ha2.getBestHand())
+
+        if winner == hand1:
+            print(hand1)
+        elif winner == hand2:
+            print(hand2)
+        elif winner == 'Split':
+            print()
 
     def updateEquity(self, hand, winner):
         if winner:
@@ -91,8 +92,11 @@ class HandComparison:
 
             it += 1
 
+board1 = Board.Board(Deck.king_clubs, Deck.four_spades, Deck.six_diamonds)
+hand1 = HandPreflop.HoldemHand(Deck.ace_clubs, Deck.eight_clubs)
+hand2 = HandPreflop.HoldemHand(Deck.ten_hearts, Deck.ten_diamonds)
 
-comparison = HandComparison(board1, [hand1, hand2])
+comparison = HandComparison([hand1, hand2])
 comparison.run()
 
 

@@ -116,7 +116,8 @@ class Deck:
     __length = None
 
     def __init__(self, dead_cards=[]):
-        self.__cards = list(set(deck) - set(dead_cards))
+        self.__cards = deck
+        #self.__cards = list(set(deck) - set(dead_cards))
         self.__length = len(self.__cards)
         self.checkRep()
 

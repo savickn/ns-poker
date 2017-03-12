@@ -10,16 +10,15 @@ class TwoPair(Hand.Hand):
         self.__secondaryValue = lowPair.getPrimaryValue()
         self.checkRep()
 
-    @staticmethod
-    def compare(w1, w2):
-        if w1.getPrimaryValue() > w2.getPrimaryValue():
-            return w1
-        elif w1.getPrimaryValue() < w2.getPrimaryValue():
+    def compare(self, w2):
+        if self.getPrimaryValue() > w2.getPrimaryValue():
+            return self
+        elif self.getPrimaryValue() < w2.getPrimaryValue():
             return w2
         else:
-            if w1.getSecondaryValue() > w2.getSecondaryValue():
-                return w1
-            elif w1.getSecondaryValue() < w2.getSecondaryValue():
+            if self.getSecondaryValue() > w2.getSecondaryValue():
+                return self
+            elif self.getSecondaryValue() < w2.getSecondaryValue():
                 return w2
             else:
                 return None
