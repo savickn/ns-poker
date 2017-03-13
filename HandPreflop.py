@@ -30,10 +30,7 @@ class HoldemHand(PreflopHand):
             return False
 
     def toString(self):
-        return self.__card1.toString() + ', ' + self.__card2.toString()
-
-    def printAsString(self):
-        print(self.toString())
+        return 'Holdem Hand: {card1}, {card2}'.format(card1=self.__card1.toString(), card2=self.__card2.toString())
 
     def draw(self):
         self.__card1.draw()

@@ -19,28 +19,6 @@ card_values = {
     'Ace': 14
 }
 
-class Card_Type(Enum):
-    ACE_LO = 1
-    TWO = 2
-    THREE = 3
-    FOUR = 4
-    FIVE = 5
-    SIX = 6
-    SEVEN = 7
-    EIGHT = 8
-    NINE = 9
-    TEN = 10
-    JACK = 11
-    QUEEN = 12
-    KING = 13
-    ACE_HIGH = 14
-
-class Card_Suit(Enum):
-    CLUBS = 1
-    HEARTS = 2
-    DIAMONDS = 3
-    SPADES = 4
-
 #most classes show implement Interface Drawable for setSprite() and draw() commands
 class Card:
     #unique id for each card
@@ -64,7 +42,7 @@ class Card:
     __sprite = None
 
     def __init__(self, type, suit, value, options={'low_value':None}):
-        self.__id = '{value}-{suit}'.format(value=value, suit=suit)
+        #self.__id = '{value}-{suit}'.format(value=value, suit=suit)
         self.__type = type
         self.__suit = suit
         self.__high_value = value
@@ -72,8 +50,8 @@ class Card:
 
         self.checkRep()
 
-    def __eq__(self, other):
-        return self.getId() == other.getId()
+    #def __eq__(self, other):
+    #    return self.getId() == other.getId()
 
     def __lt__(self, other):
         return self.getHighValue() < other.getHighValue()
@@ -125,5 +103,3 @@ class Card:
     def toString(self):
         return '{type} of {suit}'.format(type = self.__type, suit = self.__suit)
 
-    def printAsString(self):
-        print(self.toString())

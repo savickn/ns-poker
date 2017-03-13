@@ -22,7 +22,7 @@ class HandAnalyzer:
     __hand = None
     __board = None
     __availableCards = None
-    __bestHand = None
+    __bestHand = None #an array of objects of sub-type Hand that together add up to 5 Cards
 
     #pair-type hands
     __quads = []
@@ -57,15 +57,16 @@ class HandAnalyzer:
     __flushBlockers = []
     __nutBlockers = [] #meaning hands that block strong hands, don't want to raise for value if u block strong hands
 
+    # accepts an array of 2-4 cards (hand) and an array of 5 cards(board)
     def __init__(self, hand, board):
         self.__hand = hand
         self.__board = board
-        self.__availableCards = board + hand
+        self.__availableCards = hand + board
 
         try:
             self.checkRep()
         except AssertionError:
-            print('This class is not valid')
+            print('CheckRep failed! This class is not valid.')
 
         self.analyzePairedHands()
         self.analyzeStraights()
@@ -73,7 +74,7 @@ class HandAnalyzer:
         self.calculateBestHand()
 
     def checkRep(self):
-        #assert len(set(self.__board.getCards()) & set(self.__hand.getCards())) == 0
+        assert len(set(self.__board) & set(self.__hand)) == 0
         assert len(self.__board) > 3
         assert len(self.__hand) in [2, 4]
         assert len(self.__availableCards) > 5
@@ -427,79 +428,3 @@ board8 = [
 #ha.printBestHand()
 
 
-
-
-
-
-
-    #calculates remaining cards using symmetrical difference
-    #remaining_cards = set(relevant_cards) ^ set(initial_cards)
-    #remaining_cards = list(remaining_cards)
-    #best_hand = calculate_high_cards(relevant_cards, remaining_cards)
-
-    ############### Individual Hand Checks ####################
-
-    #def hasStraightFlush(self):
-    #    sf = None
-    #    for hand in self.__flushes:
-    #        if Helpers.isStraight(hand):
-    #            return
-
-    # #def hasQuads(self):
-    #     sf = None
-    #     for hand in self.__flushes:
-    #         if Helpers.isStraight(hand):
-    #             self.__bestHand = hand
-    #             return
-    #
-    # def hasFullHouse(self):
-    #     sf = None
-    #     for hand in self.__flushes:
-    #         if Helpers.isStraight(hand):
-    #             self.__bestHand = hand
-    #             return
-    #
-    # def hasStraight(self):
-    #     sf = None
-    #     for hand in self.__flushes:
-    #         if Helpers.isStraight(hand):
-    #             self.__bestHand = hand
-    #             return
-    #
-    # def hasFlush(self):
-    #     print()
-    #
-    # def hasTrips(self):
-    #     print()
-    #
-    # def hasTwoPair(self):
-    #     print()
-    #
-    # def hasPair(self):
-    #     print()
-
-    # def calculateBestHand(self):
-    #
-    #     if self.hasStraightFlush():
-    #         self.__bestHand = self.__straightFlushes[0]
-    #
-    #     if self.hasQuads():
-    #         self.__bestHand = self.__quads[0]
-    #
-    #     if self.hasFullHouse():
-    #         return self.__bestHand
-    #
-    #     if self.hasFlush():
-    #         return self.__bestHand
-    #
-    #     if self.hasStraight():
-    #         return self.__bestHand
-    #
-    #     if self.hasTrips():
-    #         return self.__bestHand
-    #
-    #     if self.hasTwoPair():
-    #         return self.__bestHand
-    #
-    #     if self.hasPair():
-    #         return self.__bestHand

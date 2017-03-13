@@ -18,6 +18,7 @@ def isConnected(card1, card2):
         return False
 
 #returns the most common suit in a collection of cards (relies on the fact that only only flush can be made at a time)
+#can be used to remove irrelevant pair cards when checking for straights and straight flushes
 def getRelevantSuit(cards):
     spades = 0
     clubs = 0
@@ -115,13 +116,6 @@ def inCollection(hand, collection):
             return True
     return False
 
-def getCollectionDiff(col1, col2):
-    diff = []
-    for c in col2:
-        if c not in col1:
-            diff.append(c)
-    return diff
-
 hand = [
     Deck.ace_hearts,
     Deck.five_diamonds,
@@ -146,14 +140,16 @@ board5 = [
 #printCards(sortCards(hand, False))
 
 
-#print(isStraight(board5))
-
-#for card in board5:
-#    print(card.toString())
 
 
 
 
+#def getCollectionDiff(col1, col2):
+#    diff = []
+#    for c in col2:
+#        if c not in col1:
+#            diff.append(c)
+#    return diff
 
 #Helper function for analyzing all combinations of flushes
 #def extractFlushes(self, cards):

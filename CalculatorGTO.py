@@ -2,6 +2,7 @@ __author__ = 'Nick'
 
 import Deck, Board
 
+#used to rank hands within a range to determine which X% should be called vs. a pot-size bet/etc
 class GtoSolver:
     __deck = None
     __board = None

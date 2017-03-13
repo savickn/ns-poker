@@ -115,9 +115,13 @@ class Deck:
     __cards = None
     __length = None
 
-    def __init__(self, dead_cards=[]):
-        self.__cards = deck
-        #self.__cards = list(set(deck) - set(dead_cards))
+    def __init__(self, deadCards=[]):
+        liveCards = []
+        for c in deck:
+            if c not in deadCards:
+                liveCards.append(c)
+
+        self.__cards = liveCards
         self.__length = len(self.__cards)
         self.checkRep()
 
@@ -145,11 +149,10 @@ class Deck:
         self.__length = len(self.__cards)
         print('refresh hand combos')
 
-    def checkRep(self):
-        assert self.__length <= 52 and self.__length >= 0
+    ############# HAND COMBINATORICS #################
 
-    def generateHoldemHandCombos(self, dead_cards=[]):
-        available_cards = set(self.__cards) - set(dead_cards)
+    def generateHoldemHandCombos(self):
+        available_cards = self.__cards
         processed_cards = []
 
         hands = []
@@ -160,9 +163,9 @@ class Deck:
         for card1 in available_cards:
             for card2 in available_cards:
                 if (card1 is not card2) and (card2 not in processed_cards):
-                    ourhand = HandPreflop.HoldemHand(card1, card2)
-                    if ourhand not in hands:
-                        hands.append(ourhand)
+                    pHand = HandPreflop.HoldemHand(card1, card2)
+                    if pHand not in hands:
+                        hands.append(pHand)
             processed_cards.append(card1)
 
         for hand in hands:
@@ -178,6 +181,9 @@ class Deck:
         print(len(offsuit_hands)) #should be 936
         print(len(hands)) #should be 1,326
         return hands
+
+    def checkRep(self):
+        assert self.__length <= 52 and self.__length >= 0
 
 #d = Deck()
 #hands = d.generateHoldemHandCombos()
@@ -213,3 +219,4 @@ class Deck:
 #                            if (hand not in hands):
 #                                hands.append(hand)
 #        print(len(hands))
+

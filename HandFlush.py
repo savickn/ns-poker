@@ -22,3 +22,7 @@ class Flush(Hand.Hand):
         assert len(self.getCards()) == self.getLength()
         assert Helpers.isFlush(self.getCards())
 
+    def toString(self):
+        string = 'Flush: '
+        for card in self.getCards():
+            string += '{card}, '.format(card=card.toString())

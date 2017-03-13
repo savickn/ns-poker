@@ -67,10 +67,6 @@ class Hand:
 
     ############ UTILITY #############
 
-    def toString(self):
-        for card in self.__cards:
-            print(card.toString())
-
     def checkRep(self):
         assert self.__identifier[0] == self.__prefix
         assert len(self.__cards) in [2, 3 ,4, 5]
