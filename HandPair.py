@@ -21,19 +21,3 @@ class Pair(Hand.Hand):
         for card in self.getCards():
             assert card.getHighValue() == self.getPrimaryValue()
 
-
-pa1 = [
-    Deck.two_hearts,
-    Deck.two_spades
-]
-
-pa2 = [
-    Deck.five_clubs,
-    Deck.five_spades
-]
-
-pair1 = Pair(pa1, pa1[0].getHighValue())
-pair2 = Pair(pa2, pa2[0].getHighValue())
-
-#winner = Pair.compare(pair1, pair2)
-#print(winner.toString())

@@ -52,14 +52,15 @@ class Hand:
     def getLength(self):
         return self.__length
 
-    def getIdentifier(self):
-        return self.__identifier
-
     def getPrefix(self):
         return self.__prefix
 
+    def getIdentifier(self):
+        return self.__identifier
+
     ############ SETTERS #############
 
+    #format: W-10-
     def setIdentifier(self, prefix):
         code = 0
         for card in self.__cards:

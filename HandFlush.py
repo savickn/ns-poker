@@ -9,7 +9,7 @@ class Flush(Hand.Hand):
         self.checkRep()
 
     def compare(self, f2):
-        for c1, c2 in zip(self, f2):
+        for c1, c2 in self, f2:
             if c1 > c2:
                 return self
             elif c2 > c1:

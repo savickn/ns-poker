@@ -19,49 +19,44 @@ handRankings = {
 
 #used to determine the different types of hands that can be made based on the board + hand, including the best possible hand
 class HandAnalyzer:
-    __hand = None
-    __board = None
-    __availableCards = None
-    __bestHand = None #an array of objects of sub-type Hand that together add up to 5 Cards,
+    def __init__(self, hand, board, toPrint=False):
+        self.__hand = hand #must be of type PreflopHand
+        self.__board = board #must be of type Board
+        self.__availableCards = hand.getCards() + board.getCards() #a List of cards contained with '__hand' and '__board'
+        self.__bestHand = None #must be of type HandBest
 
-    #pair-type hands
-    __quads = []
-    __fullHouses = []
-    __trips = []
-    __twoPairs = []
-    __pairs = []
+        #pair-type hands
+        self.__quads = []
+        self.__fullHouses = []
+        self.__trips = []
+        self.__twoPairs = []
+        self.__pairs = []
 
-    #straight-flush-type hands
-    __straightFlushes = []
-    __sf_gutshot_draws = []
-    __sf_open_ended_draws = []
+        #straight-flush-type hands
+        self.__straightFlushes = []
+        self.__sf_gutshot_draws = []
+        self.__sf_open_ended_draws = []
 
-    #flush-type hands
-    __flushes = []
-    __flushDraws = []
-    __backdoorFDs = []
+        #flush-type hands
+        self.__flushes = []
+        self.__flushDraws = []
+        self.__backdoorFDs = []
 
-    #straight-type hands
-    __straights = []
-    __gutterDraws = []
-    __openEndedDraws = []
-    __backdoorGDs = []
-    __backdoorOEDs = []
+        #straight-type hands
+        self.__straights = []
+        self.__gutterDraws = []
+        self.__openEndedDraws = []
+        self.__backdoorGDs = []
+        self.__backdoorOEDs = []
 
-    #missed hands
-    __overcards = []
-    __nothing = [] #includes 1 overcard hands and 0 overcard hands
+        #missed hands
+        self.__overcards = []
+        self.__nothing = [] #includes 1 overcard hands and 0 overcard hands
 
-    #blockers
-    __straightBlockers = []
-    __flushBlockers = []
-    __nutBlockers = [] #meaning hands that block strong hands, don't want to raise for value if u block strong hands
-
-    # accepts a PreflopHand object and a Board object
-    def __init__(self, hand, board):
-        self.__hand = hand
-        self.__board = board
-        self.__availableCards = hand.getCards() + board.getCards()
+        #blockers
+        self.__straightBlockers = []
+        self.__flushBlockers = []
+        self.__nutBlockers = [] #meaning hands that block strong hands, don't want to raise for value if u block strong hands
 
         try:
             self.checkRep()
@@ -73,11 +68,15 @@ class HandAnalyzer:
         self.analyzeFlushes()
         self.calculateBestHand()
 
-        self.printAnalysis()
-        self.printAvailableCards()
-        self.printBestHand()
+        if toPrint:
+            self.printAnalysis()
+            self.printAvailableCards()
+            self.printBestHand()
 
     def checkRep(self):
+        assert isinstance(self.__hand, HandPreflop.PreflopHand)
+        assert isinstance(self.__board, Board.Board)
+
         assert len(set(self.__board.getCards()) & set(self.__hand.getCards())) == 0
         assert len(self.__availableCards) > 5
 
@@ -117,7 +116,7 @@ class HandAnalyzer:
                     self.__quads.append(quads)
             else:
                 #print('{card} does not make a pair, trips, or quads.'.format(card=card.toString()))
-                return
+                continue
 
         #checks for full houses
         if (len(self.__trips) == 2) or (len(self.__trips) > 0 and len(self.__pairs) > 0):
@@ -142,7 +141,7 @@ class HandAnalyzer:
                         pair = HandPair.Pair(temp.getCards()[:2], temp.getPrimaryValue())
 
                 #replaces 'pair' with the current 'trips' value if current 'trips' < old 'trips' but also > 'pair'
-                elif (t.getPrimaryValue() < trips.getPrimaryValue()) and ((pair == None) or (t.getPrimaryValue() > pair.getPrimaryValue())):
+                elif (t.getPrimaryValue() < trips.getPrimaryValue()) and ((pair is None) or (t.getPrimaryValue() > pair.getPrimaryValue())):
                     pair = HandPair.Pair(t.getCards()[:2], t.getPrimaryValue())
 
             if trips and pair:
@@ -260,7 +259,8 @@ class HandAnalyzer:
             return
 
         if len(self.__quads) > 0:
-            self.__bestHand = HandBest.HandBest(self.__quads[0])
+            highCards = self.calculateHighCards(self.__quads[0].getCards(), self.__quads[0].getLength())
+            self.__bestHand = HandBest.HandBest(self.__quads[0], highCards)
             return
 
         if len(self.__fullHouses) > 0:
@@ -310,6 +310,7 @@ class HandAnalyzer:
                 print('###### {card}'.format(card=card.toString()))
 
     def printAnalysis(self):
+        print('HAND ANALYSIS')
         self.printCategory(self.__straightFlushes, 'Straight Flushes', 'SF')
         self.printCategory(self.__quads, 'Quads', 'Q')
         self.printCategory(self.__fullHouses, 'Full Houses', 'FH')
@@ -414,7 +415,7 @@ board8 = Board.Board(
 
 
 #all possible analysis are working
-ha = HandAnalyzer(hand, board8)
+#ha = HandAnalyzer(hand, board1)
 #ha.printAnalysis()
 #ha.printBestHand()
 

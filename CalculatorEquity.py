@@ -28,7 +28,7 @@ class Equity:
 class EquityCalculator:
     __deck = None #of type Deck
     __board = None #of type Board
-    __hands = [] #of type Equity
+    __equities = [] #of type Equity
     __iterations = None
     __equitySplit = None
 
@@ -40,7 +40,7 @@ class EquityCalculator:
         if board:
             dead_cards.append(board.getCards())
         for hand in hands:
-            self.__hands.append(Equity(hand))
+            self.__equities.append(Equity(hand))
             dead_cards += hand.getCards()
 
         self.__deck = Deck.Deck(dead_cards)
@@ -57,11 +57,11 @@ class EquityCalculator:
         return board
 
     #helper method for determining the equity distribution in split pots
-    def calculateEquitySplit(self, winners):
-        equity = 100 / len(winners)
+    def calculateEquitySplit(self, winnerCount):
+        equity = 100 / winnerCount
         return equity
 
-    #returns an array of hands that have won/tied, takes a array of 5 Cards (board) and an array of objs of type PreflopHand (hands)
+    #returns the winning BestHand object, takes a array of 5 Cards (board) and an array of objs of type PreflopHand (hands)
     def determineWinner(self, board, hands):
         analyzers = {}
         it = 1
@@ -69,25 +69,29 @@ class EquityCalculator:
             analyzers['hand' + str(it)] = HandAnalyzer.HandAnalyzer(hand, board)
             it += 1
 
-        winners = None
+        winner = None
+        winnerCount = 0
         for key, value in analyzers.items():
-            if not winners:
-                winners = [value]
+            if not winner:
+                winner = value.getBestHand()
+                winnerCount = 1
             else:
-                w = HandAnalyzer.HandAnalyzer.compareHands(value.getBestHand(), winners[0].getBestHand())
+                w = value.getBestHand().compare(winner)
                 if w == 'Split Pot':
-                    winners.append(value)
+                    winnerCount += 1
                 else:
-                    winners = [value]
-        self.__equitySplit = self.calculateEquitySplit(winners)
-        return winners
+                    winner = w
+                    winnerCount = 1
 
-    def updateEquity(self, hand, equity):
-        hand.updateEquity(equity)
+        self.__equitySplit = self.calculateEquitySplit(winnerCount)
+        return winner #should be of type BestHand
+
+    def updateEquity(self, eqObj, equity):
+        eqObj.updateEquity(equity)
 
     def run(self):
         hands = []
-        for eq in self.__hands:
+        for eq in self.__equities:
             hands.append(eq.getHand())
 
         for x in range(self.__iterations):
@@ -95,20 +99,19 @@ class EquityCalculator:
             availableCards.shuffleDeck() #shuffles Deck in each iteration
             board = self.generateBoard(availableCards, self.__board) #creates a new Board before each iteration
 
-            winners = self.determineWinner(board, hands) #sets 'equitySplit' abd returns winning hands
-            print(winners)
-            for hand in self.__hands:
-                print(hand)
-                if hand.getHand() in winners:
-                    self.updateEquity(hand, self.__equitySplit)
+            winner = self.determineWinner(board, hands) #sets 'equitySplit' and returns winning BestHand
+            for eq in self.__equities:
+                if eq.getHand().getCards() in winner:
+                    self.updateEquity(eq, self.__equitySplit)
                 else:
-                    self.updateEquity(hand, 0)
-                print(hand.toString())
+                    self.updateEquity(eq, 0)
+
+                print(eq.toString())
 
     ############# UTILITY METHODS ##############
 
     def checkRep(self):
-        assert len(self.__hands) >= 2
+        assert len(self.__equities) >= 2
 
 
 board1 = Board.Board(Deck.king_clubs, Deck.four_spades, Deck.six_diamonds) #Kc4s6d
