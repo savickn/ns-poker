@@ -111,6 +111,8 @@ deck = [
     two_spades
 ]
 
+preflopHands = {}
+
 class Deck:
     __cards = None
     __length = None
@@ -127,7 +129,6 @@ class Deck:
 
     def shuffleDeck(self):
         self.__cards = self.shuffle(self.__cards)
-        self.refreshLength()
 
     def shuffle(self, cards):
         ary = cards
@@ -145,10 +146,6 @@ class Deck:
         self.__length = len(self.__cards)
         return card
 
-    def refreshLength(self):
-        self.__length = len(self.__cards)
-        print('refresh hand combos')
-
     ############# HAND COMBINATORICS #################
 
     def generateHoldemHandCombos(self):
@@ -156,9 +153,9 @@ class Deck:
         processed_cards = []
 
         hands = []
-        paired_hands = []
-        suited_hands = []
-        offsuit_hands = []
+        pairedHands = []
+        suitedHands = []
+        offsuitHands = []
 
         for card1 in available_cards:
             for card2 in available_cards:
@@ -168,19 +165,25 @@ class Deck:
                         hands.append(pHand)
             processed_cards.append(card1)
 
+        #adds each preflop hand to the appropriate category
         for hand in hands:
             if hand.isPaired():
-                paired_hands.append(hand)
-            elif hand.isSuited():
-                suited_hands.append(hand)
-            else:
-                offsuit_hands.append(hand)
+                pairedHands.append(hand)
 
-        print(len(suited_hands)) #should be 312
-        print(len(paired_hands)) #should be 78
-        print(len(offsuit_hands)) #should be 936
-        print(len(hands)) #should be 1,326
-        return hands
+            elif hand.isSuited():
+                suitedHands.append(hand)
+                #id = 's'
+                #if not preflopHands[id]:
+                #    preflopHands[id] = [hand]
+                #else:
+                #    preflopHands[id].append(hand)
+            else:
+                offsuitHands.append(hand)
+
+        #print(len(suitedHands)) #should be 312
+        #print(len(pairedHands)) #should be 78
+        #print(len(offsuitHands)) #should be 936
+        #print(len(hands)) #should be 1,326
 
     def checkRep(self):
         assert self.__length <= 52 and self.__length >= 0
@@ -220,3 +223,6 @@ class Deck:
 #                                hands.append(hand)
 #        print(len(hands))
 
+#def refreshLength(self):
+#        self.__length = len(self.__cards)
+#        print('refresh hand combos')

@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-import Deck
+import Deck, Board, HandPreflop, HandBest
 import HandPair, HandTP, HandTrips, HandStraight, HandFlush, HandFH, HandQuads, HandSF, HandHC
 import Helpers
 from collections import deque
@@ -22,7 +22,7 @@ class HandAnalyzer:
     __hand = None
     __board = None
     __availableCards = None
-    __bestHand = None #an array of objects of sub-type Hand that together add up to 5 Cards
+    __bestHand = None #an array of objects of sub-type Hand that together add up to 5 Cards,
 
     #pair-type hands
     __quads = []
@@ -57,11 +57,11 @@ class HandAnalyzer:
     __flushBlockers = []
     __nutBlockers = [] #meaning hands that block strong hands, don't want to raise for value if u block strong hands
 
-    # accepts an array of 2-4 cards (hand) and an array of 5 cards(board)
+    # accepts a PreflopHand object and a Board object
     def __init__(self, hand, board):
         self.__hand = hand
         self.__board = board
-        self.__availableCards = hand + board
+        self.__availableCards = hand.getCards() + board.getCards()
 
         try:
             self.checkRep()
@@ -73,30 +73,16 @@ class HandAnalyzer:
         self.analyzeFlushes()
         self.calculateBestHand()
 
+        self.printAnalysis()
+        self.printAvailableCards()
+        self.printBestHand()
+
     def checkRep(self):
-        assert len(set(self.__board) & set(self.__hand)) == 0
-        assert len(self.__board) > 3
-        assert len(self.__hand) in [2, 4]
+        assert len(set(self.__board.getCards()) & set(self.__hand.getCards())) == 0
         assert len(self.__availableCards) > 5
 
     def getBestHand(self):
         return self.__bestHand
-
-    #determines the winner between two separate player's hands
-    @staticmethod
-    def compareHands(hand1, hand2):
-        for x, y in hand1, hand2:
-            if handRankings[x.getPrefix()] > handRankings[y.getPrefix()]:
-                return hand1
-            elif handRankings[y.getPrefix()] > handRankings[x.getPrefix()]:
-                return hand2
-            elif handRankings[x.getPrefix()] == handRankings[y.getPrefix()]:
-                winner = x.compare(y)
-                if winner is not None:
-                    return winner
-            else:
-                raise Exception('One or more hand prefixes is not valid.')
-        return 'Split Pot' #returns if both players hands are identical
 
     ############ ANALYSIS METHODS #############
 
@@ -115,22 +101,23 @@ class HandAnalyzer:
             if len(temp_hand) == 2:
                 pair = HandPair.Pair(temp_hand, temp_hand[0].getHighValue())
                 if not Helpers.inCollection(pair, self.__pairs):
-                    print('{card} makes a pair.'.format(card=card.toString()))
+                    #print('{card} makes a pair.'.format(card=card.toString()))
                     self.__pairs.append(pair)
 
             elif len(temp_hand) == 3:
                 trips = HandTrips.Trips(temp_hand, temp_hand[0].getHighValue())
                 if not Helpers.inCollection(trips, self.__trips):
-                    print('{card} makes trips.'.format(card=card.toString()))
+                    #print('{card} makes trips.'.format(card=card.toString()))
                     self.__trips.append(trips)
 
             elif len(temp_hand) == 4:
                 quads = HandQuads.Quads(temp_hand, temp_hand[0].getHighValue())
                 if not Helpers.inCollection(quads, self.__quads):
-                    print('{card} makes quads.'.format(card=card.toString()))
+                    #print('{card} makes quads.'.format(card=card.toString()))
                     self.__quads.append(quads)
             else:
-                print('{card} does not make a pair, trips, or quads.'.format(card=card.toString()))
+                #print('{card} does not make a pair, trips, or quads.'.format(card=card.toString()))
+                return
 
         #checks for full houses
         if (len(self.__trips) == 2) or (len(self.__trips) > 0 and len(self.__pairs) > 0):
@@ -243,7 +230,8 @@ class HandAnalyzer:
         elif(len(diamonds) >= 5 ):
             self.extractBestFlush(diamonds)
         else:
-            print('This hand does not make a flush.')
+            #print('This hand does not make a flush.')
+            return
 
     #fills a given hand with high cards and returns the resulting 5 card hand... working
     def calculateHighCards(self, cards, length):
@@ -261,51 +249,52 @@ class HandAnalyzer:
         else:
             raise Exception('This hand does not require any additional high cards.')
 
+
     ################# DETERMINE BEST HAND METHOD ######################
 
     #determines the best possible hand that a player's hole cards can make given the board
     def calculateBestHand(self):
         #sets bestHand to straight flush if it exists
         if len(self.__straightFlushes) > 0:
-            self.__bestHand = [self.__straightFlushes[0]]
+            self.__bestHand = HandBest.HandBest(self.__straightFlushes[0])
             return
 
         if len(self.__quads) > 0:
-            self.__bestHand = [self.__quads[0]]
+            self.__bestHand = HandBest.HandBest(self.__quads[0])
             return
 
         if len(self.__fullHouses) > 0:
-            self.__bestHand = [self.__fullHouses[0]]
+            self.__bestHand = HandBest.HandBest(self.__fullHouses[0])
             return
 
         if len(self.__flushes) > 0:
-            self.__bestHand = [self.__flushes[0]]
+            self.__bestHand = HandBest.HandBest(self.__flushes[0])
             return
 
         if len(self.__straights) > 0:
-            self.__bestHand = [self.__straights[0]]
+            self.__bestHand = HandBest.HandBest(self.__straights[0])
             return
 
         if len(self.__trips) > 0:
             highCards = self.calculateHighCards(self.__trips[0].getCards(), self.__trips[0].getLength())
-            self.__bestHand = [self.__trips[0], highCards]
+            self.__bestHand = HandBest.HandBest(self.__trips[0], highCards)
             return
 
         if len(self.__twoPairs) > 0:
             highCards = self.calculateHighCards(self.__twoPairs[0].getCards(), self.__twoPairs[0].getLength())
-            self.__bestHand = [self.__twoPairs[0], highCards]
+            self.__bestHand = HandBest.HandBest(self.__twoPairs[0], highCards)
             return
 
         if len(self.__pairs) > 0:
             pair = self.__pairs[0]
             highCards = self.calculateHighCards(pair.getCards(), pair.getLength())
-            self.__bestHand = [pair, highCards]
+            self.__bestHand = HandBest.HandBest(pair, highCards)
             return
 
         #sets highCards if no higher hand is made (e.g. not even a Pair)
         if self.__bestHand is None:
             highCards = self.calculateHighCards([], 0)
-            self.__bestHand = [highCards]
+            self.__bestHand = HandBest.HandBest(highCards)
 
 
     ######## PRINTING RESULTS ##############
@@ -337,94 +326,118 @@ class HandAnalyzer:
         self.printCategory(self.__overcards, 'Overcards', 'OC')
         self.printCategory(self.__nothing, 'Nothing', 'N')
 
+    def printAvailableCards(self):
+        print('############ PREFLOP HAND ############')
+        for c in self.__hand.getCards():
+            print(c.toString())
+
+        print('############ BOARD #############')
+        for c in self.__board.getCards():
+            print(c.toString())
+
+        print('############ AVAILABLE CARDS ###########')
+        for c in self.__availableCards:
+            print(c.toString())
+
     def printBestHand(self):
         print('############# BEST HAND ############')
-        for h in self.__bestHand:
-            for c in h.getCards():
-                print(c.toString())
+        self.__bestHand.printAsString()
 
 
-hand = [
+hand = HandPreflop.HoldemHand(
     Deck.ace_spades,
-    Deck.seven_spades
-]
+    Deck.seven_spades)
 
 #double-trips full house
-board1 = [
+board1 = Board.Board(
     Deck.ace_hearts,
     Deck.ace_clubs,
     Deck.ten_diamonds,
     Deck.ten_hearts,
-    Deck.ten_clubs
-]
+    Deck.ten_clubs)
 
 #two pair
-board2 = [
+board2 = Board.Board(
     Deck.king_hearts,
     Deck.five_clubs,
     Deck.seven_diamonds,
     Deck.ten_hearts,
-    Deck.ten_clubs
-]
+    Deck.ten_clubs)
 
 #flush
-board3 = [
+board3 = Board.Board(
     Deck.king_spades,
     Deck.five_spades,
     Deck.six_spades,
     Deck.ten_spades,
-    Deck.jack_spades
-]
+    Deck.jack_spades)
 
 #straight
-board4 = [
+board4 = Board.Board(
     Deck.two_spades,
     Deck.three_clubs,
     Deck.four_diamonds,
     Deck.five_hearts,
-    Deck.jack_spades
-]
+    Deck.jack_spades)
 
 #straight flush
-board5 = [
+board5 = Board.Board(
     Deck.six_spades,
     Deck.five_spades,
     Deck.four_spades,
     Deck.three_spades,
-    Deck.two_spades
-]
+    Deck.two_spades)
 
 #pair
-board6 = [
+board6 = Board.Board(
     Deck.ace_hearts,
     Deck.five_spades,
     Deck.four_spades,
     Deck.three_hearts,
-    Deck.ten_hearts
-]
+    Deck.ten_hearts)
 
 #trips
-board7 = [
+board7 = Board.Board(
     Deck.ace_hearts,
     Deck.ace_clubs,
     Deck.five_spades,
     Deck.four_spades,
-    Deck.three_hearts
-]
+    Deck.three_hearts)
 
 #high cards
-board8 = [
+board8 = Board.Board(
     Deck.king_clubs,
     Deck.six_diamonds,
     Deck.five_spades,
     Deck.jack_clubs,
-    Deck.ten_diamonds
-]
+    Deck.ten_diamonds)
 
 
 #all possible analysis are working
-#ha = HandAnalyzer(hand, board8)
+ha = HandAnalyzer(hand, board8)
 #ha.printAnalysis()
 #ha.printBestHand()
 
 
+#bestCards = []
+#for hand in self.__bestHand:
+#    for c in hand.getCards():
+#        bestCards.append(c)
+#assert len(bestCards) == 5
+
+    #accepts 2 'bestHand' arrays and returns the winner (or returns 'split pot' if 2 or more players tied)
+    #@staticmethod
+    #def compareHands(hand1, hand2):
+    #    for x, y in hand1, hand2:
+    #        if handRankings[x.getPrefix()] > handRankings[y.getPrefix()]:
+    #            print('WINNER: {hand}'.format())
+    #            return hand1
+    #        elif handRankings[y.getPrefix()] > handRankings[x.getPrefix()]:
+    #            return hand2
+    #        elif handRankings[x.getPrefix()] == handRankings[y.getPrefix()]:
+    #            winner = x.compare(y)
+    #            if winner is not None:
+    #                return winner
+    #        else:
+    #            raise Exception('One or more hand prefixes is not valid.')
+    #    return 'Split Pot' #returns if both players hands are identical

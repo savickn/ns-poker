@@ -29,6 +29,7 @@ class Hand:
         self.__cards = list(cards)
         self.__primaryValue = value
         self.__length = length
+        self.__prefix = prefix
         self.__identifier = self.setIdentifier(prefix)
 
         self.checkRep()
