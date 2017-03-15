@@ -66,6 +66,7 @@ class Card:
 
         self.checkRep()
 
+    #used to check if two Cards are identical (e.g. Js == Js but Jh != Js), not working
     #def __eq__(self, other):
     #    return self.getId() == other.getId()
 

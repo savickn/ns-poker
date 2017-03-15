@@ -1,7 +1,5 @@
 __author__ = 'Nick'
 
-import Deck
-
 #returns true if two cards are within 1 value of each other
 def isConnected(card1, card2):
     primary_diff = abs(card1.getHighValue() - card2.getHighValue())
@@ -46,44 +44,27 @@ def getRelevantSuit(cards):
     else:
         return 'Diamonds'
 
-#used to remove Pairs when checking for straights, careful it could remove both Pair cards
+#used to remove Pairs before checking for straights
 def removePairs(cards, suit):
     filtered = []
+    #adds cards of relevant suit to the filtered cards
     for c in cards:
         if c.getSuit() == suit:
             filtered.append(c)
     for c in cards:
-        if c in filtered:
+        if c in filtered: #skips suited cards
             continue
+        isPaired = False
         for c2 in filtered:
             if c.getHighValue() == c2.getHighValue():
-                continue
-        filtered.append(c)
+                isPaired = True
+                break
+        if not isPaired:
+            filtered.append(c)
     return filtered
-
-#straight flush
-board = [
-    Deck.seven_spades,
-    Deck.ten_hearts,
-    Deck.jack_spades,
-    Deck.jack_clubs,
-    Deck.queen_diamonds,
-    Deck.king_spades,
-    Deck.ace_spades
-]
-
-suit = getRelevantSuit(board)
-print(suit)
-filteredCards = removePairs(board, suit)
-for c in filteredCards:
-    print(c.toString())
-
 
 #uses 'isConnected' to check if all cards are connected
 def isStraight(cards):
-    suit = getRelevantSuit(cards)
-    cards = removePairs(cards, suit)
-
     length = len(cards)
     c5c4 = isConnected(cards[length-1], cards[length-2])
     c4c3 = isConnected(cards[length-2], cards[length-3])

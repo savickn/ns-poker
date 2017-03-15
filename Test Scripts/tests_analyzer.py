@@ -125,43 +125,48 @@ board13 = Board.Board(
     Deck.two_spades)
 
 
-toPrint = False
+printHighCards = False
+printPairedHands = False
+printFlushes = False
+printStraights = False
 
-ha1 = HandAnalyzer.HandAnalyzer(hand, board1, toPrint)
+ha1 = HandAnalyzer.HandAnalyzer(hand, board1, printHighCards)
 assert isinstance(ha1.getBestHand().getPrimary(), HandHC.HighCards)
 
-ha2 = HandAnalyzer.HandAnalyzer(hand, board2, toPrint)
+ha2 = HandAnalyzer.HandAnalyzer(hand, board2, printPairedHands)
 assert isinstance(ha2.getBestHand().getPrimary(), HandPair.Pair)
 
-ha3 = HandAnalyzer.HandAnalyzer(hand, board3, toPrint)
+ha3 = HandAnalyzer.HandAnalyzer(hand, board3, printPairedHands)
 assert isinstance(ha3.getBestHand().getPrimary(), HandPair.Pair)
 
-ha4 = HandAnalyzer.HandAnalyzer(hand, board4, toPrint)
+ha4 = HandAnalyzer.HandAnalyzer(hand, board4, printPairedHands)
 assert isinstance(ha4.getBestHand().getPrimary(), HandTP.TwoPair)
 
-ha5 = HandAnalyzer.HandAnalyzer(hand, board5, toPrint)
+ha5 = HandAnalyzer.HandAnalyzer(hand, board5, printPairedHands)
 assert isinstance(ha5.getBestHand().getPrimary(), HandTrips.Trips)
 
-ha6 = HandAnalyzer.HandAnalyzer(hand, board6, toPrint)
+ha6 = HandAnalyzer.HandAnalyzer(hand, board6, printPairedHands)
 assert isinstance(ha6.getBestHand().getPrimary(), HandFH.FullHouse)
 
-ha7 = HandAnalyzer.HandAnalyzer(hand, board7, toPrint)
+ha7 = HandAnalyzer.HandAnalyzer(hand, board7, printPairedHands)
 assert isinstance(ha7.getBestHand().getPrimary(), HandFH.FullHouse)
 
-ha8 = HandAnalyzer.HandAnalyzer(hand, board8, toPrint)
+ha8 = HandAnalyzer.HandAnalyzer(hand, board8, printPairedHands)
 assert isinstance(ha8.getBestHand().getPrimary(), HandQuads.Quads)
 
-ha9 = HandAnalyzer.HandAnalyzer(hand, board9, toPrint)
+ha9 = HandAnalyzer.HandAnalyzer(hand, board9, printFlushes)
 assert isinstance(ha9.getBestHand().getPrimary(), HandFlush.Flush)
 
-ha10 = HandAnalyzer.HandAnalyzer(hand, board10, True)
+ha10 = HandAnalyzer.HandAnalyzer(hand, board10, printStraights)
 assert isinstance(ha10.getBestHand().getPrimary(), HandStraight.Straight)
 
-ha11 = HandAnalyzer.HandAnalyzer(hand, board11, True)
+ha11 = HandAnalyzer.HandAnalyzer(hand, board11, printStraights)
 assert isinstance(ha11.getBestHand().getPrimary(), HandStraight.Straight)
 
-ha12 = HandAnalyzer.HandAnalyzer(hand, board12, True)
+ha12 = HandAnalyzer.HandAnalyzer(hand, board12, printStraights)
 assert isinstance(ha12.getBestHand().getPrimary(), HandStraight.Straight)
 
+ha13 = HandAnalyzer.HandAnalyzer(hand, board13, printStraights)
+assert isinstance(ha13.getBestHand().getPrimary(), HandSF.StraightFlush)
 
 

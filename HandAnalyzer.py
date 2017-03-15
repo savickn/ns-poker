@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-import Deck, Board, HandPreflop, HandBest
+import Board, HandPreflop, HandBest
 import HandPair, HandTP, HandTrips, HandStraight, HandFlush, HandFH, HandQuads, HandSF, HandHC
 import Helpers
 from collections import deque
@@ -16,6 +16,8 @@ handRankings = {
     'P': 2,
     'C': 1
 }
+
+### FULLY WORKING ###
 
 #used to determine the different types of hands that can be made based on the board + hand, including the best possible hand
 class HandAnalyzer:
@@ -171,7 +173,9 @@ class HandAnalyzer:
 
     #extracts all possible straights from availableCards (required to calc possible straight_flushes)
     def analyzeStraights(self, draws=False):
-        sortedDeque = deque(Helpers.sortCards(self.__availableCards, False))
+        suit = Helpers.getRelevantSuit(self.__availableCards)
+        cards = Helpers.removePairs(self.__availableCards, suit)
+        sortedDeque = deque(Helpers.sortCards(cards, False))
 
         it = 0
         while it < len(sortedDeque):
@@ -344,49 +348,5 @@ class HandAnalyzer:
         print('############# BEST HAND ############')
         self.__bestHand.printAsString()
 
-
-hand = HandPreflop.HoldemHand(
-    Deck.ace_spades,
-    Deck.seven_spades)
-
-
-#Ace-high straight
-board1 = Board.Board(
-    Deck.king_spades,
-    Deck.jack_clubs,
-    Deck.queen_diamonds,
-    Deck.ten_hearts,
-    Deck.jack_spades)
-
-#Ace-low straight
-board2 = Board.Board(
-    Deck.two_spades,
-    Deck.three_clubs,
-    Deck.four_diamonds,
-    Deck.five_hearts,
-    Deck.jack_spades)
-
-#straight with A-high
-board3 = Board.Board(
-    Deck.six_spades,
-    Deck.three_clubs,
-    Deck.four_diamonds,
-    Deck.five_hearts,
-    Deck.jack_spades)
-
-#straight flush
-board4 = Board.Board(
-    Deck.six_spades,
-    Deck.five_spades,
-    Deck.four_spades,
-    Deck.three_spades,
-    Deck.two_spades)
-
-
-
-#all possible analysis are working
-ha = HandAnalyzer(hand, board1, True)
-#ha.printAnalysis()
-#ha.printBestHand()
 
 
