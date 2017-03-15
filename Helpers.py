@@ -49,10 +49,35 @@ def getRelevantSuit(cards):
 #used to remove Pairs when checking for straights, careful it could remove both Pair cards
 def removePairs(cards, suit):
     filtered = []
-    for card in cards:
-        if card not in filtered:
-            filtered.append(card)
+    for c in cards:
+        if c.getSuit() == suit:
+            filtered.append(c)
+    for c in cards:
+        if c in filtered:
+            continue
+        for c2 in filtered:
+            if c.getHighValue() == c2.getHighValue():
+                continue
+        filtered.append(c)
     return filtered
+
+#straight flush
+board = [
+    Deck.seven_spades,
+    Deck.ten_hearts,
+    Deck.jack_spades,
+    Deck.jack_clubs,
+    Deck.queen_diamonds,
+    Deck.king_spades,
+    Deck.ace_spades
+]
+
+suit = getRelevantSuit(board)
+print(suit)
+filteredCards = removePairs(board, suit)
+for c in filteredCards:
+    print(c.toString())
+
 
 #uses 'isConnected' to check if all cards are connected
 def isStraight(cards):
@@ -79,23 +104,6 @@ def isFlush(cards):
             return False
     return True
 
-#fills a given hand with high cards and returns the resulting 5 card hand... working
-def calculateHighCards(relevant_cards, remaining_cards) :
-    _relevant_cards = relevant_cards
-    _remaining_cards = remaining_cards
-    number_of_cards = len(relevant_cards) + len(remaining_cards)
-    assert(number_of_cards > 4)
-
-    _remaining_cards.sort(key=lambda card: card.getHighValue(), reverse=True)
-
-    while len(_relevant_cards) < 5 :
-        _relevant_cards.append(_remaining_cards.pop(0))
-
-    assert len(_relevant_cards) == 5
-    assert len(_remaining_cards) == number_of_cards - len(_relevant_cards)
-
-    return _relevant_cards
-
 def printCards(cards):
     for card in cards:
         print(card.toString())
@@ -116,24 +124,11 @@ def inCollection(hand, collection):
             return True
     return False
 
-hand = [
-    Deck.ace_hearts,
-    Deck.five_diamonds,
-    Deck.five_clubs,
-    Deck.king_spades,
-    Deck.four_spades
-]
 
-#straight flush
-board5 = [
-    Deck.ace_diamonds,
-    Deck.king_hearts,
-    Deck.king_spades,
-    Deck.queen_spades,
-    Deck.jack_spades,
-    Deck.ten_spades,
-    Deck.nine_spades
-]
+
+
+
+
 
 
 #printCards(sortCards(hand, True))
@@ -164,3 +159,37 @@ board5 = [
 #        self.__flushes.append(HandFlush.Flush(cards[1:6], cards[0].getHighValue()))
 #        self.__flushes.append(HandFlush.Flush(cards[2:7], cards[0].getHighValue()))
 
+#fills a given hand with high cards and returns the resulting 5 card hand... working
+#def calculateHighCards(relevant_cards, remaining_cards) :
+#    _relevant_cards = relevant_cards
+#    _remaining_cards = remaining_cards
+#    number_of_cards = len(relevant_cards) + len(remaining_cards)
+#    assert(number_of_cards > 4)
+
+#    _remaining_cards.sort(key=lambda card: card.getHighValue(), reverse=True)
+
+#    while len(_relevant_cards) < 5 :
+#        _relevant_cards.append(_remaining_cards.pop(0))
+
+#    assert len(_relevant_cards) == 5
+#    assert len(_remaining_cards) == number_of_cards - len(_relevant_cards)
+
+#    return _relevant_cards
+
+
+#accepts 2 'bestHand' arrays and returns the winner (or returns 'split pot' if 2 or more players tied)
+#@staticmethod
+#def compareHands(hand1, hand2):
+#    for x, y in hand1, hand2:
+#        if handRankings[x.getPrefix()] > handRankings[y.getPrefix()]:
+#            print('WINNER: {hand}'.format())
+#            return hand1
+#        elif handRankings[y.getPrefix()] > handRankings[x.getPrefix()]:
+#            return hand2
+#        elif handRankings[x.getPrefix()] == handRankings[y.getPrefix()]:
+#            winner = x.compare(y)
+#            if winner is not None:
+#                return winner
+#        else:
+#            raise Exception('One or more hand prefixes is not valid.')
+#    return 'Split Pot' #returns if both players hands are identical

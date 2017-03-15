@@ -349,96 +349,44 @@ hand = HandPreflop.HoldemHand(
     Deck.ace_spades,
     Deck.seven_spades)
 
-#double-trips full house
+
+#Ace-high straight
 board1 = Board.Board(
-    Deck.ace_hearts,
-    Deck.ace_clubs,
-    Deck.ten_diamonds,
-    Deck.ten_hearts,
-    Deck.ten_clubs)
-
-#two pair
-board2 = Board.Board(
-    Deck.king_hearts,
-    Deck.five_clubs,
-    Deck.seven_diamonds,
-    Deck.ten_hearts,
-    Deck.ten_clubs)
-
-#flush
-board3 = Board.Board(
     Deck.king_spades,
-    Deck.five_spades,
-    Deck.six_spades,
-    Deck.ten_spades,
+    Deck.jack_clubs,
+    Deck.queen_diamonds,
+    Deck.ten_hearts,
     Deck.jack_spades)
 
-#straight
-board4 = Board.Board(
+#Ace-low straight
+board2 = Board.Board(
     Deck.two_spades,
     Deck.three_clubs,
     Deck.four_diamonds,
     Deck.five_hearts,
     Deck.jack_spades)
 
+#straight with A-high
+board3 = Board.Board(
+    Deck.six_spades,
+    Deck.three_clubs,
+    Deck.four_diamonds,
+    Deck.five_hearts,
+    Deck.jack_spades)
+
 #straight flush
-board5 = Board.Board(
+board4 = Board.Board(
     Deck.six_spades,
     Deck.five_spades,
     Deck.four_spades,
     Deck.three_spades,
     Deck.two_spades)
 
-#pair
-board6 = Board.Board(
-    Deck.ace_hearts,
-    Deck.five_spades,
-    Deck.four_spades,
-    Deck.three_hearts,
-    Deck.ten_hearts)
-
-#trips
-board7 = Board.Board(
-    Deck.ace_hearts,
-    Deck.ace_clubs,
-    Deck.five_spades,
-    Deck.four_spades,
-    Deck.three_hearts)
-
-#high cards
-board8 = Board.Board(
-    Deck.king_clubs,
-    Deck.six_diamonds,
-    Deck.five_spades,
-    Deck.jack_clubs,
-    Deck.ten_diamonds)
 
 
 #all possible analysis are working
-#ha = HandAnalyzer(hand, board1)
+ha = HandAnalyzer(hand, board1, True)
 #ha.printAnalysis()
 #ha.printBestHand()
 
 
-#bestCards = []
-#for hand in self.__bestHand:
-#    for c in hand.getCards():
-#        bestCards.append(c)
-#assert len(bestCards) == 5
-
-    #accepts 2 'bestHand' arrays and returns the winner (or returns 'split pot' if 2 or more players tied)
-    #@staticmethod
-    #def compareHands(hand1, hand2):
-    #    for x, y in hand1, hand2:
-    #        if handRankings[x.getPrefix()] > handRankings[y.getPrefix()]:
-    #            print('WINNER: {hand}'.format())
-    #            return hand1
-    #        elif handRankings[y.getPrefix()] > handRankings[x.getPrefix()]:
-    #            return hand2
-    #        elif handRankings[x.getPrefix()] == handRankings[y.getPrefix()]:
-    #            winner = x.compare(y)
-    #            if winner is not None:
-    #                return winner
-    #        else:
-    #            raise Exception('One or more hand prefixes is not valid.')
-    #    return 'Split Pot' #returns if both players hands are identical
