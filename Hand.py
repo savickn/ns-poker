@@ -36,10 +36,7 @@ class Hand:
 
     #used to check if a particular hand already exists in a collection
     def __eq__(self, other):
-        if self.__identifier == other.getIdentifier():
-            return True
-        else:
-            return False
+        return True if self.__identifier == other.getIdentifier() else False
 
     ########## GETTERS ###########
 

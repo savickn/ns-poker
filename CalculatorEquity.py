@@ -1,40 +1,36 @@
 __author__ = 'Nick'
 
 import HandPreflop, Board, Deck, HandAnalyzer
+import copy
 
 #holds equity information for a single hand
 class Equity:
-    __hand = None
-    __count = 0
-    __equity = 0
-
     def __init__(self, hand):
         self.__hand = hand
+        self.__count = 0
+        self.__equity = 0
 
     def getHand(self):
         return self.__hand
 
+    def getEquity(self):
+        return self.__equity/self.__count
+
     def updateEquity(self, equity):
         self.__equity += equity
         self.__count += 1
-
-    def getEquity(self):
-        return self.__equity/self.__count
 
     def toString(self):
         return '{hand}-{equity}'.format(hand=self.__hand.toString(), equity=self.getEquity())
 
 #used to determine equity of single hands vs. one another (e.g. player1 vs player2 vs player3) by running hundreds of iterations
 class EquityCalculator:
-    __deck = None #of type Deck
-    __board = None #of type Board
-    __equities = [] #of type Equity
-    __iterations = None
     __equitySplit = None
 
     def __init__(self, hands, board=None, iterations=1000):
-        self.__board = board
+        self.__board = board #must be type Board
         self.__iterations = iterations
+        self.__equities = [] #nust contain Equity objs
 
         dead_cards = []
         if board:
@@ -43,18 +39,9 @@ class EquityCalculator:
             self.__equities.append(Equity(hand))
             dead_cards += hand.getCards()
 
-        self.__deck = Deck.Deck(dead_cards)
+        self.__deadCards = dead_cards
+        #  self.__deck = Deck.Deck(dead_cards) #must be type Deck
         self.checkRep()
-
-    #takes list of availableCards and an initial Board object and generates a full board
-    def generateBoard(self, ac, board):
-        if not board:
-            board = Board.Board(ac.getTopCard(), ac.getTopCard(), ac.getTopCard())
-        if board and len(board.getCards()) == 3:
-            board.setTurn(self.__deck.getTopCard())
-        if board and len(board.getCards()) == 4:
-            board.setRiver(self.__deck.getTopCard())
-        return board
 
     #helper method for determining the equity distribution in split pots
     def calculateEquitySplit(self, winnerCount):
@@ -86,6 +73,7 @@ class EquityCalculator:
         self.__equitySplit = self.calculateEquitySplit(winnerCount)
         return winner #should be of type BestHand
 
+    #updates a hand's equity via its Equity object
     def updateEquity(self, eqObj, equity):
         eqObj.updateEquity(equity)
 
@@ -95,9 +83,10 @@ class EquityCalculator:
             hands.append(eq.getHand())
 
         for x in range(self.__iterations):
-            availableCards = self.__deck #creates a new Deck before each iteration
-            availableCards.shuffleDeck() #shuffles Deck in each iteration
-            board = self.generateBoard(availableCards, self.__board) #creates a new Board before each iteration
+            deck = Deck.Deck(self.__deadCards)
+            deck.shuffleDeck()
+            board = Board.Board.generateBoard(deck, self.__board.getCards()) #creates a new Board before each iteration
+            board.printAsString()
 
             winner = self.determineWinner(board, hands) #sets 'equitySplit' and returns winning BestHand
             for eq in self.__equities:
@@ -121,7 +110,7 @@ hand3 = HandPreflop.HoldemHand(Deck.jack_hearts, Deck.nine_hearts) #J9h
 hand4 = HandPreflop.HoldemHand(Deck.six_spades, Deck.five_spades) #65s
 hand5 = HandPreflop.HoldemHand(Deck.queen_hearts, Deck.jack_clubs) #QhJc
 
-comparison = EquityCalculator([hand1, hand2], board1, 1)
+comparison = EquityCalculator([hand1, hand2], board1, 10)
 comparison.run()
 
 

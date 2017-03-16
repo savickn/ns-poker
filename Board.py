@@ -15,6 +15,22 @@ class Board:
         self.__turn = card4
         self.__river = card5
 
+    #takes a Deck obj and a list of existing cards and returns a completed Board object
+    @staticmethod
+    def generateBoard(deck, board):
+        b = Board(*board)
+        if not b:
+            deck.getTopCard()
+            b = Board(deck.getTopCard(), deck.getTopCard(), deck.getTopCard())
+        if len(b.getCards()) == 3:
+            deck.getTopCard()
+            b.setTurn(deck.getTopCard())
+        if len(b.getCards()) == 4:
+            deck.getTopCard()
+            b.setRiver(deck.getTopCard())
+        return b
+    ############# GETTERS AND SETTERS
+
     def getCards(self):
         board = [self.__flop1, self.__flop2, self.__flop3]
         if self.__turn is not None:
@@ -41,6 +57,7 @@ class Board:
         return string
 
     def printAsString(self):
+        print('### BOARD ###')
         print(self.toString())
 
     def draw(self):

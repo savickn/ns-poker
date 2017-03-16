@@ -32,7 +32,6 @@ class HandBest:
                 matchedCards.append(c1)
             else:
                 return False
-
         if matchedCards == cards:
             return True
 

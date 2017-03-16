@@ -114,8 +114,6 @@ deck = [
 preflopHands = {}
 
 class Deck:
-    __cards = None
-    __length = None
 
     def __init__(self, deadCards=[]):
         liveCards = []
@@ -128,9 +126,10 @@ class Deck:
         self.checkRep()
 
     def shuffleDeck(self):
-        self.__cards = self.shuffle(self.__cards)
+        self.__cards = Deck.shuffle(self.__cards)
 
-    def shuffle(self, cards):
+    @staticmethod
+    def shuffle(cards):
         ary = cards
         a=len(ary)
         b=a-1
@@ -184,6 +183,21 @@ class Deck:
         #print(len(pairedHands)) #should be 78
         #print(len(offsuitHands)) #should be 936
         #print(len(hands)) #should be 1,326
+
+
+    ############## UTILITY METHODS ##############
+
+    def toString(self):
+        str = ''
+        for c in self.__cards:
+            str += '{card} \n'.format(card=c.toString())
+        return str
+
+    def printAsString(self):
+        print('##### DECK COUNT #####')
+        print(self.__length)
+        print('##### DECK #####')
+        print(self.toString())
 
     def checkRep(self):
         assert self.__length <= 52 and self.__length >= 0
