@@ -10,9 +10,9 @@ class Quads(Hand.Hand):
 
     def compare(self, q2):
         if self.getPrimaryValue() > q2.getPrimaryValue():
-            return self
+            return True
         elif self.getPrimaryValue() < q2.getPrimaryValue():
-            return q2
+            return False
         else:
             return None
 

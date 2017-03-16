@@ -12,14 +12,14 @@ class FullHouse(Hand.Hand):
 
     def compare(self, z2):
         if self.getPrimaryValue() > z2.getPrimaryValue():
-            return self
+            return True
         elif self.getPrimaryValue() < z2.getPrimaryValue():
-            return z2
+            return False
         else:
             if self.getSecondaryValue() > z2.getSecondaryValue():
-                return self
+                return True
             elif self.getSecondaryValue() < z2.getSecondaryValue():
-                return z2
+                return False
             else:
                 return None
 

@@ -347,6 +347,7 @@ class HandAnalyzer:
     def printBestHand(self):
         print('############# BEST HAND ############')
         self.__bestHand.printAsString()
+        print('############# END OF ANALYSIS ##############')
 
 
 

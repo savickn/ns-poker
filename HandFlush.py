@@ -11,9 +11,9 @@ class Flush(Hand.Hand):
     def compare(self, f2):
         for c1, c2 in self, f2:
             if c1 > c2:
-                return self
+                return True
             elif c2 > c1:
-                return f2
+                return False
             else:
                 continue
         return None

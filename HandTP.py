@@ -12,14 +12,14 @@ class TwoPair(Hand.Hand):
 
     def compare(self, w2):
         if self.getPrimaryValue() > w2.getPrimaryValue():
-            return self
+            return True
         elif self.getPrimaryValue() < w2.getPrimaryValue():
-            return w2
+            return False
         else:
             if self.getSecondaryValue() > w2.getSecondaryValue():
-                return self
+                return True
             elif self.getSecondaryValue() < w2.getSecondaryValue():
-                return w2
+                return False
             else:
                 return None
 

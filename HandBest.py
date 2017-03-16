@@ -25,7 +25,11 @@ class HandBest:
 
     #accepts a list of Cards and determines if they are contained with '__primary' and '__secondary'
     def __contains__(self, cards):
-        bestCards = self.__primary.getCards() + self.__secondary.getCards()
+        bestCards = self.__primary.getCards() + self.__secondary.getCards() if self.__secondary else self.__primary.getCards()
+
+        for c in bestCards:
+            print(c.toString())
+
         matchedCards = []
         for c1 in cards:
             if c1 in bestCards:
@@ -52,9 +56,11 @@ class HandBest:
         elif case1 is False:
             return other
         else:
-            winner = self.getPrimary().compare(other.getPrimary())
-            if winner is not None:
-                return winner
+            winner = self.getPrimary().compare(other.getPrimary()) #compares primary Hands with the same prefix
+            if winner is True:
+                return self
+            elif winner is False:
+                return other
             else:
                 case2 = self.analyzePrefix(self.getSecondary().getPrefix(), other.getSecondary().getPrefix())
                 if case2 == True:
@@ -62,9 +68,13 @@ class HandBest:
                 elif case2 == False:
                     return other
                 else:
-                    winner = self.getSecondary().compare(other.getSecondary())
-                    w = winner if not None else 'Split Pot'
-                    return w
+                    winner = self.getSecondary().compare(other.getSecondary()) #compares secondary Hands with same prefix if necessary
+                    if winner is True:
+                        return self
+                    elif winner is False:
+                        return other
+                    else:
+                        return 'Split Pot'
 
     ############# SETTERS AND GETTERS #############
 
@@ -77,6 +87,9 @@ class HandBest:
     ############# UTILITY METHODS #############
 
     def printAsString(self):
+        print(self.__primary)
+        print(self.__secondary)
+
         cards = self.__primary.getCards() + self.__secondary.getCards() if self.__secondary else self.__primary.getCards()
         for c in cards:
             print(c.toString())
@@ -85,4 +98,5 @@ class HandBest:
         assert isinstance(self.__primary, Hand.Hand)
         if self.__secondary:
             assert isinstance(self.getSecondary(), Hand.Hand)
+        assert (len(self.__primary.getCards()) == 5) or (len(self.__primary.getCards()) + len(self.__secondary.getCards()) == 5)
 

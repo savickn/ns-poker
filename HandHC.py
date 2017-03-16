@@ -16,9 +16,9 @@ class HighCards(Hand.Hand):
     def compare(self, h2):
         for c1, c2 in self.getCards(), h2.getCards():
             if c1 > c2:
-                return self
+                return True
             elif c2 > c1:
-                return h2
+                return False
             else:
                 continue
         return None

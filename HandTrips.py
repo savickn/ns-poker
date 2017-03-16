@@ -9,9 +9,9 @@ class Trips(Hand.Hand):
 
     def compare(self, t2):
         if self.getPrimaryValue() > t2.getPrimaryValue():
-            return self
+            return True
         elif self.getPrimaryValue() < t2.getPrimaryValue():
-            return t2
+            return False
         else:
             return None
 

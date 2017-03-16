@@ -10,9 +10,9 @@ class Pair(Hand.Hand):
 
     def compare(self, p2):
         if self.getPrimaryValue() > p2.getPrimaryValue():
-            return self
+            return True
         elif self.getPrimaryValue() < p2.getPrimaryValue():
-            return p2
+            return False
         else:
             return None
 

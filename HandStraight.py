@@ -15,9 +15,9 @@ class Straight(Hand.Hand):
     #used to compare two hands of the same Ranking
     def compare(self, s2):
         if self.getPrimaryValue() > s2.getPrimaryValue():
-            return self
+            return True
         elif self.getPrimaryValue() < s2.getPrimaryValue():
-            return s2
+            return False
         else:
             return None
 
