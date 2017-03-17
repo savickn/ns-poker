@@ -35,34 +35,26 @@ initials = {
     'Two': '2'
 }
 
+
+defaultOptions = {
+    'low_value': None
+}
+
 #most classes show implement Interface Drawable for setSprite() and draw() commands
 class Card:
     #unique id for each card
     __id = None
 
-    #should be enum Card_Type
-    __type = None
-
-    #should be enum Card_Suit
-    __suit = None
-
-    #used to represent card value (e.g. Queen = 12, King = 13, Ace = 14)
-    __high_value = None
-
-    #used to represent a value of 1 for Aces
-    __low_value = None
-
-    #used to determine if card should be shown or not
-    __hidden = True
-
     __sprite = None
 
-    def __init__(self, type, suit, value, options={'low_value':None}):
+    def __init__(self, type, suit, value, options=defaultOptions):
         #self.__id = '{value}-{suit}'.format(value=value, suit=suit)
         self.__type = type
         self.__suit = suit
         self.__high_value = value
         self.__low_value = options['low_value'] if options['low_value'] is not None else value
+
+        self.__hidden = True #used to determine if card should be drawn face-up or face-down
 
         self.checkRep()
 
@@ -81,12 +73,12 @@ class Card:
         #assert self.__low_value in [None, 1]
         assert self.__type in ['Ace', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King']
         assert self.__suit in ['Spades', 'Hearts', 'Clubs', 'Diamonds']
-        assert self.__hidden in [True, False]
+        assert isinstance(self.__hidden, bool)
 
     ########## SETTERS & GETTERS ############
 
-    def getId(self):
-        return self.__id
+    #def getId(self):
+    #    return self.__id
 
     def getInitial(self):
         return initials[self.__type]

@@ -1,27 +1,7 @@
 __author__ = 'Nick'
 
-import HandPreflop, Board, Deck, HandAnalyzer
-import types
+import HandPreflop, Board, Deck, HandAnalyzer, HandEquity
 
-#holds equity information for a single hand
-class Equity:
-    def __init__(self, hand):
-        self.__hand = hand #must be type PreflopHand
-        self.__count = 0
-        self.__equity = 0
-
-    def getHand(self):
-        return self.__hand
-
-    def getEquity(self):
-        return self.__equity/self.__count
-
-    def updateEquity(self, equity):
-        self.__equity += equity
-        self.__count += 1
-
-    def toString(self):
-        return '{hand}-{equity}'.format(hand=self.__hand.toString(), equity=self.getEquity())
 
 #used to determine equity of single hands vs. one another (e.g. player1 vs player2 vs player3) by running hundreds of iterations
 class EquityCalculator:
@@ -36,11 +16,10 @@ class EquityCalculator:
         for c in board:
             dead_cards.append(c)
         for hand in hands:
-            self.__equities.append(Equity(hand))
+            self.__equities.append(HandEquity.Equity(hand))
             dead_cards += hand.getCards()
 
         self.__deadCards = dead_cards
-        #  self.__deck = Deck.Deck(dead_cards) #must be type Deck
         self.checkRep()
 
     #helper method for determining the equity distribution in split pots
@@ -59,7 +38,6 @@ class EquityCalculator:
         winner = None
         winnerCount = 0
         for key, value in analyzers.items():
-            print(winner)
             if not winner:
                 winner = value.getBestHand()
                 winnerCount = 1
@@ -87,7 +65,7 @@ class EquityCalculator:
             deck = Deck.Deck(self.__deadCards)
             deck.shuffleDeck()
             board = Board.Board.generateBoard(deck, self.__board) #creates a new Board before each iteration
-            board.printAsString()
+            #board.printAsString()
 
             winner = self.determineWinner(board, hands) #sets 'equitySplit' and returns winning BestHand
             for eq in self.__equities:
@@ -96,6 +74,7 @@ class EquityCalculator:
                 else:
                     self.updateEquity(eq, 0)
 
+            for eq in self.__equities:
                 print(eq.toString())
 
     ############# UTILITY METHODS ##############
@@ -107,13 +86,13 @@ class EquityCalculator:
 board1 = Board.Board(Deck.king_clubs, Deck.four_spades, Deck.six_diamonds, Deck.king_spades, Deck.eight_diamonds) #Kc4s6dKs8d
 board2 = Board.Board(Deck.king_clubs, Deck.four_spades, Deck.six_diamonds) #Kc4s6d
 
-hand1 = HandPreflop.HoldemHand(Deck.ace_clubs, Deck.eight_clubs) #A8c
-hand2 = HandPreflop.HoldemHand(Deck.ten_hearts, Deck.ten_diamonds) #ThTd
-hand3 = HandPreflop.HoldemHand(Deck.jack_hearts, Deck.nine_hearts) #J9h
-hand4 = HandPreflop.HoldemHand(Deck.six_spades, Deck.five_spades) #65s
-hand5 = HandPreflop.HoldemHand(Deck.queen_hearts, Deck.jack_clubs) #QhJc
+hand1 = HandPreflop.HoldemHand([Deck.ace_clubs, Deck.eight_clubs]) #A8c
+hand2 = HandPreflop.HoldemHand([Deck.ten_hearts, Deck.ten_diamonds]) #ThTd
+hand3 = HandPreflop.HoldemHand([Deck.jack_hearts, Deck.nine_hearts]) #J9h
+hand4 = HandPreflop.HoldemHand([Deck.six_spades, Deck.five_spades]) #65s
+hand5 = HandPreflop.HoldemHand([Deck.queen_hearts, Deck.jack_clubs]) #QhJc
 
-comparison = EquityCalculator([hand1, hand2], board2.getCards(), 10000)
-comparison.run()
+#comparison = EquityCalculator([hand1, hand2], board2.getCards(), 10)
+#comparison.run()
 
 

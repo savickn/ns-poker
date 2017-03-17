@@ -27,9 +27,6 @@ class HandBest:
     def __contains__(self, cards):
         bestCards = self.__primary.getCards() + self.__secondary.getCards() if self.__secondary else self.__primary.getCards()
 
-        for c in bestCards:
-            print(c.toString())
-
         matchedCards = []
         for c1 in cards:
             if c1 in bestCards:

@@ -5,29 +5,29 @@ class PreflopHand:
         x = 1
 
 class HoldemHand(PreflopHand):
-    __card1 = None
-    __card2 = None
 
-    def __init__(self, card1, card2):
+    def __init__(self, cards):
         PreflopHand.__init__(self)
-        self.__card1 = card1
-        self.__card2 = card2
+        cards.sort(key=lambda card: card.getHighValue(), reverse=True)
+        self.__card1 = cards[0]
+        self.__card2 = cards[1]
 
     def getCards(self):
         cards = [self.__card1, self.__card2]
         return cards
 
+    def getInitials(self):
+        str = self.__card1.getInitial() + self.__card2.getInitial()
+        str += 's' if self.isSuited() else 'o'
+        return str
+
     def isSuited(self):
-        if self.__card1.getSuit() == self.__card2.getSuit():
-            return True
-        else:
-            return False
+        return True if self.__card1.getSuit() == self.__card2.getSuit() else False
 
     def isPaired(self):
-        if self.__card1.getHighValue() == self.__card2.getHighValue():
-            return True
-        else:
-            return False
+        return True if self.__card1.getHighValue() == self.__card2.getHighValue() else False
+
+    ############# UTILITY METHODS ###########
 
     def toString(self):
         return 'Holdem Hand: {card1}, {card2}'.format(card1=self.__card1.toString(), card2=self.__card2.toString())

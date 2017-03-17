@@ -115,7 +115,7 @@ preflopHands = {}
 
 class Deck:
 
-    def __init__(self, deadCards=[]):
+    def __init__(self, deadCards=[], generateHands=False):
         liveCards = []
         for c in deck:
             if c not in deadCards:
@@ -124,6 +124,9 @@ class Deck:
         self.__cards = liveCards
         self.__length = len(self.__cards)
         self.checkRep()
+
+        if generateHands:
+            self.generateHoldemHandCombos() #used to populate 'preflopHands'
 
     def shuffleDeck(self):
         self.__cards = Deck.shuffle(self.__cards)
@@ -147,8 +150,7 @@ class Deck:
 
     ############# HAND COMBINATORICS #################
 
-    def generateHoldemHandCombos(self):
-        available_cards = self.__cards
+    def generateHoldemHandCombos(self, toPrint=False):
         processed_cards = []
 
         hands = []
@@ -156,34 +158,40 @@ class Deck:
         suitedHands = []
         offsuitHands = []
 
-        for card1 in available_cards:
-            for card2 in available_cards:
+        for card1 in self.__cards:
+            for card2 in self.__cards:
                 if (card1 is not card2) and (card2 not in processed_cards):
-                    pHand = HandPreflop.HoldemHand(card1, card2)
+                    pHand = HandPreflop.HoldemHand([card1, card2])
                     if pHand not in hands:
                         hands.append(pHand)
             processed_cards.append(card1)
 
-        #adds each preflop hand to the appropriate category
         for hand in hands:
-            if hand.isPaired():
-                pairedHands.append(hand)
+            #adds PreflopHand to general category (e.g. Paired Hand vs. Suited Hand)
+            #if hand.isPaired():
+            #    pairedHands.append(hand)
+            #elif hand.isSuited():
+            #    suitedHands.append(hand)
+            #else:
+            #    offsuitHands.append(hand)
 
-            elif hand.isSuited():
-                suitedHands.append(hand)
-                #id = 's'
-                #if not preflopHands[id]:
-                #    preflopHands[id] = [hand]
-                #else:
-                #    preflopHands[id].append(hand)
+            #adds PreflopHand to specific category (AKs vs. AQo)
+            if hand.getInitials() in preflopHands.keys():
+                preflopHands[hand.getInitials()].append(hand)
             else:
-                offsuitHands.append(hand)
+                preflopHands[hand.getInitials()] = [hand]
 
-        #print(len(suitedHands)) #should be 312
-        #print(len(pairedHands)) #should be 78
-        #print(len(offsuitHands)) #should be 936
-        #print(len(hands)) #should be 1,326
+        if toPrint:
+            print('##### HAND TYPES #####')
+            for key, value in preflopHands.items():
+                length = len(preflopHands[key])
+                print('{key}-{length}'.format(key=key, length=length))
 
+            print('##### COMBINATIONS #####')
+            print(len(suitedHands)) #should be 312
+            print(len(pairedHands)) #should be 78
+            print(len(offsuitHands)) #should be 936
+            print(len(hands)) #should be 1,326
 
     ############## UTILITY METHODS ##############
 
@@ -203,7 +211,7 @@ class Deck:
         assert self.__length <= 52 and self.__length >= 0
 
 #d = Deck()
-#hands = d.generateHoldemHandCombos()
+#d.generateHoldemHandCombos(True)
 
 
 

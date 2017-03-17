@@ -120,7 +120,7 @@ class Poker:
 
     #creates player hand, maybe make it so that the hand type (e.g. Holdem vs. Omaha) depends on how many cards are passed in
     def dealHand(self, player, cards):
-        hand = HandPreflop.HoldemHand(cards[0], cards[1])
+        hand = HandPreflop.HoldemHand(cards)
         player.setHand(hand)
 
     ########## Positioning Players #############
