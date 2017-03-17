@@ -241,21 +241,21 @@ class HandAnalyzer:
             if len(spades) == 4:
                 self.__flushDraws.append(spades)
             elif len(clubs) == 4:
-                self.extractBestFlush(clubs)
+                self.__flushDraws.append(clubs)
             elif len(hearts) == 4:
-                self.extractBestFlush(hearts)
+                self.__flushDraws.append(hearts)
             elif len(diamonds) == 4:
-                self.extractBestFlush(diamonds)
+                self.__flushDraws.append(diamonds)
 
         if checkDraws and (len(self.__availableCards) < 6):
             if len(spades) == 3:
-                self.__flushDraws.append(spades)
+                self.__backdoorFDs.append(spades)
             elif len(clubs) == 3:
-                self.extractBestFlush(clubs)
+                self.__backdoorFDs.append(clubs)
             elif len(hearts) == 3:
-                self.extractBestFlush(hearts)
+                self.__backdoorFDs.append(hearts)
             elif len(diamonds) == 3:
-                self.extractBestFlush(diamonds)
+                self.__backdoorFDs.append(diamonds)
 
     #fills a given hand with high cards and returns the resulting 5 card hand... working
     def calculateHighCards(self, cards, length):
@@ -384,4 +384,4 @@ board = Board.Board(
     Deck.five_hearts,
     Deck.jack_spades)
 
-ha = HandAnalyzer(hand, board, True)
+#ha = HandAnalyzer(hand, board, True)

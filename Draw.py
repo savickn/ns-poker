@@ -5,5 +5,5 @@ class Draw:
 
     def __init__(self, cards):
         self.__cards = cards #list of Card objects
-        self.__outs = None #
+        self.__outs = None #cards that will improve this hand
 

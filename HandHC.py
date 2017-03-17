@@ -14,7 +14,9 @@ class HighCards(Hand.Hand):
 
     #used to compare two hands of the same Ranking
     def compare(self, h2):
-        for c1, c2 in self.getCards(), h2.getCards():
+        print(self)
+        print(h2)
+        for c1, c2 in zip(self.getCards(), h2.getCards()):
             if c1 > c2:
                 return True
             elif c2 > c1:

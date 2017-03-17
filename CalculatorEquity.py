@@ -105,8 +105,8 @@ hand3 = HandPreflop.HoldemHand([Deck.jack_hearts, Deck.nine_hearts]) #J9h
 hand4 = HandPreflop.HoldemHand([Deck.six_spades, Deck.five_spades]) #65s
 hand5 = HandPreflop.HoldemHand([Deck.queen_hearts, Deck.jack_clubs]) #QhJc
 
-#comparison = EquityCalculator([hand1, hand2], board2.getCards(), 1000)
-#comparison.run()
+comparison = EquityCalculator([hand1, hand2, hand3], board2.getCards(), 1000)
+comparison.run()
 
 
 
