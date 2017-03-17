@@ -2,7 +2,7 @@ __author__ = 'Nick'
 
 import Board, HandPreflop, HandBest
 import HandPair, HandTP, HandTrips, HandStraight, HandFlush, HandFH, HandQuads, HandSF, HandHC
-import Helpers
+import Helpers, Deck
 from collections import deque
 
 handRankings = {
@@ -78,7 +78,6 @@ class HandAnalyzer:
     def checkRep(self):
         assert isinstance(self.__hand, HandPreflop.PreflopHand)
         assert isinstance(self.__board, Board.Board)
-
         assert len(set(self.__board.getCards()) & set(self.__hand.getCards())) == 0
         assert len(self.__availableCards) > 5
 
@@ -172,7 +171,7 @@ class HandAnalyzer:
                 self.__twoPairs.append(HandTP.TwoPair(p1, p2))
 
     #extracts all possible straights from availableCards (required to calc possible straight_flushes)
-    def analyzeStraights(self, draws=False):
+    def analyzeStraights(self, checkDraws=False):
         suit = Helpers.getRelevantSuit(self.__availableCards)
         cards = Helpers.removePairs(self.__availableCards, suit)
         sortedDeque = deque(Helpers.sortCards(cards, False))
@@ -200,13 +199,18 @@ class HandAnalyzer:
                     value = cards[-1].getHighValue()
                     self.__straightFlushes.append(HandSF.StraightFlush(cards, value))
 
+        #check for straight draws
+        #if checkDraws:
+
+
+
     #Helper function for extracting the best possible flush
     def extractBestFlush(self, cards):
         cards.sort(key=lambda card: card.getHighValue(), reverse=True)
         self.__flushes.append(HandFlush.Flush(cards[:5], cards[0].getHighValue()))
 
     #extracts all possible flushes from availableCards (required to calc possible straight_flushes)
-    def analyzeFlushes(self, draws=False):
+    def analyzeFlushes(self, checkDraws=False):
         spades = []
         clubs = []
         diamonds = []
@@ -224,17 +228,34 @@ class HandAnalyzer:
             else:
                 raise Exception('This card has an invalid suit.')
 
-        if(len(spades) >= 5):
+        if len(spades) >= 5:
             self.extractBestFlush(spades)
-        elif(len(clubs) >= 5):
+        elif len(clubs) >= 5:
             self.extractBestFlush(clubs)
-        elif(len(hearts) >= 5):
+        elif len(hearts) >= 5:
             self.extractBestFlush(hearts)
-        elif(len(diamonds) >= 5 ):
+        elif len(diamonds) >= 5:
             self.extractBestFlush(diamonds)
-        else:
-            #print('This hand does not make a flush.')
-            return
+
+        if checkDraws and (len(self.__availableCards) < 7):
+            if len(spades) == 4:
+                self.__flushDraws.append(spades)
+            elif len(clubs) == 4:
+                self.extractBestFlush(clubs)
+            elif len(hearts) == 4:
+                self.extractBestFlush(hearts)
+            elif len(diamonds) == 4:
+                self.extractBestFlush(diamonds)
+
+        if checkDraws and (len(self.__availableCards) < 6):
+            if len(spades) == 3:
+                self.__flushDraws.append(spades)
+            elif len(clubs) == 3:
+                self.extractBestFlush(clubs)
+            elif len(hearts) == 3:
+                self.extractBestFlush(hearts)
+            elif len(diamonds) == 3:
+                self.extractBestFlush(diamonds)
 
     #fills a given hand with high cards and returns the resulting 5 card hand... working
     def calculateHighCards(self, cards, length):
@@ -351,3 +372,16 @@ class HandAnalyzer:
 
 
 
+hand = HandPreflop.HoldemHand(
+    [Deck.ace_clubs,
+    Deck.king_spades])
+
+#gutshot straight draw
+board = Board.Board(
+    Deck.six_spades,
+    Deck.three_clubs,
+    Deck.four_diamonds,
+    Deck.five_hearts,
+    Deck.jack_spades)
+
+ha = HandAnalyzer(hand, board, True)

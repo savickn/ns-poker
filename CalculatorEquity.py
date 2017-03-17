@@ -2,7 +2,10 @@ __author__ = 'Nick'
 
 import HandPreflop, Board, Deck, HandAnalyzer, HandEquity
 
+# can simplify equity calculations by using probability (e.g. flush draw vs. trips)
+# would have 35% to beat trips but trips would also improve to full house 35% of the time (e.g. 35% of 35% == 12%)
 
+####### FULLY WORKING #######
 #used to determine equity of single hands vs. one another (e.g. player1 vs player2 vs player3) by running hundreds of iterations
 class EquityCalculator:
     __equitySplit = None
@@ -38,15 +41,17 @@ class EquityCalculator:
         winner = None
         winnerCount = 0
         for key, value in analyzers.items():
+            #value.getBestHand().printAsString()
             if not winner:
                 winner = value.getBestHand()
                 winnerCount = 1
             else:
-                w = value.getBestHand().compare(winner)
-                if isinstance(w, str) and w == 'Split Pot':
+                v = value.getBestHand()
+                w = v.compare(winner)
+                if w == 0:
                     winnerCount += 1
-                else:
-                    winner = w
+                elif w == 1:
+                    winner = v
                     winnerCount = 1
 
         self.__equitySplit = self.calculateEquitySplit(winnerCount)
@@ -56,6 +61,13 @@ class EquityCalculator:
     def updateEquity(self, eqObj, equity):
         eqObj.updateEquity(equity)
 
+    def printEquities(self):
+        print('### Equities ###')
+        print('EQ SPLIT: {split}'.format(split=self.__equitySplit))
+        for eq in self.__equities:
+            print(eq.toString())
+
+    #main function for determining equity
     def run(self):
         hands = []
         for eq in self.__equities:
@@ -74,8 +86,9 @@ class EquityCalculator:
                 else:
                     self.updateEquity(eq, 0)
 
-            for eq in self.__equities:
-                print(eq.toString())
+            #print('# WINNER #')
+            #winner.printAsString()
+            self.printEquities()
 
     ############# UTILITY METHODS ##############
 
@@ -92,7 +105,11 @@ hand3 = HandPreflop.HoldemHand([Deck.jack_hearts, Deck.nine_hearts]) #J9h
 hand4 = HandPreflop.HoldemHand([Deck.six_spades, Deck.five_spades]) #65s
 hand5 = HandPreflop.HoldemHand([Deck.queen_hearts, Deck.jack_clubs]) #QhJc
 
-#comparison = EquityCalculator([hand1, hand2], board2.getCards(), 10)
+#comparison = EquityCalculator([hand1, hand2], board2.getCards(), 1000)
 #comparison.run()
+
+
+
+
 
 

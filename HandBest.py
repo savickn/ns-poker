@@ -26,15 +26,10 @@ class HandBest:
     #accepts a list of Cards and determines if they are contained with '__primary' and '__secondary'
     def __contains__(self, cards):
         bestCards = self.__primary.getCards() + self.__secondary.getCards() if self.__secondary else self.__primary.getCards()
-
-        matchedCards = []
         for c1 in cards:
             if c1 in bestCards:
-                matchedCards.append(c1)
-            else:
-                return False
-        if matchedCards == cards:
-            return True
+                return True
+        return False
 
     #helper function for 'compare'
     def analyzePrefix(self, p1, p2):
@@ -49,29 +44,29 @@ class HandBest:
     def compare(self, other):
         case1 = self.analyzePrefix(self.getPrimary().getPrefix(), other.getPrimary().getPrefix())
         if case1 is True:
-            return self
+            return 1
         elif case1 is False:
-            return other
+            return -1
         else:
             winner = self.getPrimary().compare(other.getPrimary()) #compares primary Hands with the same prefix
             if winner is True:
-                return self
+                return 1
             elif winner is False:
-                return other
+                return -1
             else:
                 case2 = self.analyzePrefix(self.getSecondary().getPrefix(), other.getSecondary().getPrefix())
                 if case2 == True:
-                    return self
+                    return 1
                 elif case2 == False:
-                    return other
+                    return -1
                 else:
                     winner = self.getSecondary().compare(other.getSecondary()) #compares secondary Hands with same prefix if necessary
                     if winner is True:
-                        return self
+                        return 1
                     elif winner is False:
-                        return other
+                        return -1
                     else:
-                        return 'Split Pot'
+                        return 0
 
     ############# SETTERS AND GETTERS #############
 
@@ -84,6 +79,7 @@ class HandBest:
     ############# UTILITY METHODS #############
 
     def printAsString(self):
+        print('### BEST HAND ###')
         print(self.__primary)
         print(self.__secondary)
 

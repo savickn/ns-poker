@@ -1,65 +1,61 @@
 __author__ = 'Nick'
 
-import Deck, Board
+import Deck, Board, Range, HandAnalyzer
+
+
+potBet = 100
+threeQuarterBet = 75
+twoThirdBet = 66
+halfBet = 50
+oneThirdBet = 33
+oneQuarterBet = 25
 
 
 #used to rank hands within a range to determine which X% should be called vs. a pot-size bet/etc
 class GtoSolver:
-    __deck = None
-    __board = None
-    __hands = None
-    __iterations = None
 
-    def __init__(self, iterations):
-        self.__deck = Deck.Deck()
-        self.__iterations = iterations
+    def __init__(self, range, board):
+        self.__bestHands = [] #an array of BestHand objects
+        self.__range = range #must be a Range obj
+        self.__numberOfHands = range.getLength()
+        self.__board = board #must be a list of
 
-    ######## GETTERS and SETTERS ########
-
-    def setIterations(self, iterations):
-        self.__iterations = iterations
-
-
-    def run_iteration(self):
-        self.__deck.shuffleDeck()
-        self.generateFlop()
-        self.generateTurn()
-        self.generateRiver()
-
-
-
-    def get_preflop_equity(self, hero, villain):
-        #1 v 1 hands
+    #for calling pot-size bets
+    def getTop50(self):
         print()
 
-    def get_postflop_equity(self, hero, villain, board):
+    #for calling half-pot bets
+    def getTop66(self):
         print()
 
-    def get_equity_range(hero_array, villain_array):
+    def getValueRange(self):
+        print()
+
+    def getBestBluffs(self):
         print()
 
 
-    ######### Community Card Actions ############
+    #creates an array of 'X' bestHands from an array of 'X' PreflopHands
+    def analyzerBoard(self):
+        bestHands = []
+        for hand in self.__range.getHands():
+            ha = HandAnalyzer.HandAnalyzer(hand, self.__board)
+            bestHands.append(ha.getBestHand())
+        bestHands.sort()
+        self.__bestHands = bestHands
 
-    def burnCard(self):
-        self.__deck.getTopCard()
+    #used to determine which Turn cards will benefit your range and which will be detrimental
+    def calculateTurnLikeliness(self):
+        print()
 
-    def generateFlop(self):
-        self.burnCard()
-        card1 = self.__deck.getTopCard()
-        card2 = self.__deck.getTopCard()
-        card3 = self.__deck.getTopCard()
-        self.__board = Board.Board(card1, card2, card3)
 
-    def generateTurn(self):
-        self.burnCard()
-        card4 = self.__deck.getTopCard()
-        self.__board.setTurn(card4)
+    def run_iteration(self, hand):
+        deadCards = self.__board + hand.getCards()
+        deck = Deck.Deck(deadCards)
+        deck.shuffleDeck()
 
-    def generateRiver(self):
-        self.burnCard()
-        card5 = self.__deck.getTopCard()
-        self.__board.setRiver(card5)
+
+
 
 
 

@@ -5,12 +5,12 @@ import HandPair, HandTP, HandTrips, HandStraight, HandFlush, HandFH, HandQuads, 
 
 
 hand = HandPreflop.HoldemHand(
-    Deck.ace_spades,
-    Deck.seven_spades)
+    [Deck.ace_spades,
+    Deck.seven_spades])
 
 hand2 = HandPreflop.HoldemHand(
-    Deck.ace_clubs,
-    Deck.king_spades)
+    [Deck.ace_clubs,
+    Deck.king_spades])
 
 #High-Card Hand Tests
 

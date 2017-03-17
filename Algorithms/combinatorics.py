@@ -1,5 +1,9 @@
 __author__ = 'Nick'
 
+# can simplify equity calculations by using probability (e.g. flush draw vs. trips)
+# would have 35% to beat trips but trips would also improve to full house 35% of the time (e.g. 35% of 35% == 12%)
+
+
 #returns total number of unique Combos (e.g. flop has 3 perHand, board has 5 perHand, omaha has 4 perHand, holdem has 2 perHand)
 def getCombos(totalCards, perHand):
     it = 0
