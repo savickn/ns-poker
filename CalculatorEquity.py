@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-import HandPreflop, Board, Deck, HandAnalyzer, HandEquity
+import HandPreflop, Board, Deck, HandAnalyzer, HandEquity, HandBest
 
 # can simplify equity calculations by using probability (e.g. flush draw vs. trips)
 # would have 35% to beat trips but trips would also improve to full house 35% of the time (e.g. 35% of 35% == 12%)
@@ -47,7 +47,8 @@ class EquityCalculator:
                 winnerCount = 1
             else:
                 v = value.getBestHand()
-                w = v.compare(winner)
+                w = HandBest.HandBest.compare(v, winner)
+                #w = v.compare(winner)
                 if w == 0:
                     winnerCount += 1
                 elif w == 1:
@@ -104,9 +105,11 @@ hand2 = HandPreflop.HoldemHand([Deck.ten_hearts, Deck.ten_diamonds]) #ThTd
 hand3 = HandPreflop.HoldemHand([Deck.jack_hearts, Deck.nine_hearts]) #J9h
 hand4 = HandPreflop.HoldemHand([Deck.six_spades, Deck.five_spades]) #65s
 hand5 = HandPreflop.HoldemHand([Deck.queen_hearts, Deck.jack_clubs]) #QhJc
+hand6 = HandPreflop.HoldemHand([Deck.ace_hearts, Deck.seven_clubs]) #Ah7c
 
-comparison = EquityCalculator([hand1, hand2, hand3], board2.getCards(), 1000)
-comparison.run()
+#glitchy when comparing 'hand1' and 'hand6'
+#comparison = EquityCalculator([hand1, hand6], board2.getCards(), 1000)
+#comparison.run()
 
 
 

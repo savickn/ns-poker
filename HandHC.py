@@ -6,11 +6,7 @@ class HighCards(Hand.Hand):
 
     def __init__(self, cards, value, length):
         super().__init__(cards, value, length, 'C')
-
-        try:
-            self.checkRep()
-        except AssertionError:
-            print('This hand is not valid.')
+        self.checkRep()
 
     #used to compare two hands of the same Ranking
     def compare(self, h2):

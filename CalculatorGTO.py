@@ -1,7 +1,7 @@
 __author__ = 'Nick'
 
-import Deck, Board, Range, HandAnalyzer
-
+import Deck, Board, Range, HandAnalyzer, HandBest
+import operator, math
 
 potBet = 100
 threeQuarterBet = 75
@@ -15,50 +15,61 @@ oneQuarterBet = 25
 class GtoSolver:
 
     def __init__(self, range, board):
-        self.__bestHands = [] #an array of BestHand objects
+        self.__madeHands = [] #an array of BestHand objects
         self.__range = range #must be a Range obj
-        self.__numberOfHands = range.getLength()
-        self.__board = board #must be a list of
+        self.__board = board #must be a list of Card objects
 
-    #for calling pot-size bets
-    def getTop50(self):
-        print()
+        self.analyzeBoard()
+        self.checkRep()
 
-    #for calling half-pot bets
-    def getTop66(self):
-        print()
+    #for determining which hands to use for calling bets (e.g. getTopX(50) for calling pot-size bet)
+    #not working
+    def getTopX(self, x):
+        cutoff = math.ceil(len(self.__madeHands)/(100/x))
+        hands = self.__madeHands[-cutoff:]
+        return hands
 
+    #for determining which hands to bet for value
     def getValueRange(self):
         print()
 
-    def getBestBluffs(self):
+    #for determining which hands to use as bluffs
+    def getBluffRange(self):
         print()
 
-
-    #creates an array of 'X' bestHands from an array of 'X' PreflopHands
-    def analyzerBoard(self):
-        bestHands = []
+    #creates an array of 'X' madeHands from an array of 'X' PreflopHands
+    def analyzeBoard(self):
+        madeHands = []
         for hand in self.__range.getHands():
             ha = HandAnalyzer.HandAnalyzer(hand, self.__board)
-            bestHands.append(ha.getBestHand())
-        bestHands.sort()
-        self.__bestHands = bestHands
+            madeHands.append(ha.getBestHand())
+        madeHands.sort()
+        self.__madeHands = madeHands
+        for b in madeHands:
+            b.printAsString()
 
     #used to determine which Turn cards will benefit your range and which will be detrimental
     def calculateTurnLikeliness(self):
         print()
 
+    #def run(self, hand):
+    #    deadCards = self.__board + hand.getCards()
+    #    deck = Deck.Deck(deadCards)
+    #    deck.shuffleDeck()
 
-    def run_iteration(self, hand):
-        deadCards = self.__board + hand.getCards()
-        deck = Deck.Deck(deadCards)
-        deck.shuffleDeck()
+    def checkRep(self):
+        assert  isinstance(self.__range, Range.Range)
 
+b = Board.Board(*[Deck.ace_clubs, Deck.ace_spades, Deck.four_diamonds])
+d = Deck.Deck(b.getCards(), True)
 
+selected = Deck.preflopHands['AKo'] + Deck.preflopHands['AKs'] + Deck.preflopHands['54s'] + Deck.preflopHands['98s']
+r = Range.Range(selected)
 
-
-
-
+gto = GtoSolver(r, b)
+best50 = gto.getTopX(50)
+for h in best50:
+    b.printAsString()
 
 #def get_equity(self, hero, villain, board=[]):
 #    assert len(board) in range(3, 6)

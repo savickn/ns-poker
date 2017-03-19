@@ -17,11 +17,18 @@ handRankings = {
     'C': 1
 }
 
+options = {
+    'toPrint': False,
+    'checkDraws': False
+}
+
 ### FULLY WORKING ###
 
 #used to determine the different types of hands that can be made based on the board + hand, including the best possible hand
 class HandAnalyzer:
-    def __init__(self, hand, board, toPrint=False):
+    def __init__(self, hand, board, toPrint=False, checkDraws = False):
+        self.__checkDraws = checkDraws
+
         self.__hand = hand #must be of type PreflopHand
         self.__board = board #must be of type Board
         self.__availableCards = hand.getCards() + board.getCards() #a List of cards contained with '__hand' and '__board'
@@ -60,10 +67,7 @@ class HandAnalyzer:
         self.__flushBlockers = []
         self.__nutBlockers = [] #meaning hands that block strong hands, don't want to raise for value if u block strong hands
 
-        try:
-            self.checkRep()
-        except AssertionError:
-            print('CheckRep failed! This class is not valid.')
+        self.checkRep()
 
         self.analyzePairedHands()
         self.analyzeStraights()
@@ -79,7 +83,7 @@ class HandAnalyzer:
         assert isinstance(self.__hand, HandPreflop.PreflopHand)
         assert isinstance(self.__board, Board.Board)
         assert len(set(self.__board.getCards()) & set(self.__hand.getCards())) == 0
-        assert len(self.__availableCards) > 5
+        assert len(self.__availableCards) >= 5
 
     def getBestHand(self):
         return self.__bestHand
@@ -171,7 +175,7 @@ class HandAnalyzer:
                 self.__twoPairs.append(HandTP.TwoPair(p1, p2))
 
     #extracts all possible straights from availableCards (required to calc possible straight_flushes)
-    def analyzeStraights(self, checkDraws=False):
+    def analyzeStraights(self):
         suit = Helpers.getRelevantSuit(self.__availableCards)
         cards = Helpers.removePairs(self.__availableCards, suit)
         sortedDeque = deque(Helpers.sortCards(cards, False))
@@ -210,7 +214,7 @@ class HandAnalyzer:
         self.__flushes.append(HandFlush.Flush(cards[:5], cards[0].getHighValue()))
 
     #extracts all possible flushes from availableCards (required to calc possible straight_flushes)
-    def analyzeFlushes(self, checkDraws=False):
+    def analyzeFlushes(self):
         spades = []
         clubs = []
         diamonds = []
@@ -237,7 +241,7 @@ class HandAnalyzer:
         elif len(diamonds) >= 5:
             self.extractBestFlush(diamonds)
 
-        if checkDraws and (len(self.__availableCards) < 7):
+        if self.__checkDraws and (len(self.__availableCards) < 7):
             if len(spades) == 4:
                 self.__flushDraws.append(spades)
             elif len(clubs) == 4:
@@ -247,7 +251,7 @@ class HandAnalyzer:
             elif len(diamonds) == 4:
                 self.__flushDraws.append(diamonds)
 
-        if checkDraws and (len(self.__availableCards) < 6):
+        if self.__checkDraws and (len(self.__availableCards) < 6):
             if len(spades) == 3:
                 self.__backdoorFDs.append(spades)
             elif len(clubs) == 3:
@@ -378,7 +382,7 @@ hand = HandPreflop.HoldemHand(
 
 #gutshot straight draw
 board = Board.Board(
-    Deck.six_spades,
+    Deck.ace_spades,
     Deck.three_clubs,
     Deck.four_diamonds,
     Deck.five_hearts,
