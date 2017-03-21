@@ -1,5 +1,16 @@
 __author__ = 'Nick'
 
+
+#helper for checking if a collection of cards makes a flush
+def isFlush(cards):
+    suit = cards[0].getSuit()
+    for c in cards:
+        if c.getSuit() == suit:
+            continue
+        else:
+            return False
+    return True
+
 #returns true if two cards are within 1 value of each other
 def isConnected(card1, card2):
     primary_diff = abs(card1.getHighValue() - card2.getHighValue())
@@ -75,22 +86,25 @@ def isStraight(cards):
     else:
         return False
 
-#helper for checking if a collection of cards makes a flush
-def isFlush(cards):
-    suit = cards[0].getSuit()
+#must be passed 5 cards
+def isStraightOpt(cards):
+    assert len(cards) == 5
+    print(cards)
+    highValues = []
+    lowValues = []
     for c in cards:
-        if c.getSuit() == suit:
-            continue
-        else:
-            return False
-    return True
+        highValues.append(c.getHighValue())
+        lowValues.append(c.getLowValue())
 
-def printCards(cards):
-    for card in cards:
-        print(card.toString())
+    highValues.sort()
+    lowValues.sort()
+
+    if(abs(highValues[4] - highValues[0]) == 4) or (abs(lowValues[4] - lowValues[0]) == 4):
+        return True
+
 
 #sorts based on a card's highValue field (highest value to lowest if reverse=True and vice versa)
-def sortCards(cards, reverse):
+def highSort(cards, reverse):
     sorted_cards = sorted(cards, key=lambda card: card.getHighValue(), reverse=reverse)
     return sorted_cards
 
@@ -99,21 +113,54 @@ def lowSort(cards, reverse):
     sorted_cards = sorted(cards, key=lambda card: card.getLowValue(), reverse=reverse)
     return sorted_cards
 
+#checks if a Hand (e.g. HandQuads or HandFlush) is in a collection (based on Hand.__id)
 def inCollection(hand, collection):
     for h in collection:
         if h == hand:
             return True
     return False
 
+def printCards(cards):
+    for card in cards:
+        print(card.toString())
+
+#used to sort BestHand objects, not working
+def sortBestHands(hands):
+    sortedHands = sorted(hands, key=lambda hand: hand.getPrimary(), reverse=True)
+    return sortedHands
+
+
+import Board, Data
+
+#Ace-high straight
+board10 = Board.Board(
+    Data.king_spades,
+    Data.jack_clubs,
+    Data.queen_diamonds,
+    Data.ten_hearts,
+    Data.jack_spades)
+
+#Ace-low straight
+board11 = Board.Board(
+    Data.two_spades,
+    Data.three_clubs,
+    Data.four_diamonds,
+    Data.five_hearts,
+    Data.jack_spades)
+
+#straight with A-high
+board12 = Board.Board(
+    Data.six_spades,
+    Data.three_clubs,
+    Data.four_diamonds,
+    Data.five_hearts,
+    Data.jack_spades)
 
 
 
 
-
-
-
-#printCards(sortCards(hand, True))
-#printCards(sortCards(hand, False))
+#printCards(highSort(hand, True))
+#printCards(highSort(hand, False))
 
 
 

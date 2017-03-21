@@ -2,7 +2,7 @@ __author__ = 'Nick'
 
 import Seat
 
-boilerplate_options = {
+default = {
     'number_of_seats': 9
 }
 
@@ -10,7 +10,7 @@ class Table:
     #figure out how to dynamically create Seats based on how type of table (e.g. 6-max vs. HU vs. full-ring)
     __seats = None
 
-    def __init__(self, options={}):
+    def __init__(self, options=default):
         assert options['number_of_seats'] >= 2
         self.__seats = self.setSeats(options['number_of_seats'])
         self.checkRep()
@@ -62,18 +62,15 @@ class Table:
         print('remove seat')
 
     #used to determine which players are involved in a hand
-    def countActivePlayers(self):
-        players = self.getActivePlayers()
-        return len(players)
-
     def getActivePlayers(self):
         players = []
         for seat in self.__seats:
             player = seat.getPlayer()
-            if player is not None and player.getStatus() is 'Active':
+            if player is not None and player.getStatus() == 'Active':
                 players.append(player)
         return players
 
+    #returns all players at the Table
     def getAllPlayers(self):
         players = []
         for seat in self.__seats:
@@ -93,7 +90,7 @@ class Table:
         for seat in self.__seats:
             print(seat.toString())
 
-table = Table(boilerplate_options)
+table = Table(default)
 table.toString()
 #table.getSeats()
 

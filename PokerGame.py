@@ -26,24 +26,17 @@ gameTypes = {
 class Poker:
     __preflop = True
     __heads_up = False
-    __cards_per_hand = 2 #or 4 in Omaha or 5 in Draw or 3 in Stud
+    __cardsPerHand = 2 #or 4 in Omaha or 5 in Draw or 3 in Stud
     __state = None #should be in [Running, Wait]
-
-    __max_buyin = None
-    __min_buyin = None
 
     __action_player = None #the player whose turn it is to act
     __action_timer = None
 
-    __bb_stake = None
-    __sb_stake = None
-    __ante = None
 
     #__players = None #organized as follows: [UTG, UTG2, UTG3, LOJ, HIJ, CO, BTN, SB, BB]
     #__playerMap = {}
     #__seats = None
 
-    __table = None
     __btn = None #for assigning initial positions
     __sb = None #for postflop play and posting blinds
     __bb = None #for posting blinds
@@ -53,19 +46,24 @@ class Poker:
     __board = None
     __pot = 0
 
+    __current_bet = None #represents the most recently placed bet
     __min_raise = None #must be at least double the last biggest bet/raise (e.g. bet to $4 over $2 BB, bet to $20 if opponent bets $10 on the flop)
     __max_bet = None #mainly for Limit and PLO games
 
     def __init__(self, **options):
         #self.__players = deque(players)
         #self.__seats = seats
-        self.__deck = Deck.Deck()
+        # self.__deck = Deck.Deck()
+
+
         self.__table = PokerTable.Table()
+
+
+        ########## OPTIONS ###########
 
         self.__bb_stake = options['bb']
         self.__sb_stake = options['sb']
         self.__ante = options['ante']
-
         self.__max_buyin = options['max_buyin']*options['bb']
         self.__min_buyin = options['min_buyin']*options['bb']
 
@@ -97,22 +95,20 @@ class Poker:
 
     ############## Dealing Player Hands
 
+    #creates a HoldemHand for each active Player, deals cards in the correct order
     def generateHands(self):
-        card = 1
-        active_seats = self.__table.getActiveSeats()
+        activePlayers = self.__table.getActivePlayers() #list of Players
+        numberOfActivePlayers = len(activePlayers)
         hands = {}
 
-        while card <= self.__cards_per_hand:
-            it = 1
-            while it <= active_seats:
-                hands['hand' + str(it)] = []
-                hands['hand' + str(it)].append(self.__deck.getTopCard())
-                it += 1
-            card += 1
+        for x in range(self.__cardsPerHand):
+            for y in range(numberOfActivePlayers):
+                hands['hand' + str(y)] = []
+                hands['hand' + str(y)].append(self.__deck.getTopCard())
 
         first_seat = self.__sb
         it = 1
-        for num in range (0, len(active_seats)):
+        for num in range (0, len(activePlayers)):
             cards = hands['hand{id}'.format(id=it)]
             self.dealHand(first_seat.getPlayer(), cards)
             first_seat = first_seat.getLeft()

@@ -1,6 +1,7 @@
 __author__ = 'Nick'
 
-import Deck, Board, Range, HandAnalyzer, HandBest
+import Deck, Board, Range, HandAnalyzer, HandBest, Data
+import Helpers
 import operator, math
 
 potBet = 100
@@ -15,15 +16,13 @@ oneQuarterBet = 25
 class GtoSolver:
 
     def __init__(self, range, board):
-        self.__madeHands = [] #an array of BestHand objects
         self.__range = range #must be a Range obj
         self.__board = board #must be a list of Card objects
+        self.__madeHands = self.analyzeBoard() #an array of BestHand objects
 
-        self.analyzeBoard()
         self.checkRep()
 
     #for determining which hands to use for calling bets (e.g. getTopX(50) for calling pot-size bet)
-    #not working
     def getTopX(self, x):
         cutoff = math.ceil(len(self.__madeHands)/(100/x))
         hands = self.__madeHands[-cutoff:]
@@ -43,10 +42,19 @@ class GtoSolver:
         for hand in self.__range.getHands():
             ha = HandAnalyzer.HandAnalyzer(hand, self.__board)
             madeHands.append(ha.getBestHand())
+
+        for h in madeHands:
+            h.printAsString()
+
         madeHands.sort()
-        self.__madeHands = madeHands
-        for b in madeHands:
-            b.printAsString()
+
+        #Helpers.sortBestHands(madeHands)
+
+        for h in madeHands:
+            h.printAsString()
+
+        #madeHands.sort() #this creates the unexplained printing of HighCard hands
+        return madeHands
 
     #used to determine which Turn cards will benefit your range and which will be detrimental
     def calculateTurnLikeliness(self):
@@ -60,16 +68,16 @@ class GtoSolver:
     def checkRep(self):
         assert  isinstance(self.__range, Range.Range)
 
-b = Board.Board(*[Deck.ace_clubs, Deck.ace_spades, Deck.four_diamonds])
+b = Board.Board(*[Data.ace_clubs, Data.ace_spades, Data.four_diamonds])
 d = Deck.Deck(b.getCards(), True)
 
 selected = Deck.preflopHands['AKo'] + Deck.preflopHands['AKs'] + Deck.preflopHands['54s'] + Deck.preflopHands['98s']
 r = Range.Range(selected)
 
+
 gto = GtoSolver(r, b)
 best50 = gto.getTopX(50)
-for h in best50:
-    b.printAsString()
+
 
 #def get_equity(self, hero, villain, board=[]):
 #    assert len(board) in range(3, 6)

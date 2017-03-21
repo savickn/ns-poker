@@ -24,7 +24,7 @@ class HandBest:
         self.__secondary = secondary
         self.checkRep()
 
-    #accepts a list of Cards and determines if they are contained with '__primary' and '__secondary'
+    #accepts a list of Cards and determines if they are contained with '__primary' and '__secondary', potentially glitchy when playing the Board
     def __contains__(self, cards):
         bestCards = self.__primary.getCards() + self.__secondary.getCards() if self.__secondary else self.__primary.getCards()
         for c1 in cards:
