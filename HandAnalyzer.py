@@ -197,26 +197,31 @@ class HandAnalyzer:
         suit = Helpers.getRelevantSuit(self.__availableCards)
         cards = Helpers.removePairs(self.__availableCards, suit) #used to remove Pairs which interfere in Straight calculations
 
+        if len(cards) < 5:
+            return
+
         lowSort = Helpers.lowSort(cards, False)
         highSort = Helpers.highSort(cards, False)
 
+        slices = [
+            lowSort[:5],
+            highSort[:5]
+        ]
 
-        sortedDeque = deque(Helpers.highSort(cards, False))
+        if len(highSort) >= 6:
+            slices.append(highSort[1:6])
 
-        it = 0
-        while it < len(sortedDeque):
-            sortedCards = list(sortedDeque)
-            if Helpers.isStraightOpt(sortedCards):
-                cards = sortedCards[-5:]
+        if len(highSort) == 7:
+            slices.append(highSort[2:7])
+
+        for c in slices:
+            if Helpers.isStraight(c):
                 value = cards[-1].getHighValue()
-                straight = HandStraight.Straight(cards, value)
+                straight = HandStraight.Straight(c, value)
 
                 #ensures no duplicate straights are added
                 if not Helpers.inCollection(straight, self.__straights):
                     self.__straights.append(straight)
-            else:
-                sortedDeque.rotate(1)
-            it += 1
 
         #used to check for straight flushes
         if len(self.__straights) > 0:
@@ -273,50 +278,50 @@ class HandAnalyzer:
 
     ################# DETERMINE BEST HAND METHOD ######################
 
-    #determines the BestHand possible that a player's hole cards can make given the board
+    #determines the BestHand possible that a player's hole cards can make given the board, FIX THIS SOMETIME (NOT VERY ROBUST CODE)
     def calculateBestHand(self):
         #sets bestHand to straight flush if it exists
         if len(self.__straightFlushes) > 0:
-            self.__bestHand = HandBest.HandBest(self.__straightFlushes[0])
+            self.__bestHand = HandBest.HandBest(self.__hand, self.__straightFlushes[-1])
             return
 
         if len(self.__quads) > 0:
             highCards = self.calculateHighCards(self.__quads[0].getCards(), self.__quads[0].getLength())
-            self.__bestHand = HandBest.HandBest(self.__quads[0], highCards)
+            self.__bestHand = HandBest.HandBest(self.__hand, self.__quads[0], highCards)
             return
 
         if len(self.__fullHouses) > 0:
-            self.__bestHand = HandBest.HandBest(self.__fullHouses[0])
+            self.__bestHand = HandBest.HandBest(self.__hand, self.__fullHouses[0])
             return
 
         if len(self.__flushes) > 0:
-            self.__bestHand = HandBest.HandBest(self.__flushes[0])
+            self.__bestHand = HandBest.HandBest(self.__hand, self.__flushes[0])
             return
 
         if len(self.__straights) > 0:
-            self.__bestHand = HandBest.HandBest(self.__straights[0])
+            self.__bestHand = HandBest.HandBest(self.__hand, self.__straights[0])
             return
 
         if len(self.__trips) > 0:
             highCards = self.calculateHighCards(self.__trips[0].getCards(), self.__trips[0].getLength())
-            self.__bestHand = HandBest.HandBest(self.__trips[0], highCards)
+            self.__bestHand = HandBest.HandBest(self.__hand, self.__trips[0], highCards)
             return
 
         if len(self.__twoPairs) > 0:
             highCards = self.calculateHighCards(self.__twoPairs[0].getCards(), self.__twoPairs[0].getLength())
-            self.__bestHand = HandBest.HandBest(self.__twoPairs[0], highCards)
+            self.__bestHand = HandBest.HandBest(self.__hand, self.__twoPairs[0], highCards)
             return
 
         if len(self.__pairs) > 0:
             pair = self.__pairs[0]
             highCards = self.calculateHighCards(pair.getCards(), pair.getLength())
-            self.__bestHand = HandBest.HandBest(pair, highCards)
+            self.__bestHand = HandBest.HandBest(self.__hand, pair, highCards)
             return
 
         #sets highCards if no higher hand is made (e.g. not even a Pair)
         if self.__bestHand is None:
             highCards = self.calculateHighCards([], 0)
-            self.__bestHand = HandBest.HandBest(highCards)
+            self.__bestHand = HandBest.HandBest(self.__hand, highCards)
 
     ################ DETERMINE DRAWS FOR BEST HAND ###################
 
@@ -430,3 +435,44 @@ board = Board.Board(
         #         self.__backdoorFDs.append(hearts)
         #     elif len(diamonds) == 3:
         #         self.__backdoorFDs.append(diamonds)
+
+
+
+    # #extracts all possible straights from availableCards (required to calc possible straight_flushes)
+    # def analyzeStraights(self):
+    #     suit = Helpers.getRelevantSuit(self.__availableCards)
+    #     cards = Helpers.removePairs(self.__availableCards, suit) #used to remove Pairs which interfere in Straight calculations
+    #
+    #     lowSort = Helpers.lowSort(cards, False)
+    #     highSort = Helpers.highSort(cards, False)
+    #
+    #     slices = [
+    #         lowSort[:5],
+    #         highSort[:5]
+    #     ]
+    #
+    #     if len(highSort) >= 6:
+    #         slices.append(highSort[1:6])
+    #
+    #     if len(highSort) == 7:
+    #         slices.append(highSort[2:7])
+    #
+    #
+    #     sortedDeque = deque(Helpers.highSort(cards, False))
+    #
+    #     for it in range(len(sortedDeque)):
+    #         sortedCards = list(sortedDeque)
+    #         if Helpers.isStraightOpt(sortedCards):
+    #             cards = sortedCards[-5:]
+    #             value = cards[-1].getHighValue()
+    #             straight = HandStraight.Straight(cards, value)
+    #
+    #             #ensures no duplicate straights are added
+    #             if not Helpers.inCollection(straight, self.__straights):
+    #                 self.__straights.append(straight)
+    #         else:
+    #             sortedDeque.rotate(1)
+    #
+    #     #used to check for straight flushes
+    #     if len(self.__straights) > 0:
+    #         self.checkForStraightFlushes()

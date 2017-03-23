@@ -11,21 +11,6 @@ def isFlush(cards):
             return False
     return True
 
-#returns true if two cards are within 1 value of each other
-def isConnected(card1, card2):
-    primary_diff = abs(card1.getHighValue() - card2.getHighValue())
-    secondary_diff = None
-    #analyzing low values
-    if(card1.getLowValue()):
-        secondary_diff = abs(card1.getLowValue() - card2.getHighValue())
-    if(card2.getLowValue()):
-        secondary_diff = abs(card2.getLowValue() - card1.getHighValue())
-    #final check, or (primary_diff == 0)
-    if(primary_diff == 1) or (secondary_diff == 1):
-        return True
-    else:
-        return False
-
 #returns the most common suit in a collection of cards (relies on the fact that only only flush can be made at a time)
 #can be used to remove irrelevant pair cards when checking for straights and straight flushes
 def getRelevantSuit(cards):
@@ -74,46 +59,22 @@ def removePairs(cards, suit):
             filtered.append(c)
     return filtered
 
-#uses 'isConnected' to check if all cards are connected
+#must be passed 5 sorted cards, WORKING
 def isStraight(cards):
-    length = len(cards)
-    c5c4 = isConnected(cards[length-1], cards[length-2])
-    c4c3 = isConnected(cards[length-2], cards[length-3])
-    c3c2 = isConnected(cards[length-3], cards[length-4])
-    c2c1 = isConnected(cards[length-4], cards[length-5])
-    if(c5c4 and c4c3 and c3c2 and c2c1):
-        return True
-    else:
-        return False
-
-#must be passed 5 cards
-def isStraightOpt(cards):
     assert len(cards) == 5
-    print(cards)
-    highValues = []
-    lowValues = []
-    for c in cards:
-        highValues.append(c.getHighValue())
-        lowValues.append(c.getLowValue())
+    return True if(cards[4].getHighValue() - cards[0].getHighValue() == 4) or (cards[4].getLowValue() - cards[0].getLowValue() == 4) else False
 
-    highValues.sort()
-    lowValues.sort()
-
-    if(abs(highValues[4] - highValues[0]) == 4) or (abs(lowValues[4] - lowValues[0]) == 4):
-        return True
-
-
-#sorts based on a card's highValue field (highest value to lowest if reverse=True and vice versa)
+#sorts based on a card's highValue field (highest value to lowest if reverse=True and vice versa), WORKING
 def highSort(cards, reverse):
     sorted_cards = sorted(cards, key=lambda card: card.getHighValue(), reverse=reverse)
     return sorted_cards
 
-#sorts based on a card's lowValue field
+#sorts based on a card's lowValue field, WORKING
 def lowSort(cards, reverse):
     sorted_cards = sorted(cards, key=lambda card: card.getLowValue(), reverse=reverse)
     return sorted_cards
 
-#checks if a Hand (e.g. HandQuads or HandFlush) is in a collection (based on Hand.__id)
+#checks if a Hand (e.g. HandQuads or HandFlush) is in a collection (based on Hand.__id), WORKING
 def inCollection(hand, collection):
     for h in collection:
         if h == hand:
@@ -135,7 +96,7 @@ import Board, Data
 #Ace-high straight
 board10 = Board.Board(
     Data.king_spades,
-    Data.jack_clubs,
+    Data.ace_clubs,
     Data.queen_diamonds,
     Data.ten_hearts,
     Data.jack_spades)
@@ -159,8 +120,11 @@ board12 = Board.Board(
 
 
 
-#printCards(highSort(hand, True))
-#printCards(highSort(hand, False))
+
+
+
+#printCards(highSort(board10.getCards(), True))
+#printCards(lowSort(board10.getCards(), True))
 
 
 
@@ -221,3 +185,48 @@ board12 = Board.Board(
 #        else:
 #            raise Exception('One or more hand prefixes is not valid.')
 #    return 'Split Pot' #returns if both players hands are identical
+
+#
+# #must be passed 5 sorted cards
+# def isStraightOpt(cards):
+#     assert len(cards) == 5
+#     #print(cards)
+#     highValues = []
+#     lowValues = []
+#     for c in cards:
+#         highValues.append(c.getHighValue())
+#         lowValues.append(c.getLowValue())
+#
+#     highValues.sort()
+#     lowValues.sort()
+#
+#     if(abs(cards[4].getHighValue() - cards[0].get) == 4) or (abs(lowValues[4] - lowValues[0]) == 4):
+#         return True
+#
+
+#uses 'isConnected' to check if all cards are connected
+# def isStraightAlt(cards):
+#     length = len(cards)
+#     c5c4 = isConnected(cards[length-1], cards[length-2])
+#     c4c3 = isConnected(cards[length-2], cards[length-3])
+#     c3c2 = isConnected(cards[length-3], cards[length-4])
+#     c2c1 = isConnected(cards[length-4], cards[length-5])
+#     if(c5c4 and c4c3 and c3c2 and c2c1):
+#         return True
+#     else:
+#         return False
+
+#returns true if two cards are within 1 value of each other
+# def isConnected(card1, card2):
+#     primary_diff = abs(card1.getHighValue() - card2.getHighValue())
+#     secondary_diff = None
+#     #analyzing low values
+#     if(card1.getLowValue()):
+#         secondary_diff = abs(card1.getLowValue() - card2.getHighValue())
+#     if(card2.getLowValue()):
+#         secondary_diff = abs(card2.getLowValue() - card1.getHighValue())
+#     #final check, or (primary_diff == 0)
+#     if(primary_diff == 1) or (secondary_diff == 1):
+#         return True
+#     else:
+#         return False

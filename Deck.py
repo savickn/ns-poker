@@ -11,7 +11,7 @@ preflopHands = {}
 class Deck:
 
     def __init__(self, deadCards=default, generateHands=False):
-        self.__cards = set(Data.deck) - set(deadCards)
+        self.__cards = Data.deck if len(deadCards) == 0 else list(set(Data.deck) - set(deadCards))
         self.__length = len(self.__cards)
         self.checkRep()
 
@@ -33,6 +33,15 @@ class Deck:
           ary[d],ary[e]=ary[e],ary[d]
         return ary
 
+    #used to reset the Deck to a default state
+    def resetDeck(self):
+        self.__cards = Data.deck
+
+    #used to remove dead cards
+    def removeDeadCards(self, deadCards):
+        self.__cards = list(set(self.__cards) - set(deadCards))
+
+    #used to retrieve the top card (either for Dealing a Hand or Burning)
     def getTopCard(self):
         card =  self.__cards.pop(0)
         self.__length = len(self.__cards)

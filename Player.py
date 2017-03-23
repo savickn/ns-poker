@@ -1,30 +1,39 @@
 __author__ = 'Nick'
 
-import Card, Deck, HandPreflop, Board, Range, Avatar, Account, ViewTable
+
+ranges = {
+    'UTG': [],
+    'CO': [],
+    'BTN': [],
+    'SB': [],
+    'BB': []
+}
+
+options = {
+    'Ranges': ranges
+}
 
 
 class Player:
-    __account = None
-    __stack = None
-    __status = None #must be in [ACTIVE, SITTING_OUT]
-    __hand = None #can be an Omaha or Texas Holdem hand
-    __timeBank = None
-    __tableView = None #must be initialized when Player joins using Game.getPublicInfo
 
-    __utg_range = None
-    __co_range = None
-    __btn_range = None
-    __sb_range = None
-    __bb_range = None
+    def __init__(self, account, buyin, **options):
+        self.__account = account
+        self.__status = 'Sitting Out' #must be in [ACTIVE, SITTING_OUT]
+        self.__hand = None #can be an Omaha or Texas Holdem hand
 
-    def __init__(self, buyin, account=''):
-        #self.__account = account
-        #self.__stack = account.withdraw(buyin)
+        self.__timeBank = None
+        self.__tableView = None #must be initialized when Player joins using Game.getPublicInfo
+
         self.__stack = buyin
-        self.__status = 'Active'
-        #self.__range = Range.Range()
+        #self.__stack = account.withdraw(buyin)
 
-        print('player init')
+
+        self.__utgRange = options['bb']
+        self.__coRange = options
+        self.__btnRange = options
+        self.__sbRange = options['sb']
+        self.__bbRange = options
+
 
     ############ Setters and Getters #############
 
@@ -93,8 +102,6 @@ class Player:
 
     def _raise(self):
         print()
-
-
 
 
     ############ GRAPHICS #############

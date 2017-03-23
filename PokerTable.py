@@ -15,6 +15,11 @@ class Table:
         self.__seats = self.setSeats(options['number_of_seats'])
         self.checkRep()
 
+
+
+
+    ############### HANDLING SEATS #################
+
     #for debugging only
     def getSeats(self):
         for seat in self.__seats:
@@ -61,6 +66,9 @@ class Table:
         assert len(self.__seats) >= 2
         print('remove seat')
 
+
+    ############### HANDLING PLAYERS #################
+
     #used to determine which players are involved in a hand
     def getActivePlayers(self):
         players = []
@@ -79,7 +87,7 @@ class Table:
                 players.append(player)
         return players
 
-    ############## Utility Methods #################
+    ################ Utility Methods ##################
 
     def checkRep(self):
         assert len(self.__seats) >=2 and len(self.__seats) <= 9

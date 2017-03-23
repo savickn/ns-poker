@@ -15,13 +15,13 @@ handRankings = {
 }
 
 class HandBest:
-    __primary = None #of type Hand
-    __secondary = None #of type Hand
-    __draws = None #of type Draw (must improve BestHand)
 
-    def __init__(self, primary, secondary=None):
-        self.__primary = primary
-        self.__secondary = secondary
+    def __init__(self, startingHand, primary, secondary=None):
+        self.__primary = primary #of type Hand
+        self.__secondary = secondary #of type Hand
+        self.__startingHand = startingHand #of type PreflopHand
+        self.__draws = None #of type Draw (must improve BestHand)
+
         self.checkRep()
 
     #accepts a list of Cards and determines if they are contained with '__primary' and '__secondary', potentially glitchy when playing the Board
@@ -118,6 +118,10 @@ class HandBest:
 
         cards = self.__primary.getCards() + self.__secondary.getCards() if self.__secondary else self.__primary.getCards()
         for c in cards:
+            print(c.toString())
+
+        print('# HOLE CARDS #')
+        for c in self.__startingHand.getCards():
             print(c.toString())
 
     def checkRep(self):

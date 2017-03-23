@@ -19,7 +19,6 @@ class GtoSolver:
         self.__range = range #must be a Range obj
         self.__board = board #must be a list of Card objects
         self.__madeHands = self.analyzeBoard() #an array of BestHand objects
-
         self.checkRep()
 
     #for determining which hands to use for calling bets (e.g. getTopX(50) for calling pot-size bet)
@@ -28,13 +27,35 @@ class GtoSolver:
         hands = self.__madeHands[-cutoff:]
         return hands
 
-    #for determining which hands to bet for value
-    def getValueRange(self):
+    #used to determine which hands are strong enough to value bet
+    def determineValueBets(self):
         print()
 
-    #for determining which hands to use as bluffs
-    def getBluffRange(self):
+    #used to determine which hands make good  bluffs
+    def determineBluffs(self):
         print()
+
+    #used to determine which cards hurt a specific Range (good for bluffing on)
+    def determineScareCards(self):
+        print()
+
+
+    #for determining value/bluff proportions (e.g. 66/33 Value to Bluff ratio on the River)
+    def getValueBluffRange(self, state, betSize):
+        obj = {}
+        if state == 'Flop':
+            obj['Half-Pot'] = self.getTopX(75)
+            obj['Full-Pot'] = self.getTopX(67)
+            obj['2x-Pot'] = self.getTopX(60)
+        elif state == 'Turn':
+            obj['Half-Pot'] = self.getTopX(75)
+            obj['Full-Pot'] = self.getTopX(67)
+            obj['2x-Pot'] = self.getTopX(60)
+        elif state == 'River':
+            obj['Half-Pot'] = self.getTopX(75)
+            obj['Full-Pot'] = self.getTopX(67)
+            obj['2x-Pot'] = self.getTopX(60)
+        return obj
 
     #creates an array of 'X' madeHands from an array of 'X' PreflopHands
     def analyzeBoard(self):
@@ -43,27 +64,13 @@ class GtoSolver:
             ha = HandAnalyzer.HandAnalyzer(hand, self.__board)
             madeHands.append(ha.getBestHand())
 
-        for h in madeHands:
-            h.printAsString()
-
-        madeHands.sort()
-
+        madeHands.sort() #this creates the unexplained printing of HighCard hands
         #Helpers.sortBestHands(madeHands)
-
-        for h in madeHands:
-            h.printAsString()
-
-        #madeHands.sort() #this creates the unexplained printing of HighCard hands
         return madeHands
 
     #used to determine which Turn cards will benefit your range and which will be detrimental
     def calculateTurnLikeliness(self):
         print()
-
-    #def run(self, hand):
-    #    deadCards = self.__board + hand.getCards()
-    #    deck = Deck.Deck(deadCards)
-    #    deck.shuffleDeck()
 
     def checkRep(self):
         assert  isinstance(self.__range, Range.Range)
@@ -76,7 +83,12 @@ r = Range.Range(selected)
 
 
 gto = GtoSolver(r, b)
-best50 = gto.getTopX(50)
+best50 = gto.getTopX(10)
+#for x in best50:
+#    x.printAsString()
+
+
+
 
 
 #def get_equity(self, hero, villain, board=[]):
@@ -87,3 +99,8 @@ best50 = gto.getTopX(50)
 #        raw_equity += self.run_iteration()
 #    avg_equity = raw_equity/self.__iterations
 #    return avg_equity
+
+    #def run(self, hand):
+    #    deadCards = self.__board + hand.getCards()
+    #    deck = Deck.Deck(deadCards)
+    #    deck.shuffleDeck()

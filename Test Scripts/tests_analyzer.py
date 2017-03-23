@@ -108,7 +108,7 @@ board11 = Board.Board(
     Data.five_hearts,
     Data.jack_spades)
 
-#straight with A-high
+#middle card straight
 board12 = Board.Board(
     Data.six_spades,
     Data.three_clubs,
@@ -128,7 +128,7 @@ board13 = Board.Board(
 printHighCards = False
 printPairedHands = False
 printFlushes = False
-printStraights = True
+printStraights = False
 
 ha1 = HandAnalyzer.HandAnalyzer(hand, board1, printHighCards)
 assert isinstance(ha1.getBestHand().getPrimary(), HandHC.HighCards)
@@ -160,13 +160,13 @@ assert isinstance(ha9.getBestHand().getPrimary(), HandFlush.Flush)
 ha10 = HandAnalyzer.HandAnalyzer(hand, board10, printStraights)
 assert isinstance(ha10.getBestHand().getPrimary(), HandStraight.Straight)
 
-#ha11 = HandAnalyzer.HandAnalyzer(hand, board11, printStraights)
-#assert isinstance(ha11.getBestHand().getPrimary(), HandStraight.Straight)
+ha11 = HandAnalyzer.HandAnalyzer(hand, board11, printStraights)
+assert isinstance(ha11.getBestHand().getPrimary(), HandStraight.Straight)
 
-#ha12 = HandAnalyzer.HandAnalyzer(hand, board12, printStraights)
-#assert isinstance(ha12.getBestHand().getPrimary(), HandStraight.Straight)
+ha12 = HandAnalyzer.HandAnalyzer(hand, board12, printStraights)
+assert isinstance(ha12.getBestHand().getPrimary(), HandStraight.Straight)
 
-#ha13 = HandAnalyzer.HandAnalyzer(hand, board13, printStraights)
-#assert isinstance(ha13.getBestHand().getPrimary(), HandSF.StraightFlush)
+ha13 = HandAnalyzer.HandAnalyzer(hand, board13, printStraights)
+assert isinstance(ha13.getBestHand().getPrimary(), HandSF.StraightFlush)
 
 

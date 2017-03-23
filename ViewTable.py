@@ -1,7 +1,7 @@
 __author__ = 'Nick'
 
 from tkinter import *
-from PokerCalculator import ViewTableBetting
+import ViewTableBetting
 
 
 class ViewTable:
