@@ -8,16 +8,12 @@ states = [
     'Sitting Out' #will not be dealt a hand
 ]
 
-ranges = {
+defaultOptions = {
     'UTG': [],
     'CO': [],
     'BTN': [],
     'SB': [],
     'BB': []
-}
-
-options = {
-    'Ranges': ranges
 }
 
 
@@ -35,11 +31,11 @@ class Player:
         #self.__stack = account.withdraw(buyin)
 
 
-        self.__utgRange = options['bb']
-        self.__coRange = options
-        self.__btnRange = options
-        self.__sbRange = options['sb']
-        self.__bbRange = options
+        #self.__utgRange = options['UTG'] if options['UTG'] else []
+        #self.__coRange = options['CO'] if options['CO'] else []
+        #self.__btnRange = options['BTN'] if options['BTN'] else []
+        #self.__sbRange = options['SB'] if options['SB'] else []
+        #self.__bbRange = options['BB'] if options['BB'] else []
 
 
     ############ Setters and Getters #############

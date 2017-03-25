@@ -3,6 +3,7 @@ __author__ = 'Nick'
 import random
 import Card, Deck, HandPreflop, Board, Player, Account, PokerTable
 from collections import deque
+import operator
 
 boilerplateOptions = {
     'ante': 0,
@@ -95,8 +96,7 @@ class Poker:
 
         for x in range(self.__cardsPerHand):
             for y in range(len(activePlayers)):
-                hands[y] = []
-                hands[y].append(self.__deck.getTopCard())
+                hands[y] = [] if not hands[y] else hands[y].append(self.__deck.getTopCard())
 
         seat = self.__sb
         for n in range (len(activePlayers)):
@@ -114,25 +114,26 @@ class Poker:
     def assignPositions(self):
         deck = Deck.Deck()
         deck.shuffleDeck()
-        playerCards = {}
+        activeSeats = self.__table.getActiveSeats()
 
-        for player in self.__table.getActivePlayers():
-            playerCards[player] = deck.getTopCard()
+        highest = None
+        for seat in activeSeats:
+            print(highest)
+            card = deck.getTopCard()
+            if highest is None or (card.getHighValue() > highest['Card'].getHighValue()):
+                highest = {'Seat': seat, 'Card': card}
+            else:
+                continue
 
-        sorted_cards = sorted(playerCards.values(), reverse=True)
-        keys = sorted_cards.keys()
-        print(keys[0])
+        self.__btn = highest['Seat']
 
-        self.__btn = keys[0]
-
-        active_seats = self.__table.getActivePlayers()
-        if active_seats is 2:
+        if len(activeSeats) == 2:
             self.__sb = self.__btn
-        elif active_seats > 2:
-            self.__sb = self.__btn.getActiveLeft()
+        elif len(activeSeats) > 2:
+            self.__sb = self.__btn.getNearestLeftSeatWithActivePlayer()
 
-        self.__bb = self.__sb.getActiveLeft()
-        self.__fp = self.__bb.getActiveLeft()
+        self.__bb = self.__sb.getNearestLeftSeatWithActivePlayer()
+        self.__fp = self.__bb.getNearestLeftSeatWithActivePlayer()
 
     def rotatePlayers(self):
         self.__sb = self.__sb.getNearestLeftSeatWithActivePlayer()
@@ -283,7 +284,7 @@ players.append(player1)
 players.append(player2)
 
 game = Poker(**boilerplateOptions)
-game.assignPositions()
+#game.assignPositions()
 
 
 

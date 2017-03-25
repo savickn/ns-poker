@@ -25,7 +25,13 @@ valueToBluffFrequencies = {
 }
 
 callingFrequencies = {
-    ''
+    'Full-Pot': 0.5,
+    '0.75-Pot': 0.57,
+    'Half-Pot': 0.66
+}
+
+potOdds = {
+
 }
 
 

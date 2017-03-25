@@ -66,6 +66,14 @@ class Table:
 
     ############### HANDLING PLAYERS #################
 
+    def getActiveSeats(self):
+        seats = []
+        for seat in self.__seats:
+            player = seat.getPlayer()
+            if player is not None and player.getStatus() == 'Active':
+                seats.append(seat)
+        return seats
+
     #used to determine which players should be dealt-in pre-flop
     def getActivePlayers(self):
         players = []
