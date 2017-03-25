@@ -1,6 +1,13 @@
 __author__ = 'Nick'
 
 
+states = [
+    'In Hand', #will be given a chance to BET/CHECK
+    'All In', #will be analyzed after RIVER but will not be given a chance to BET/CHECK
+    'Active', #will be dealt a hand
+    'Sitting Out' #will not be dealt a hand
+]
+
 ranges = {
     'UTG': [],
     'CO': [],
@@ -58,16 +65,21 @@ class Player:
 
     #called by PokerGame to transfer money from a player's stack to the pot (e.g. for betting or posting blinds)
     def removeFromStack(self, amount):
+        action = {}
         if self.__stack > amount:
             self.__stack -= amount
-            return True
+            action['AMOUNT'] = amount
+            action['COMPLETE'] = True
         elif self.__stack < amount and self.__stack > 0:
             temp = self.__stack
             self.__stack = 0
-            return True
+            self.__status = 'All In'
+            action['AMOUNT'] = temp
+            action['COMPLETE'] = True
         else:
             self.__status = 'Sitting_Out'
-            return False
+            action['COMPLETE'] = False
+        return action
 
     def rebuy(self, amount):
         if self.__stack:
@@ -106,15 +118,15 @@ class Player:
 
     ############ GRAPHICS #############
 
-    def draw_hand(self):
+    def drawHand(self):
         self.__hand.draw()
 
-    def draw_avatar(self):
+    def drawAvatar(self):
         self.__account.draw()
         #CANVAS.DRAW(self.__sprite)
 
     def checkRep(self):
-        assert self.__status in ['In Hand', 'Active', 'Sitting Out', 'Observing']
+        assert self.__status in states
 
 
-player1 = Player(200)
+player1 = Player('Nick', 200)

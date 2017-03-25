@@ -10,7 +10,7 @@ boilerplateOptions = {
     'bb': 2,
     'max_buyin': 100,
     'min_buyin': 40,
-    'action_timer': 30
+    'timer': 30
 }
 
 gameTypes = {
@@ -26,38 +26,30 @@ gameTypes = {
 class Poker:
     __preflop = True
     __heads_up = False
-    __cardsPerHand = 2 #or 4 in Omaha or 5 in Draw or 3 in Stud
     __state = None #should be in [Running, Wait]
 
     __action_player = None #the player whose turn it is to act
-    __action_timer = None
-
-
-    #__players = None #organized as follows: [UTG, UTG2, UTG3, LOJ, HIJ, CO, BTN, SB, BB]
-    #__playerMap = {}
-    #__seats = None
-
-    __btn = None #for assigning initial positions
-    __sb = None #for postflop play and posting blinds
-    __bb = None #for posting blinds
-    __fp = None #for preflop play, basically set __first_position and call __first_position.__left to move around table for betting
-
-    __deck = None
-    __board = None
 
     __currentBet = None #represents the most recently placed bet
     __min_raise = None #must be at least double the last biggest bet/raise (e.g. bet to $4 over $2 BB, bet to $20 if opponent bets $10 on the flop)
     __max_bet = None #mainly for Limit and PLO games
 
     def __init__(self, **options):
-        #self.__players = deque(players)
-        #self.__seats = seats
 
 
         self.__table = PokerTable.Table()
 
         self.__pot = 0
+        self.__cardsPerHand = 2 #or 4 in Omaha or 5 in Draw or 3 in Stud
 
+
+        self.__deck = None
+        self.__board = None
+
+        self.__btn = None #for assigning initial positions
+        self.__sb = None #for postflop play and posting blinds
+        self.__bb = None #for posting blinds
+        self.__fp = None #for preflop play, basically set __first_position and call __first_position.__left to move around table for betting
 
         ########## OPTIONS ###########
 
@@ -66,6 +58,7 @@ class Poker:
         self.__ante = options['ante']
         self.__max_buyin = options['max_buyin'] * options['bb']
         self.__min_buyin = options['min_buyin'] * options['bb']
+        self.__timer = options['timer']
 
     def checkRep(self):
         print('checkrep')
@@ -88,7 +81,7 @@ class Poker:
         return {
             'max_buyin': self.__max_buyin,
             'min_buyin': self.__min_buyin,
-            'timer': self.__action_timer,
+            'timer': self.__timer,
             'min_raise': self.__min_raise,
             'min_bet': self.__bbStake
         }
@@ -98,21 +91,17 @@ class Poker:
     #creates a HoldemHand for each active Player, deals cards in the correct order
     def generateHands(self):
         activePlayers = self.__table.getActivePlayers() #list of Players
-        numberOfActivePlayers = len(activePlayers)
-        hands = {}
+        hands = []
 
         for x in range(self.__cardsPerHand):
-            for y in range(numberOfActivePlayers):
-                hands['hand' + str(y)] = []
-                hands['hand' + str(y)].append(self.__deck.getTopCard())
+            for y in range(len(activePlayers)):
+                hands[y] = []
+                hands[y].append(self.__deck.getTopCard())
 
-        first_seat = self.__sb
-        it = 1
-        for num in range (0, len(activePlayers)):
-            cards = hands['hand{id}'.format(id=it)]
-            self.dealHand(first_seat.getPlayer(), cards)
-            first_seat = first_seat.getLeft()
-            it += 1
+        seat = self.__sb
+        for n in range (len(activePlayers)):
+            self.dealHand(seat.getPlayer(), hands[n])
+            seat = seat.getNearestLeftSeatWithActivePlayer()
 
     #creates player hand, maybe make it so that the hand type (e.g. Holdem vs. Omaha) depends on how many cards are passed in
     def dealHand(self, player, cards):
@@ -145,11 +134,36 @@ class Poker:
         self.__bb = self.__sb.getActiveLeft()
         self.__fp = self.__bb.getActiveLeft()
 
-    #rotates players after each round
-    def rotate_players(self):
+    def rotatePlayers(self):
         self.__sb = self.__sb.getNearestLeftSeatWithActivePlayer()
-        self.__bb = self.__bb.getNearestLeftSeatWithActivePlayer()
-        self.__fp = self.__fp.getNearestLeftSeatWithActivePlayer()
+        self.__bb = self.__sb.getNearestLeftSeatWithActivePlayer()
+        self.__fp = self.__bb.getNearestLeftSeatWithActivePlayer()
+
+    ############ Posting SB/BB/Ante ############
+
+    def postBB(self):
+        response = self.__bb.getPlayer().removeFromStack(self.__bbStake)
+        if response['COMPLETE']:
+            self.__pot += response['AMOUNT']
+            self.__currentBet = self.__bbStake
+        else:
+            self.__bb = self.__bb.getNearestLeftSeatWithActivePlayer() #sets a new BB
+            self.__fp = self.__bb.getNearestLeftSeatWithActivePlayer() #sets a new FP immediately left of the new BB
+            self.postBB() #calls postBB until the BB is posted or an Exception is thrown
+
+    def postSB(self):
+        response = self.__sb.getPlayer().removeFromStack(self.__sbStake)
+        if response['COMPLETE']:
+           self.__pot += response['AMOUNT']
+        else:
+            self.rotatePlayers()
+            self.postSB() #calls postBB until the BB is posted or an Exception is thrown
+
+    def postAnte(self):
+        for player in self.__table.getActivePlayers():
+            response = player.removeFromStack(self.__ante)
+            if response['COMPLETE']:
+                self.__pot += response['AMOUNT']
 
     ######### Community Card Actions ############
 
@@ -173,36 +187,9 @@ class Poker:
         card5 = self.__deck.getTopCard()
         self.__board.setRiver(card5)
 
-    ############ Calling/Raising/Posting SB/BB/Ante ############
+    ########## Preflop Actions #############
 
     actions = ['POST_BB', 'POST_SB', 'POST_ANTE', 'YOUR_TURN']
-
-    def prompt_for_bb(self):
-        if self.__bb.getPlayer().removeFromStack(self.__bbStake):
-            self.__pot += self.__bbStake
-            if self.__bbStake > self.__last_bet:
-                self.__last_bet = self.__bbStake
-        else:
-            print()
-            #must reassign position if fails
-
-    def prompt_for_sb(self):
-        if self.__sb.getPlayer().removeFromStack(self.__sbStake):
-           self.__pot += self.__sbStake
-           if self.__sbStake > self.__last_bet:
-                    self.__last_bet = self.__sbStake
-        else:
-            print()
-            #must reassign position if fails
-
-    def prompt_for_ante(self):
-        for player in self.__table.getActivePlayers():
-            if player.removeFromStack(self.__ante):
-                self.__pot += self.__ante
-                if self.__ante > self.__last_bet:
-                    self.__last_bet = self.__ante
-
-    ########## Preflop Actions #############
 
     def preFlopBetting(self):
 
@@ -212,7 +199,7 @@ class Poker:
         action = player.selectAction(self.getPublicState())
         self.handle_action(player, action)
 
-        while num < self.__table.countActivePlayers():
+        while num < len(self.__table.getActivePlayers()):
             print()
 
         print('not implemented')
@@ -233,6 +220,9 @@ class Poker:
 
     ########## Handles each individual round #############
 
+    def initializeGame(self):
+        print()
+
     def startRound(self):
         activePlayers = self.__table.getActivePlayers()
         if activePlayers < 2:
@@ -247,16 +237,15 @@ class Poker:
 
         self.__pot = 0
         self.__preflop = True
-        self.rotate_players()
+        self.rotatePlayers()
 
         self.generateHands()
 
         if self.__ante > 0:
-            self.prompt_for_ante()
-        self.prompt_for_sb()
-        self.prompt_for_bb()
+            self.postAnte()
+        self.postSB()
+        self.postBB()
 
-        self.__currentBet = self.__bbStake
 
 
         #action = self.__utg.selectAction(self.getPublicState())
@@ -287,8 +276,8 @@ class Poker:
 
 
 
-player1 = Player.Player(200)
-player2 = Player.Player(200)
+player1 = Player.Player('Nick', 200)
+player2 = Player.Player('Matt', 200)
 players = []
 players.append(player1)
 players.append(player2)
@@ -314,7 +303,6 @@ game.assignPositions()
 
 
 
-
 # def play(self):
 #         self.generateHands()
 #         self.__preflop = True
@@ -327,7 +315,6 @@ game.assignPositions()
 #         self.__preflop = False
 #         self.generateTurn()
 
-
 # def reset(self):
 #         self.__board = None
 #         self.__pot = 0
@@ -335,4 +322,13 @@ game.assignPositions()
 #         self.__deck.shuffleDeck()
 #         self.rotate_players()
 
+    # def postBB(self):
+    #     response = self.__bb.getPlayer().removeFromStack(self.__bbStake)
+    #     if response['COMPLETE']:
+    #         self.__pot += response['AMOUNT']
+    #         if self.__bbStake > self.__currentBet:
+    #             self.__currentBet = self.__bbStake
 
+#__players = None #organized as follows: [UTG, UTG2, UTG3, LOJ, HIJ, CO, BTN, SB, BB]
+    #__playerMap = {}
+    #__seats = None

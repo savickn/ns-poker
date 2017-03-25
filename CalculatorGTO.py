@@ -12,6 +12,23 @@ oneThirdBet = 33
 oneQuarterBet = 25
 
 
+valueToBluffFrequencies = {
+    'Flop': {
+
+    },
+    'Turn': {
+
+    },
+    'River': {
+
+    }
+}
+
+callingFrequencies = {
+    ''
+}
+
+
 #used to rank hands within a range to determine which X% should be called vs. a pot-size bet/etc
 class GtoSolver:
 

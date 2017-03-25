@@ -21,7 +21,7 @@ class Seat:
             else:
                 temp = temp.__left
 
-        return 'Not enough players are active.'
+        raise Exception('There are not enough ACTIVE players.')
 
     ############# GETTERS ##############
 

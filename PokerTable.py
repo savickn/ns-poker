@@ -7,16 +7,13 @@ default = {
 }
 
 class Table:
-    #figure out how to dynamically create Seats based on how type of table (e.g. 6-max vs. HU vs. full-ring)
-    __seats = None
 
     def __init__(self, options=default):
-        assert options['number_of_seats'] >= 2
+        #figure out how to dynamically create Seats based on how type of table (e.g. 6-max vs. HU vs. full-ring)
         self.__seats = self.setSeats(options['number_of_seats'])
+        self.__observers = [] #Players that are observing the table
+        self.__waitlist = [] #Players that are waiting to join the table
         self.checkRep()
-
-
-
 
     ############### HANDLING SEATS #################
 
@@ -69,7 +66,7 @@ class Table:
 
     ############### HANDLING PLAYERS #################
 
-    #used to determine which players are involved in a hand
+    #used to determine which players should be dealt-in pre-flop
     def getActivePlayers(self):
         players = []
         for seat in self.__seats:
@@ -78,7 +75,16 @@ class Table:
                 players.append(player)
         return players
 
-    #returns all players at the Table
+    #used to determine which players are involved in the hand post-flop
+    def getInHandPlayers(self):
+        players = []
+        for seat in self.__seats:
+            player = seat.getPlayer()
+            if player is not None and player.getStatus() == 'In Hand':
+                players.append(player)
+        return players
+
+    #returns all players currently sitting at the Table
     def getAllPlayers(self):
         players = []
         for seat in self.__seats:
