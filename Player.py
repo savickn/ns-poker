@@ -2,10 +2,10 @@ __author__ = 'Nick'
 
 
 states = [
-    'In Hand', #will be given a chance to BET/CHECK
+    'In Hand', #used for postflop play, e.g. player can BET/CHECK
     'All In', #will be analyzed after RIVER but will not be given a chance to BET/CHECK
-    'Active', #will be dealt a hand
-    'Sitting Out' #will not be dealt a hand
+    'Active', #used for preflop play, will be dealt and hand and given a chance to CALL/RAISE the BB
+    'Sitting Out' #used for preflop play, will not be dealt a hand
 ]
 
 defaultOptions = {
@@ -21,15 +21,12 @@ class Player:
 
     def __init__(self, account, buyin, **options):
         self.__account = account
-        self.__status = 'Sitting Out' #must be in [ACTIVE, SITTING_OUT]
+        self.__stack = buyin #alternatively used 'account.withdraw(buyin)'
+        self.__status = 'Active' #must be in [ACTIVE, SITTING_OUT]
         self.__hand = None #can be an Omaha or Texas Holdem hand
 
         self.__timeBank = None
         self.__tableView = None #must be initialized when Player joins using Game.getPublicInfo
-
-        self.__stack = buyin
-        #self.__stack = account.withdraw(buyin)
-
 
         #self.__utgRange = options['UTG'] if options['UTG'] else []
         #self.__coRange = options['CO'] if options['CO'] else []
@@ -37,23 +34,30 @@ class Player:
         #self.__sbRange = options['SB'] if options['SB'] else []
         #self.__bbRange = options['BB'] if options['BB'] else []
 
+    ############ Helper Methods ##############
+
+    def isActive(self):
+        return True if self.__status == 'Active' else False
+
+    def isInHand(self):
+        return True if self.__status == 'In Hand' else False
+
+    def shouldAnalyze(self):
+        return True if self.__status in ['In Hand', 'All In'] else False
 
     ############ Setters and Getters #############
-
-    def setHand(self, hand):
-        self.__hand = hand
 
     def getHand(self):
         return self.__hand
 
-    def getStatus(self):
-        return self.__status
+    def setHand(self, hand):
+        self.__hand = hand
 
     def setStatus(self, status):
         assert status in ['In Hand', 'Active', 'Sitting Out', 'Observing']
         self.__status = status
 
-    ############# Interact with game ##############
+    ############# BETTING/REBUY/WINNING ##############
 
     #called by PokerGame to add money to a player's stack (e.g. when they win a pot)
     def addToStack(self, amount):
@@ -85,8 +89,21 @@ class Player:
         #used to ensure stack !> max_buyin
         #if stack > :
 
+    ################# GAMES ACTIONS ##################
+
+    def populateActions(self, state):
+        actions = []
+        if self.__stack - state.currentBet <= state.currentBet:
+            actions.append('CALL')
+
+        #if state.openedPot is False and
+        return actions
+
 
     def selectAction(self, state):
+        self.populateActions(state)
+
+
         #draw user input frame
         #count down clock from 30 seconds
 
@@ -94,7 +111,8 @@ class Player:
         min_raise = state.min_raise
         min_bet = state.min_bet
 
-        action = input('') #can be [BET, FOLD, CALL, RAISE, ALLIN]
+
+        action = input('Select an action:') #can be [CALL, BET, FOLD], RAISE/ALLIN are unnecessary
         amount = input('') #must be >2*min_raise and < self.__stack
 
         assert amount <= self.__stack and amount >= min_bet
@@ -113,6 +131,9 @@ class Player:
 
 
     ############ GRAPHICS #############
+
+    def toString(self):
+        return '{name}'.format(name=self.__account)
 
     def drawHand(self):
         self.__hand.draw()

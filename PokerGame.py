@@ -5,7 +5,7 @@ import Card, Deck, HandPreflop, Board, Player, Account, PokerTable
 from collections import deque
 import operator
 
-boilerplateOptions = {
+gameOptions = {
     'ante': 0,
     'sb': 1,
     'bb': 2,
@@ -14,13 +14,17 @@ boilerplateOptions = {
     'timer': 30
 }
 
+tableOptions = {
+    'number_of_seats': 9
+}
+
 gameTypes = {
-    '2NLHE': boilerplateOptions,
-    '5NLHE': boilerplateOptions.update({'bb': 5, 'sb': 2}),
-    '10NLHE': boilerplateOptions.update({'bb': 10, 'sb': 5}),
-    '10NLHEDS': boilerplateOptions.update({'bb': 10, 'sb': 5, 'ante': 2, 'max_buyin': 400}),
-    '200NLHE': boilerplateOptions.update({'bb': 200, 'sb': 100}),
-    '10PLO': boilerplateOptions.update({'bb': 10, 'sb': 5})
+    '2NLHE': gameOptions,
+    '5NLHE': gameOptions.update({'bb': 5, 'sb': 2}),
+    '10NLHE': gameOptions.update({'bb': 10, 'sb': 5}),
+    '10NLHEDS': gameOptions.update({'bb': 10, 'sb': 5, 'ante': 2, 'max_buyin': 400}),
+    '200NLHE': gameOptions.update({'bb': 200, 'sb': 100}),
+    '10PLO': gameOptions.update({'bb': 10, 'sb': 5})
 }
 
 
@@ -31,21 +35,24 @@ class Poker:
 
     __action_player = None #the player whose turn it is to act
 
-    __currentBet = None #represents the most recently placed bet
-    __min_raise = None #must be at least double the last biggest bet/raise (e.g. bet to $4 over $2 BB, bet to $20 if opponent bets $10 on the flop)
-    __max_bet = None #mainly for Limit and PLO games
-
     def __init__(self, **options):
 
 
-        self.__table = PokerTable.Table()
+        self.__table = PokerTable.Table(tableOptions)
 
         self.__pot = 0
         self.__cardsPerHand = 2 #or 4 in Omaha or 5 in Draw or 3 in Stud
 
 
-        self.__deck = None
+        self.__deck = Deck.Deck()
         self.__board = None
+
+
+
+        self.__currentBet = None #represents the most recently placed bet
+        self.__minRaise = None #must be at least double the last biggest bet/raise (e.g. bet to $4 over $2 BB, bet to $20 if opponent bets $10 on the flop)
+        self.__maxBet = None #mainly for Limit and PLO games
+
 
         self.__btn = None #for assigning initial positions
         self.__sb = None #for postflop play and posting blinds
@@ -57,8 +64,8 @@ class Poker:
         self.__bbStake = options['bb']
         self.__sbStake = options['sb']
         self.__ante = options['ante']
-        self.__max_buyin = options['max_buyin'] * options['bb']
-        self.__min_buyin = options['min_buyin'] * options['bb']
+        self.__maxBuyin = options['max_buyin'] * options['bb']
+        self.__minBuyin = options['min_buyin'] * options['bb']
         self.__timer = options['timer']
 
     def checkRep(self):
@@ -80,23 +87,28 @@ class Poker:
 
     def getPublicState(self):
         return {
-            'max_buyin': self.__max_buyin,
-            'min_buyin': self.__min_buyin,
+            'maxBuyIn': self.__maxBuyin,
+            'minBuyIn': self.__minBuyin,
             'timer': self.__timer,
-            'min_raise': self.__min_raise,
-            'min_bet': self.__bbStake
+            'currentBet': self.__currentBet,
+            'minRaise': self.__minRaise,
+            'maxBet': self.__maxBet,
+            'minBet': self.__bbStake
         }
 
     ############## Dealing Player Hands
 
-    #creates a HoldemHand for each active Player, deals cards in the correct order
+    #creates a HoldemHand for each active Player, deals cards in the correct order, WORKING but refactor at some point
     def generateHands(self):
-        activePlayers = self.__table.getActivePlayers() #list of Players
-        hands = []
+        activePlayers = self.__table.getActivePlayers() #list of Players, can cache as instance var that is updated semi-regularly
+        hands = [x for x in range(len(activePlayers))]
 
         for x in range(self.__cardsPerHand):
             for y in range(len(activePlayers)):
-                hands[y] = [] if not hands[y] else hands[y].append(self.__deck.getTopCard())
+                if isinstance(hands[y], list):
+                    hands[y].append(self.__deck.getTopCard())
+                else:
+                    hands[y] = [self.__deck.getTopCard()]
 
         seat = self.__sb
         for n in range (len(activePlayers)):
@@ -110,7 +122,7 @@ class Poker:
 
     ########## Positioning Players #############
 
-    #player with highest card becomes Button
+    #player with highest card becomes Button, WORKING
     def assignPositions(self):
         deck = Deck.Deck()
         deck.shuffleDeck()
@@ -118,7 +130,6 @@ class Poker:
 
         highest = None
         for seat in activeSeats:
-            print(highest)
             card = deck.getTopCard()
             if highest is None or (card.getHighValue() > highest['Card'].getHighValue()):
                 highest = {'Seat': seat, 'Card': card}
@@ -135,10 +146,17 @@ class Poker:
         self.__bb = self.__sb.getNearestLeftSeatWithActivePlayer()
         self.__fp = self.__bb.getNearestLeftSeatWithActivePlayer()
 
+        #print('First Position: {seat}'.format(seat=self.__fp.toString()))
+        #print('Button: {seat}'.format(seat=self.__btn.toString()))
+        #print('Small Blind: {seat}'.format(seat=self.__sb.toString()))
+        #print('Big Blind: {seat}'.format(seat=self.__bb.toString()))
+
+    #used to rotate seating after each round, WORKING
     def rotatePlayers(self):
+        self.__btn = self.__btn.getNearestLeftSeatWithActivePlayer()
         self.__sb = self.__sb.getNearestLeftSeatWithActivePlayer()
-        self.__bb = self.__sb.getNearestLeftSeatWithActivePlayer()
-        self.__fp = self.__bb.getNearestLeftSeatWithActivePlayer()
+        self.__bb = self.__bb.getNearestLeftSeatWithActivePlayer()
+        self.__fp = self.__fp.getNearestLeftSeatWithActivePlayer()
 
     ############ Posting SB/BB/Ante ############
 
@@ -192,21 +210,22 @@ class Poker:
 
     actions = ['POST_BB', 'POST_SB', 'POST_ANTE', 'YOUR_TURN']
 
+    #betting begins with 'self.__fp' and continues to the left
     def preFlopBetting(self):
+        betting = True
+        startingSeat = self.__fp
+        openedPot = False
 
+        while betting is True:
+            player = startingSeat.getPlayer()
+            action = player.selectAction(self.getPublicState())
+            self.handle_action(player, action)
 
-        num = 1
-        player = self.__fp.getPlayer()
-        action = player.selectAction(self.getPublicState())
-        self.handle_action(player, action)
-
-        while num < len(self.__table.getActivePlayers()):
-            print()
-
-        print('not implemented')
+            startingSeat = startingSeat.getNearestLeftSeatWithActivePlayer()
 
     ######### Postflop Actions #############
 
+    #
     def postFlopBetting(self):
         print('not implemented')
 
@@ -234,8 +253,6 @@ class Poker:
         deck.shuffleDeck()
 
 
-
-
         self.__pot = 0
         self.__preflop = True
         self.rotatePlayers()
@@ -246,8 +263,6 @@ class Poker:
             self.postAnte()
         self.postSB()
         self.postBB()
-
-
 
         #action = self.__utg.selectAction(self.getPublicState())
         #self.handle_action(self.__utg, action)
@@ -265,26 +280,47 @@ class Poker:
         readyCounter = len(self.__table.getActivePlayers())
         return True if readyCounter >= 2 else False
 
-    def registerPlayer(self, player_id):
+    #used to add a Player object to the Table
+    def registerPlayer(self, player):
+        assert isinstance(player, Player.Player)
+        emptySeat = None
+        try:
+            emptySeat = self.__table.getEmptySeat()
+        except:
+            print('Unable to register player. There are no empty seats.')
+            return
+        emptySeat.setPlayer(player)
+
+    #used to retrieve an account from the database
+    def findPlayer(self, playerId):
         #find account in DB using 'player_id'... account = Account.findById(player_id)
-        print('register stub')
+        account = Account.findById(playerId)
+        buyin = input('How much would you like to buy in for?')
+        player = Player.Player(account, buyin)
+        return player
 
-        #account = Account.findById(player_id)
-        #buyin = input('How much would you like to buy in for?')
-        #player = Player(account, buyin)
-        #self.__players.add(player)
-
-
+    def toString(self):
+        self.__table.toString()
 
 
 player1 = Player.Player('Nick', 200)
 player2 = Player.Player('Matt', 200)
-players = []
-players.append(player1)
-players.append(player2)
+player3 = Player.Player('Mike', 200)
+player4 = Player.Player('Mark', 200)
 
-game = Poker(**boilerplateOptions)
-#game.assignPositions()
+game = Poker(**gameOptions)
+game.registerPlayer(player1)
+game.registerPlayer(player2)
+#game.registerPlayer(player3)
+#game.registerPlayer(player4)
+
+#game.toString()
+game.assignPositions()
+game.generateHands()
+
+
+
+
 
 
 

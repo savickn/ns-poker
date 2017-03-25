@@ -1,16 +1,6 @@
 __author__ = 'Nick'
 
 
-#helper for checking if a collection of cards makes a flush
-def isFlush(cards):
-    suit = cards[0].getSuit()
-    for c in cards:
-        if c.getSuit() == suit:
-            continue
-        else:
-            return False
-    return True
-
 #returns the most common suit in a collection of cards (relies on the fact that only only flush can be made at a time)
 #can be used to remove irrelevant pair cards when checking for straights and straight flushes
 def getRelevantSuit(cards):
@@ -63,6 +53,27 @@ def removePairs(cards, suit):
 def isStraight(cards):
     assert len(cards) == 5
     return True if(cards[4].getHighValue() - cards[0].getHighValue() == 4) or (cards[4].getLowValue() - cards[0].getLowValue() == 4) else False
+
+
+def getStraightOuts(cards):
+
+
+def isGutShotDraw():
+
+
+def isOpenEndedDraw():
+
+
+
+#helper for checking if a collection of cards makes a flush
+def isFlush(cards):
+    suit = cards[0].getSuit()
+    for c in cards:
+        if c.getSuit() == suit:
+            continue
+        else:
+            return False
+    return True
 
 #sorts based on a card's highValue field (highest value to lowest if reverse=True and vice versa), WORKING
 def highSort(cards, reverse):

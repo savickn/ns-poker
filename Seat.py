@@ -11,19 +11,27 @@ class Seat:
         self.__right = right
         self.__left = left
 
+    ################ HELPER METHODS #################
+
     #maybe change to getActiveLeft where it finds the nearest person that is Active
     def getNearestLeftSeatWithActivePlayer(self):
         temp = self.__left
-        for num in range (1, 11):
+        for num in range (10):
             player = temp.getPlayer()
-            if player.getStatus() is 'Active' and player is not self.__player:
+            if player is not None and player.isActive() and player is not self.__player:
                 return temp
             else:
-                temp = temp.__left
-
+                temp = temp.getLeft()
         raise Exception('There are not enough ACTIVE players.')
 
-    ############# GETTERS ##############
+    def isActive(self):
+        return True if self.__player.isActive() else False
+
+    #used to choose an empty Seat when adding a new Player to the Table
+    def isEmpty(self):
+        return True if not self.__player else False
+
+    ################# GETTERS ###############
 
     def getId(self):
         return self.__id
@@ -37,7 +45,7 @@ class Seat:
     def getRight(self):
         return self.__right
 
-    ########### SETTERS #############
+    ################ SETTERS ################
 
     def setLeft(self, player):
         self.__left = player
@@ -46,12 +54,14 @@ class Seat:
         self.__right = player
 
     def setPlayer(self, player):
+        assert self.isEmpty()
         self.__player = player
 
-    ########### Utility ###############
+    ################ Utility ################
 
     def toString(self):
-        return 'Seat-{id}, Left = Seat-{lid}, Right = Seat-{rid}'.format(id=self.__id, lid=self.__left.getId(), rid=self.__right.getId())
+        player = self.__player.toString() if self.__player else 'Empty'
+        return '{player} sitting in Seat-{id}... Left = Seat-{lid}, Right = Seat-{rid}'.format(player=player, id=self.__id, lid=self.__left.getId(), rid=self.__right.getId())
 
     def checkRep(self):
         print()

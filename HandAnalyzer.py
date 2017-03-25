@@ -203,14 +203,10 @@ class HandAnalyzer:
         lowSort = Helpers.lowSort(cards, False)
         highSort = Helpers.highSort(cards, False)
 
-        slices = [
-            lowSort[:5],
-            highSort[:5]
-        ]
+        slices = [lowSort[:5], highSort[:5]]
 
         if len(highSort) >= 6:
             slices.append(highSort[1:6])
-
         if len(highSort) == 7:
             slices.append(highSort[2:7])
 
@@ -332,15 +328,25 @@ class HandAnalyzer:
             for d in draws:
                 self.__bestHand.addDraw(d)
 
+    def checkForStraightDraw(self):
+
+
+    def checkForFlushDraw(self):
+
+
     #determines Draws for the current BestHand
     def calculateDraws(self):
         currentValue = handRankings[self.__bestHand.getPrimary().getPrefix()]
 
-        if currentValue <= 2:
+        if currentValue <= 2: #pair
             self.checkForPairDraw()
-        if currentValue <= 3:
+        if currentValue <= 3: #two-pair
             print()
-        if currentValue <= 4:
+        if currentValue <= 4: #trips
+            self.checkForStraightDraw()
+        if currentValue <= 5: #straight
+            self.checkForFlushDraw()
+        if currentValue <= 5: #flush
             print()
 
 
