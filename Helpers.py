@@ -54,19 +54,64 @@ def isStraight(cards):
     assert len(cards) == 5
     return True if(cards[4].getHighValue() - cards[0].getHighValue() == 4) or (cards[4].getLowValue() - cards[0].getLowValue() == 4) else False
 
+#def getStraightOuts(cards):
 
-def getStraightOuts(cards):
+#def isGutShotDraw():
+
+#def isOpenEndedDraw():
 
 
-def isGutShotDraw():
+def extractPattern(cards):
+    pattern = ''
+    for x+1 in range(len(cards)):
 
 
-def isOpenEndedDraw():
+    return pattern
+
+#can pass 5-6 cards, must remove pairs beforehand
+def analyzeStraightDraws(cards):
+    assert len(cards) in [5, 6]
+
+    straights = []
+    gutters = []
+    doubleGutters = []
+    openEnders = []
+
+    sortedHigh = highSort(cards, False)
+    sortedLow = lowSort(cards, False)
+
+    patternHigh = extractPattern(sortedHigh)
+    patternLow = extractPattern(sortedLow)
+
+    if pattern == '111':
+        print()
+    elif pattern == '121':
+        print()
+    elif pattern == '2112':
+        print()
+    elif pattern == '1111':
+        print()
+
+
+
 
 
 
 #helper for checking if a collection of cards makes a flush
 def isFlush(cards):
+    if len(cards) < 5:
+        return False
+    suit = cards[0].getSuit()
+    for c in cards:
+        if c.getSuit() == suit:
+            continue
+        else:
+            return False
+    return True
+
+def isFlushDraw(cards):
+    if len(cards) != 4:
+        return False
     suit = cards[0].getSuit()
     for c in cards:
         if c.getSuit() == suit:

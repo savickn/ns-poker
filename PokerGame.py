@@ -1,7 +1,7 @@
 __author__ = 'Nick'
 
 import random
-import Card, Deck, HandPreflop, Board, Player, Account, PokerTable
+import Card, Deck, HandPreflop, Board, Player, Account, PokerTable, Pot
 from collections import deque
 import operator
 
@@ -40,7 +40,7 @@ class Poker:
 
         self.__table = PokerTable.Table(tableOptions)
 
-        self.__pot = 0
+        self.__pot = Pot.Pot()
         self.__cardsPerHand = 2 #or 4 in Omaha or 5 in Draw or 3 in Stud
 
 
@@ -76,12 +76,8 @@ class Poker:
     def getBoard(self):
         return self.__board
 
-    def addToPot(self, amount):
-        self.__pot += amount
-
     def givePotToPlayer(self, seat):
-        seat.getPlayer().addToStack(self.__pot)
-        self.__pot = 0
+        seat.getPlayer().addToStack(self.__pot.getPot())
 
     ############## Custom Getters ##############
 
@@ -161,9 +157,10 @@ class Poker:
     ############ Posting SB/BB/Ante ############
 
     def postBB(self):
-        response = self.__bb.getPlayer().removeFromStack(self.__bbStake)
+        bb = self.__bb.getPlayer()
+        response = bb.removeFromStack(self.__bbStake)
         if response['COMPLETE']:
-            self.__pot += response['AMOUNT']
+            self.__pot.addToPot(bb, response['AMOUNT'])
             self.__currentBet = self.__bbStake
         else:
             self.__bb = self.__bb.getNearestLeftSeatWithActivePlayer() #sets a new BB
@@ -171,9 +168,10 @@ class Poker:
             self.postBB() #calls postBB until the BB is posted or an Exception is thrown
 
     def postSB(self):
-        response = self.__sb.getPlayer().removeFromStack(self.__sbStake)
+        sb = self.__sb.getPlayer()
+        response = sb.removeFromStack(self.__sbStake)
         if response['COMPLETE']:
-           self.__pot += response['AMOUNT']
+            self.__pot.addToPot(sb, response['AMOUNT'])
         else:
             self.rotatePlayers()
             self.postSB() #calls postBB until the BB is posted or an Exception is thrown
@@ -182,7 +180,7 @@ class Poker:
         for player in self.__table.getActivePlayers():
             response = player.removeFromStack(self.__ante)
             if response['COMPLETE']:
-                self.__pot += response['AMOUNT']
+                self.__pot.addToPot(player, response['AMOUNT'])
 
     ######### Community Card Actions ############
 
@@ -214,11 +212,12 @@ class Poker:
     def preFlopBetting(self):
         betting = True
         startingSeat = self.__fp
-        openedPot = False
 
         while betting is True:
             player = startingSeat.getPlayer()
-            action = player.selectAction(self.getPublicState())
+            state = self.getPublicState()
+            state['playerContribution'] = self.__pot.getPlayerContribution(player)
+            action = player.selectAction(state)
             self.handle_action(player, action)
 
             startingSeat = startingSeat.getNearestLeftSeatWithActivePlayer()
@@ -253,7 +252,6 @@ class Poker:
         deck.shuffleDeck()
 
 
-        self.__pot = 0
         self.__preflop = True
         self.rotatePlayers()
 

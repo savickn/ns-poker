@@ -323,16 +323,15 @@ class HandAnalyzer:
 
     def checkForPairDraw(self):
         draws = []
-
         if len(draws) >= 1:
             for d in draws:
                 self.__bestHand.addDraw(d)
 
     def checkForStraightDraw(self):
-
+        print()
 
     def checkForFlushDraw(self):
-
+        print()
 
     #determines Draws for the current BestHand
     def calculateDraws(self):

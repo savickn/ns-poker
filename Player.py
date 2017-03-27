@@ -93,8 +93,10 @@ class Player:
 
     def populateActions(self, state):
         actions = []
-        if self.__stack - state.currentBet <= state.currentBet:
-            actions.append('CALL')
+        if state.currentBet == state.playerContribution:
+            actions.append('CHECK')
+        if state.currentBet >= state.playerContribution or :
+            actions.append('BET')
 
         #if state.openedPot is False and
         return actions
