@@ -1,7 +1,7 @@
 __author__ = 'Nick'
 
 import random
-import Card, Deck, HandPreflop, Board, Player, Account, PokerTable, Pot
+import Deck, HandPreflop, Board, Player, Account, PokerTable, Pot, ActionPostAnte, ActionPostSB, ActionPostBB
 from collections import deque
 import operator
 
@@ -18,6 +18,7 @@ tableOptions = {
     'number_of_seats': 5
 }
 
+#NOT WORKING, change .update to non-mutable version
 gameTypes = {
     '2NLHE': gameOptions,
     '5NLHE': gameOptions.update({'bb': 5, 'sb': 2}),
@@ -40,14 +41,10 @@ class Poker:
 
         self.__table = PokerTable.Table(tableOptions)
 
-        self.__pot = Pot.Pot()
-        self.__cardsPerHand = 2 #or 4 in Omaha or 5 in Draw or 3 in Stud
-
-
         self.__deck = Deck.Deck()
         self.__board = None
 
-
+        self.__cardsPerHand = 2 #or 4 in Omaha or 5 in Draw or 3 in Stud
 
         self.__currentBet = None #represents the most recently placed bet
         self.__minRaise = None #must be at least double the last biggest bet/raise (e.g. bet to $4 over $2 BB, bet to $20 if opponent bets $10 on the flop)
@@ -86,6 +83,7 @@ class Poker:
             'maxBuyIn': self.__maxBuyin,
             'minBuyIn': self.__minBuyin,
             'timer': self.__timer,
+            'pot': self.__pot.getPot(),
             'currentBet': self.__currentBet,
             'minRaise': self.__minRaise,
             'maxBet': self.__maxBet,
@@ -180,7 +178,8 @@ class Poker:
         for player in self.__table.getActivePlayers():
             response = player.removeFromStack(self.__ante)
             if response['COMPLETE']:
-                self.__pot.addToPot(player, response['AMOUNT'])
+                action = ActionPostAnte.PostAnte(player, response['AMOUNT'])
+                self.__pot.handleAction(action)
 
     ######### Community Card Actions ############
 
@@ -204,37 +203,29 @@ class Poker:
         card5 = self.__deck.getTopCard()
         self.__board.setRiver(card5)
 
-    ########## Preflop Actions #############
-
-    actions = ['POST_BB', 'POST_SB', 'POST_ANTE', 'YOUR_TURN']
+    ########## Player Actions #############
 
     #betting begins with 'self.__fp' and continues to the left
     def preFlopBetting(self):
-        betting = True
         startingSeat = self.__fp
+        self.bettingRound(startingSeat)
 
+    #betting begins with 'self.__sb' and continues to the left
+    def postFlopBetting(self):
+        startingSeat = self.__sb
+        self.bettingRound(startingSeat)
+
+    #represents a single round of betting
+    def bettingRound(self, startingSeat):
+        betting = True #can be based on the number of folds or some 'winner' field
+        startingSeat = startingSeat
         while betting is True:
             activePlayer = startingSeat.getPlayer()
             state = self.getPublicState()
             state['playerContribution'] = self.__pot.getPlayerContribution(activePlayer)
             action = activePlayer.selectAction(state)
-            self.handle_action(activePlayer, action)
+            self.__pot.handleAction(action)
             startingSeat = startingSeat.getNearestLeftSeatWithActivePlayer()
-
-    ######### Postflop Actions #############
-
-    #
-    def postFlopBetting(self):
-        print('not implemented')
-
-    def handle_action(self, player, action):
-        if action.ACTION is ('BET' or 'RAISE' or 'CALL'):
-            if player.removeFromStack(action.AMOUNT):
-                self.__pot += action.AMOUNT
-        elif action.ACTION is 'FOLD':
-            player.setStatus('Active')
-        else:
-            raise Exception('This action is not recognized.')
 
     ########## Handles each individual round #############
 
@@ -250,17 +241,18 @@ class Poker:
             if len(activePlayers) < 2:
                 self.__gameState = 'WAITING'
                 print('Waiting for Players')
-            self.startRound()
+            self.startRound(activePlayers)
+            self.rotatePlayers()
 
     #acts as a single hand
-    def startRound(self):
+    def startRound(self, players):
         board = None
         deck = Deck.Deck()
         deck.shuffleDeck()
+        self.__pot = Pot.Pot()
+        self.__pot.registerActivePlayers(players)
 
         self.__preflop = True
-        self.rotatePlayers()
-
         self.generateHands()
 
         if self.__ante > 0:
@@ -317,7 +309,7 @@ player2 = Player.Player('Matt', 200)
 player3 = Player.Player('Mike', 200)
 player4 = Player.Player('Mark', 200)
 
-game = Poker(**gameOptions)
+game = Poker(**gameTypes['2NLHE'])
 game.registerPlayer(player1)
 game.registerPlayer(player2)
 game.registerPlayer(player3)

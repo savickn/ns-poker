@@ -1,5 +1,7 @@
 __author__ = 'Nick'
 
+from random import *
+import ActionCall, ActionCheck, ActionFold, ActionRaise, ActionPostAnte, ActionPostSB, ActionPostBB
 
 states = [
     'In Hand', #used for postflop play, e.g. player can BET/CHECK
@@ -21,6 +23,7 @@ class Player:
 
     def __init__(self, account, buyin, **options):
         self.__account = account
+        self.__hash = account + ''.join(["%s" % randint(0, 9) for num in range(9)])
         self.__stack = buyin #alternatively used 'account.withdraw(buyin)'
         self.__status = 'Active' #must be in [ACTIVE, SITTING_OUT]
         self.__hand = None #can be an Omaha or Texas Holdem hand
@@ -46,6 +49,9 @@ class Player:
         return True if self.__status in ['In Hand', 'All In'] else False
 
     ############ Setters and Getters #############
+
+    def getHash(self):
+        return self.__hash
 
     def getHand(self):
         return self.__hand
@@ -92,38 +98,53 @@ class Player:
     ################# GAMES ACTIONS ##################
 
     def populateActions(self, state):
-        actions = []
-        if state.currentBet == state.playerContribution:
+        actions = ['FOLD']
+        if state['currentBet'] == state['playerContribution']:
             actions.append('CHECK')
-        if state.currentBet >= state.playerContribution:
-            actions.append('RAISE')
-        if state.currentBet > state.playerContribution:
+        if state['currentBet'] > state['playerContribution']:
             actions.append('CALL')
+        if state['currentBet'] >= state['playerContribution']:
+            actions.append('RAISE')
         return actions
 
     def selectAction(self, state):
-        actions = self.populateActions(state)
-
         #draw user input frame
         #count down clock from 30 seconds using 'state.timer'
+        print(self.toString())
 
-        action = input('Select an action:') #can be [CALL, BET, FOLD], RAISE/ALLIN are unnecessary
+        #populates list of potential Actions
+        actions = self.populateActions(state)
+        actionString = 'Select an action: '
+        for index, action in enumerate(actions):
+            actionString += '{id} - {act}, '.format(id=index, act=action)
 
-        amount = input('') #must be >2*min_raise and < self.__stack
+        #prompts user to select an Action
+        actionSelection = None
+        while True:
+            actionSelection = int(input(actionString))
+            if actionSelection in range(len(actions)):
+                break
 
-        assert amount <= self.__stack and amount >= state['minBet']
+        action = actions[actionSelection]
+        print(action)
 
-        return {'ACTION': action, 'AMOUNT': amount}
-
-
-    def _bet(self):
-        print()
-
-    def _call(self, amount):
-        print()
-
-    def _raise(self):
-        print()
+        #creates new Action object based on user input
+        amount = None
+        if action == 'FOLD':
+            action = ActionFold.Fold(self)
+        elif action == 'CHECK':
+            action = ActionCheck.Check(self)
+        elif action == 'CALL':
+            toCall = state['currentBet'] - state['playerContribution']
+            amount = toCall if self.__stack > toCall else self.__stack
+            action = ActionCall.Call(self, amount)
+        elif action == 'RAISE':
+            low = state['minRaise'] if state['minRaise'] < self.__stack else self.__stack
+            high = state['maxBet'] if state['maxBet'] else self.__stack
+            while amount not in range(low, high+1):
+                amount = input('Please a value between {low} and {high}.'.format(low=low, high=high))
+            action = ActionRaise.Raise(self, amount)
+        return action
 
 
     ############ GRAPHICS #############
@@ -142,4 +163,4 @@ class Player:
         assert self.__status in states
 
 
-player1 = Player('Nick', 200)
+#player1 = Player('Nick', 200)
