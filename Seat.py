@@ -24,9 +24,6 @@ class Seat:
                 temp = temp.getLeft()
         raise Exception('There are not enough ACTIVE players.')
 
-    def isActive(self):
-        return True if self.__player.isActive() else False
-
     #used to choose an empty Seat when adding a new Player to the Table
     def isEmpty(self):
         return True if not self.__player else False

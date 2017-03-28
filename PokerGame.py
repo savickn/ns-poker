@@ -15,7 +15,7 @@ gameOptions = {
 }
 
 tableOptions = {
-    'number_of_seats': 9
+    'number_of_seats': 5
 }
 
 gameTypes = {
@@ -214,12 +214,11 @@ class Poker:
         startingSeat = self.__fp
 
         while betting is True:
-            player = startingSeat.getPlayer()
+            activePlayer = startingSeat.getPlayer()
             state = self.getPublicState()
-            state['playerContribution'] = self.__pot.getPlayerContribution(player)
-            action = player.selectAction(state)
-            self.handle_action(player, action)
-
+            state['playerContribution'] = self.__pot.getPlayerContribution(activePlayer)
+            action = activePlayer.selectAction(state)
+            self.handle_action(activePlayer, action)
             startingSeat = startingSeat.getNearestLeftSeatWithActivePlayer()
 
     ######### Postflop Actions #############
@@ -239,18 +238,25 @@ class Poker:
 
     ########## Handles each individual round #############
 
+    #used to prepare the game prior to entering the game loop
     def initializeGame(self):
-        print()
+        self.assignPositions()
+        self.__gameState = 'RUNNING'
 
+    #acts as the game loop
+    def run(self):
+        while self.__gameState == 'RUNNING':
+            activePlayers = self.__table.getActivePlayers()
+            if len(activePlayers) < 2:
+                self.__gameState = 'WAITING'
+                print('Waiting for Players')
+            self.startRound()
+
+    #acts as a single hand
     def startRound(self):
-        activePlayers = self.__table.getActivePlayers()
-        if activePlayers < 2:
-            self.__gameState = 'Waiting'
-
         board = None
         deck = Deck.Deck()
         deck.shuffleDeck()
-
 
         self.__preflop = True
         self.rotatePlayers()
@@ -262,15 +268,20 @@ class Poker:
         self.postSB()
         self.postBB()
 
-        #action = self.__utg.selectAction(self.getPublicState())
-        #self.handle_action(self.__utg, action)
-
+        self.preFlopBetting()
         self.generateFlop()
+        self.postFlopBetting()
         self.generateTurn()
+        self.postFlopBetting()
         self.generateRiver()
+        self.postFlopBetting()
+        self.handleEndgame()
+        return
 
-
-
+    def handleEndgame(self):
+        #call determine winner to pick a winner
+        #then call givePotToWinner to award pot
+        print()
 
     ############## Game State Manager ##############
 
@@ -309,13 +320,16 @@ player4 = Player.Player('Mark', 200)
 game = Poker(**gameOptions)
 game.registerPlayer(player1)
 game.registerPlayer(player2)
-#game.registerPlayer(player3)
-#game.registerPlayer(player4)
+game.registerPlayer(player3)
+game.registerPlayer(player4)
 
-#game.toString()
-game.assignPositions()
-game.generateHands()
+game.initializeGame()
+game.run()
 
+
+#game.assignPositions()
+#game.generateHands()
+game.toString()
 
 
 

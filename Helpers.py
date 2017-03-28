@@ -63,9 +63,11 @@ def isStraight(cards):
 
 def extractPattern(cards):
     pattern = ''
-    for x+1 in range(len(cards)):
+    for x in range(len(cards)):
+        value = getConnectionFactor(cards[x+1], cards[x])
+        pattern += str(value)
 
-
+    print(pattern)
     return pattern
 
 #can pass 5-6 cards, must remove pairs beforehand
@@ -84,6 +86,7 @@ def analyzeStraightDraws(cards):
     patternLow = extractPattern(sortedLow)
 
     if pattern == '111':
+
         print()
     elif pattern == '121':
         print()
@@ -172,9 +175,6 @@ board12 = Board.Board(
     Data.four_diamonds,
     Data.five_hearts,
     Data.jack_spades)
-
-
-
 
 
 
@@ -286,3 +286,15 @@ board12 = Board.Board(
 #         return True
 #     else:
 #         return False
+
+#returns true if two cards are within 1 value of each other
+def isConnected(card1, card2):
+    highDiff = abs(card1.getHighValue() - card2.getHighValue())
+    lowDiff = abs(card1.getLowValue() - card2.getLowValue())
+    return True if (highDiff == 1) or (lowDiff == 1) else False
+
+def getConnectionFactor(card1, card2):
+    highDiff = abs(card1.getHighValue() - card2.getHighValue())
+    lowDiff = abs(card1.getLowValue() - card2.getLowValue())
+    return highDiff if highDiff < lowDiff else lowDiff
+

@@ -5,6 +5,7 @@ class Pot:
     def __init__(self):
         self.__pot = 0
         self.__contributions = {} #e.g. Player1: 15
+        self.__actions = [] #ordered list of Action objects
 
     def getPot(self):
         return self.__pot

@@ -3,7 +3,7 @@ __author__ = 'Nick'
 import Seat
 
 default = {
-    'number_of_seats': 9
+    'number_of_seats': 4
 }
 
 class Table:
@@ -17,36 +17,32 @@ class Table:
 
     ############### HANDLING SEATS #################
 
-    #for registering players
+    #for registering players, WORKING
     def getEmptySeat(self):
         for seat in self.__seats:
             if seat.isEmpty():
                 return seat
         raise Exception('There are no empty seats.')
 
-    #for initializing and changing the table's Seats
+    #for initializing and changing the table's Seats, returns a Tuple, WORKING
     def initializeSeats(self, number_of_seats):
         seats = []
-        iterator = 1
-        right_seat = None
-        while iterator <= number_of_seats:
-            if right_seat is not None:
-                seat = Seat.Seat(iterator, right_seat)
+        rightSeat = None
+        for it in range(number_of_seats):
+            if rightSeat is not None:
+                seat = Seat.Seat(it+1, rightSeat)
                 seats.append(seat)
-                right_seat.setLeft(seat) #working
-                right_seat = seat
-                iterator += 1
+                rightSeat.setLeft(seat) #working
+                rightSeat = seat
             else:
-                seat = Seat.Seat(iterator)
+                seat = Seat.Seat(it+1)
                 seats.append(seat)
-                right_seat = seat
-                iterator += 1
+                rightSeat = seat
 
-        first_seat = seats[0]
-        last_seat = seats[len(seats)-1]
-
-        first_seat.setRight(last_seat)
-        last_seat.setLeft(first_seat)
+        firstSeat = seats[0]
+        lastSeat = seats[len(seats)-1]
+        firstSeat.setRight(lastSeat)
+        lastSeat.setLeft(firstSeat)
 
         return tuple(seats)
 
@@ -83,9 +79,6 @@ class Table:
             if player is not None:
                 players.append(player)
         return players
-
-
-
 
     def getActiveSeats(self):
         seats = []

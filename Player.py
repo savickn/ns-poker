@@ -95,29 +95,23 @@ class Player:
         actions = []
         if state.currentBet == state.playerContribution:
             actions.append('CHECK')
-        if state.currentBet >= state.playerContribution or :
-            actions.append('BET')
-
-        #if state.openedPot is False and
+        if state.currentBet >= state.playerContribution:
+            actions.append('RAISE')
+        if state.currentBet > state.playerContribution:
+            actions.append('CALL')
         return actions
 
-
     def selectAction(self, state):
-        self.populateActions(state)
-
+        actions = self.populateActions(state)
 
         #draw user input frame
-        #count down clock from 30 seconds
-
-        timer = state.timer
-        min_raise = state.min_raise
-        min_bet = state.min_bet
-
+        #count down clock from 30 seconds using 'state.timer'
 
         action = input('Select an action:') #can be [CALL, BET, FOLD], RAISE/ALLIN are unnecessary
+
         amount = input('') #must be >2*min_raise and < self.__stack
 
-        assert amount <= self.__stack and amount >= min_bet
+        assert amount <= self.__stack and amount >= state['minBet']
 
         return {'ACTION': action, 'AMOUNT': amount}
 
