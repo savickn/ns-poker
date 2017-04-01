@@ -5,6 +5,7 @@ import ActionCall, ActionCheck, ActionFold, ActionRaise, ActionPostAnte, ActionP
 
 states = [
     'In Hand', #used for postflop play, e.g. player can BET/CHECK
+    'Folded', # used for postflop play, e.g. player can no longer BET/CHECK
     'All In', #will be analyzed after RIVER but will not be given a chance to BET/CHECK
     'Active', #used for preflop play, will be dealt and hand and given a chance to CALL/RAISE the BB
     'Sitting Out' #used for preflop play, will not be dealt a hand
@@ -17,7 +18,6 @@ defaultOptions = {
     'SB': [],
     'BB': []
 }
-
 
 class Player:
 
@@ -39,9 +39,11 @@ class Player:
 
     ############ Helper Methods ##############
 
+    #for preflop play
     def isActive(self):
         return True if self.__status == 'Active' else False
 
+    #for postflop play
     def isInHand(self):
         return True if self.__status == 'In Hand' else False
 
@@ -132,20 +134,31 @@ class Player:
         amount = None
         if action == 'FOLD':
             action = ActionFold.Fold(self)
+            self.__status = 'Folded'
         elif action == 'CHECK':
             action = ActionCheck.Check(self)
         elif action == 'CALL':
             toCall = state['currentBet'] - state['playerContribution']
-            amount = toCall if self.__stack > toCall else self.__stack
-            action = ActionCall.Call(self, amount)
+            response = self.removeFromStack(toCall)
+            #amount = toCall if self.__stack > toCall else self.__stack
+            action = ActionCall.Call(self, response['AMOUNT'])
         elif action == 'RAISE':
+            #low = None
+            #if state['minRaise'] == 0:
+            #    low = state['bbStake']
+            #elif state['minRaise'] > 0 and state['minRaise'] < self.__stack:
+            #    low = state['minRaise']
+            #elif state['minRaise'] >= self.__stack:
+            #    low = self.__stack
+
             low = state['minRaise'] if state['minRaise'] < self.__stack else self.__stack
             high = state['maxBet'] if state['maxBet'] else self.__stack
-            while amount not in range(low, high+1):
-                amount = input('Please a value between {low} and {high}.'.format(low=low, high=high))
-            action = ActionRaise.Raise(self, amount)
-        return action
 
+            while amount not in range(low, high+1):
+                amount = int(input('Please a value between {low} and {high}.'.format(low=low, high=high)))
+            response = self.removeFromStack(amount)
+            action = ActionRaise.Raise(self, response['AMOUNT'])
+        return action
 
     ############ GRAPHICS #############
 
