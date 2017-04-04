@@ -4,5 +4,5 @@ import Action
 
 class Raise(Action.Action):
 
-    def __init__(self, actor, amount):
-        super().__init__(actor, amount)
+    def __init__(self, actor, amount, street):
+        super().__init__(actor, amount, street)

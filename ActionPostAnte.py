@@ -5,4 +5,4 @@ import Action
 class PostAnte(Action.Action):
 
     def __init__(self, actor, amount):
-        super().__init__(actor, amount)
+        super().__init__(actor, amount, 'PREFLOP')

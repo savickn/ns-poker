@@ -37,7 +37,7 @@ class Poker:
     __action_player = None #the player whose turn it is to act
 
     def __init__(self, **options):
-
+        self.__street = None
 
         self.__table = PokerTable.Table(tableOptions)
 
@@ -85,7 +85,8 @@ class Poker:
             'timer': self.__timer,
             'maxBet': self.__maxBet,
             #'minBet'1
-            'bbStake': self.__bbStake
+            'bbStake': self.__bbStake,
+            'street': self.__street
         }
 
     ############## Dealing Player Hands
@@ -193,39 +194,45 @@ class Poker:
         card2 = self.__deck.getTopCard()
         card3 = self.__deck.getTopCard()
         self.__board = Board.Board(card1, card2, card3)
+        self.__street = 'FLOP'
 
     def generateTurn(self):
         self.burnCard()
         card4 = self.__deck.getTopCard()
         self.__board.setTurn(card4)
+        self.__street = 'TURN'
 
     def generateRiver(self):
         self.burnCard()
         card5 = self.__deck.getTopCard()
         self.__board.setRiver(card5)
+        self.__street = 'RIVER'
 
     ########## Player Actions #############
 
     #betting begins with 'self.__fp' and continues to the left
     def preFlopBetting(self):
+        self.__street = 'PREFLOP'
         startingSeat = self.__fp
         self.bettingRound(startingSeat)
 
     #betting begins with 'self.__sb' and continues to the left
     def postFlopBetting(self):
-        startingSeat = self.__sb
+        startingSeat = self.__sb if self.__sb.getPlayer().isActive() else self.__sb.getNearestLeftSeatWithActivePlayer()
         self.bettingRound(startingSeat)
 
-    #represents a single round of betting
+    #represents a single round of betting, NOT WORKING, NEED TO DISTINGUISH BETWEEN BETTING ROUNDS
     def bettingRound(self, startingSeat):
         startingSeat = startingSeat
         while True:
             activePlayer = startingSeat.getPlayer()
+
+            #for consolidating state
             gameState = self.getPublicState()
             potState = self.__pot.getPublicState(activePlayer)
             gameState.update(potState)
 
-            if self.__pot.hasActed(activePlayer) and gameState['playerContribution'] == gameState['currentBet']:
+            if self.__pot.hasActed(activePlayer, self.__street) and gameState['playerContribution'] == gameState['currentBet']:
                 break #can be based on the number of folds or some 'winner' field
 
             action = activePlayer.selectAction(gameState)
@@ -257,7 +264,6 @@ class Poker:
         self.__pot = Pot.Pot(self.__bbStake)
         self.__pot.registerActivePlayers(activePlayers)
 
-        #self.__preflop = True
         self.generateHands(activePlayers)
 
         if self.__ante > 0:
@@ -268,21 +274,26 @@ class Poker:
 
         print('#### PREFLOP BETTING ####')
         self.preFlopBetting()
+
         print('####### FLOP ########')
         self.generateFlop()
         self.__board.printAsString()
         print('#### FLOP BETTING ####')
         self.postFlopBetting()
+
         print('####### TURN ########')
         self.generateTurn()
         self.__board.printAsString()
         print('#### FLOP BETTING ####')
         self.postFlopBetting()
+
         print('####### RIVER ########')
         self.generateRiver()
         self.__board.printAsString()
         print('#### RIVER BETTING ####')
         self.postFlopBetting()
+
+        print('####### POST-ROUND ANALYSIS #######')
         self.handleEndgame()
         return
 

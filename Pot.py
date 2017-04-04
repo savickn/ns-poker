@@ -8,7 +8,12 @@ class Pot:
         self.__pot = 0
         self.__bbStake = bb
         self.__contributions = {} #e.g. Player1: 15
-        self.__actions = [] #ordered list of Action objects
+        self.__actions = {
+            'PREFLOP': [],
+            'FLOP': [],
+            'TURN': [],
+            'RIVER': []
+        } #ordered list of Action objects
 
     ############ GETTERS AND SETTERS ############
 
@@ -51,7 +56,7 @@ class Pot:
     def handleAction(self, action):
         amount = action.getAmount()
         self.__contributions[action.getActor().getHash()] += amount
-        self.__actions.append(action)
+        self.__actions[action.getStreet()].append(action)
         self.__pot += amount
         #if amount > self.__lastBet:
         #    self.__lastBet = amount

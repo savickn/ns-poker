@@ -133,15 +133,15 @@ class Player:
         #creates new Action object based on user input
         amount = None
         if action == 'FOLD':
-            action = ActionFold.Fold(self)
+            action = ActionFold.Fold(self, state['street'])
             self.__status = 'Folded'
         elif action == 'CHECK':
-            action = ActionCheck.Check(self)
+            action = ActionCheck.Check(self, state['street'])
         elif action == 'CALL':
             toCall = state['currentBet'] - state['playerContribution']
             response = self.removeFromStack(toCall)
             #amount = toCall if self.__stack > toCall else self.__stack
-            action = ActionCall.Call(self, response['AMOUNT'])
+            action = ActionCall.Call(self, response['AMOUNT'], state['street'])
         elif action == 'RAISE':
             #low = None
             #if state['minRaise'] == 0:
@@ -157,7 +157,7 @@ class Player:
             while amount not in range(low, high+1):
                 amount = int(input('Please a value between {low} and {high}.'.format(low=low, high=high)))
             response = self.removeFromStack(amount)
-            action = ActionRaise.Raise(self, response['AMOUNT'])
+            action = ActionRaise.Raise(self, response['AMOUNT'], state['street'])
         return action
 
     ############ GRAPHICS #############
