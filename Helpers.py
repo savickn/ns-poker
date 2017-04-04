@@ -1,5 +1,6 @@
 __author__ = 'Nick'
 
+import HandAnalyzer, HandBest
 
 #returns the most common suit in a collection of cards (relies on the fact that only only flush can be made at a time)
 #can be used to remove irrelevant pair cards when checking for straights and straight flushes
@@ -148,6 +149,42 @@ def printCards(cards):
 def sortBestHands(hands):
     sortedHands = sorted(hands, key=lambda hand: hand.getPrimary(), reverse=True)
     return sortedHands
+
+#helper method for determining the equity distribution in split pots
+def calculateEquitySplit(winnerCount):
+    equity = 100 / winnerCount
+    return equity
+
+#returns the winning BestHand object, takes a array of 5 Cards (board) and an array of objs of type PreflopHand (hands)
+def determineWinner(board, hands):
+    analyzers = {}
+    it = 1
+    for hand in hands:
+        analyzers['hand' + str(it)] = HandAnalyzer.HandAnalyzer(hand, board, False)
+        it += 1
+
+    winner = None
+    winnerCount = 0
+    for key, value in analyzers.items():
+        #value.getBestHand().printAsString()
+        if not winner:
+            winner = value.getBestHand()
+            winnerCount = 1
+        else:
+            v = value.getBestHand()
+            w = HandBest.HandBest.compare(v, winner)
+            #w = v.compare(winner)
+            if w == 0:
+                winnerCount += 1
+            elif w == 1:
+                winner = v
+                winnerCount = 1
+
+    equitySplit = calculateEquitySplit(winnerCount)
+    return {
+        'WINNER': winner, #should be of type BestHand
+        'EQUITY': equitySplit
+    }
 
 
 import Board, Data

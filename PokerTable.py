@@ -97,6 +97,16 @@ class Table:
                 players.append(player)
         return players
 
+    def getPlayersToAnalyze(self):
+        players = []
+        for seat in self.__seats:
+            player = seat.getPlayer()
+            if player is not None and player.shouldAnalyze():
+                players.append(player)
+        return players
+
+
+
     #used to determine which players are involved in the hand post-flop
     def getInHandPlayers(self):
         players = []

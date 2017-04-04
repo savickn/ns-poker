@@ -2,6 +2,7 @@ __author__ = 'Nick'
 
 import random
 import Deck, HandPreflop, Board, Player, Account, PokerTable, Pot, ActionPostAnte, ActionPostSB, ActionPostBB
+import Helpers
 from collections import deque
 import operator
 
@@ -159,7 +160,7 @@ class Poker:
         bb = self.__bb.getPlayer()
         response = bb.removeFromStack(self.__bbStake)
         if response['COMPLETE']:
-            action = ActionPostSB.PostSB(bb, response['AMOUNT'])
+            action = ActionPostBB.PostBB(bb, response['AMOUNT'])
             self.__pot.handleAction(action)
         else:
             self.__bb = self.__bb.getNearestLeftSeatWithActivePlayer() #sets a new BB
@@ -298,10 +299,20 @@ class Poker:
         return
 
     def handleEndgame(self):
-        #call determine winner to pick a winner
-        #then call givePotToWinner to award pot
-        print()
+        #activePlayers = self.__table.getPlayersToAnalyze()
+        activePlayers = self.__table.getActivePlayers()
+        activeHands = []
 
+        for player in activePlayers:
+            activeHands.append(player.getHand())
+
+        winState = Helpers.determineWinner(self.__board, activeHands)
+        potShare = self.__pot.getPot() * winState['EQUITY']
+
+        for player in activePlayers:
+            if player.getHand().getCards() in winState['WINNER']:
+                player.addToStack(potShare)
+                
     ############## Game State Manager ##############
 
     def areReady(self):
