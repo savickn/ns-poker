@@ -48,7 +48,7 @@ class Card:
     __sprite = None
 
     def __init__(self, type, suit, value, options=defaultOptions):
-        #self.__id = '{value}-{suit}'.format(value=value, suit=suit)
+        self.__identifier = '{value}-{suit}'.format(value=value, suit=suit)
         self.__type = type
         self.__suit = suit
         self.__high_value = value
@@ -61,6 +61,9 @@ class Card:
     #used to check if two Cards are identical (e.g. Js == Js but Jh != Js), not working
     #def __eq__(self, other):
     #    return self.getId() == other.getId()
+
+    def isEqual(self, other):
+        return True if self.__identifier == other.getIdentifier() else False
 
     def __lt__(self, other):
         return self.getHighValue() < other.getHighValue()
@@ -77,8 +80,8 @@ class Card:
 
     ########## SETTERS & GETTERS ############
 
-    #def getId(self):
-    #    return self.__id
+    def getIdentifier(self):
+        return self.__identifier
 
     def getInitial(self):
         return initials[self.__type]

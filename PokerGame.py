@@ -112,8 +112,6 @@ class Poker:
     #creates player hand, maybe make it so that the hand type (e.g. Holdem vs. Omaha) depends on how many cards are passed in
     def dealHand(self, player, cards):
         hand = HandPreflop.HoldemHand(cards)
-        print(player.toString())
-        print(hand.toString())
         player.setHand(hand)
 
     ########## Positioning Players #############
@@ -183,6 +181,9 @@ class Poker:
             if response['COMPLETE']:
                 action = ActionPostAnte.PostAnte(player, response['AMOUNT'])
                 self.__pot.handleAction(action)
+            else:
+                activePlayers.remove(player)
+        return activePlayers
 
     ######### Community Card Actions ############
 
@@ -268,7 +269,7 @@ class Poker:
         self.generateHands(activePlayers)
 
         if self.__ante > 0:
-            self.postAnte(activePlayers)
+            activePlayers = self.postAnte(activePlayers)
         self.postSB()
         self.postBB()
 
@@ -309,10 +310,14 @@ class Poker:
         winState = Helpers.determineWinner(self.__board, activeHands)
         potShare = self.__pot.getPot() * winState['EQUITY']
 
+        #can add function to remove Rake if pot > x if necessary
+
         for player in activePlayers:
             if player.getHand().getCards() in winState['WINNER']:
+                print(player.toString())
+                print(potShare)
                 player.addToStack(potShare)
-                
+
     ############## Game State Manager ##############
 
     def areReady(self):

@@ -1,6 +1,8 @@
 __author__ = 'Nick'
 
 import Seat
+from tkinter import *
+from tkinter.ttk import *
 
 default = {
     'number_of_seats': 4
@@ -14,6 +16,9 @@ class Table:
         self.__observers = [] #Players that are observing the table
         self.__waitlist = [] #Players that are waiting to join the table
         self.checkRep()
+
+        self.draw()
+
 
     ############### HANDLING SEATS #################
 
@@ -105,8 +110,6 @@ class Table:
                 players.append(player)
         return players
 
-
-
     #used to determine which players are involved in the hand post-flop
     def getInHandPlayers(self):
         players = []
@@ -133,6 +136,23 @@ class Table:
         for seat in self.__seats:
             print(seat)
 
+    ############### GRAPHICS ##############
+
+    def draw(self):
+        #draw table
+        self.drawTable()
+
+
+        #draw seats
+        for s in self.__seats:
+            self.drawSeat(s)
+
+    def drawTable(self):
+
+        print()
+
+    def drawSeat(self, seat):
+        seat.draw()
 
 #table = Table(default)
 #table.toString()

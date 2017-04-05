@@ -143,14 +143,6 @@ class Player:
             #amount = toCall if self.__stack > toCall else self.__stack
             action = ActionCall.Call(self, response['AMOUNT'], state['street'])
         elif action == 'RAISE':
-            #low = None
-            #if state['minRaise'] == 0:
-            #    low = state['bbStake']
-            #elif state['minRaise'] > 0 and state['minRaise'] < self.__stack:
-            #    low = state['minRaise']
-            #elif state['minRaise'] >= self.__stack:
-            #    low = self.__stack
-
             low = state['minRaise'] if state['minRaise'] < self.__stack else self.__stack
             high = state['maxBet'] if state['maxBet'] else self.__stack
 
@@ -163,7 +155,7 @@ class Player:
     ############ GRAPHICS #############
 
     def toString(self):
-        return '{name}'.format(name=self.__account)
+        return '{name} - {stack}'.format(name=self.__account, stack=self.__stack)
 
     def drawHand(self):
         self.__hand.draw()
@@ -177,3 +169,14 @@ class Player:
 
 
 #player1 = Player('Nick', 200)
+
+
+
+
+            #low = None
+            #if state['minRaise'] == 0:
+            #    low = state['bbStake']
+            #elif state['minRaise'] > 0 and state['minRaise'] < self.__stack:
+            #    low = state['minRaise']
+            #elif state['minRaise'] >= self.__stack:
+            #    low = self.__stack

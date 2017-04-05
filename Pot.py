@@ -61,6 +61,8 @@ class Pot:
         #if amount > self.__lastBet:
         #    self.__lastBet = amount
         self.printAsString()
+        print(action.getActor().toString())
+        print(action.getActor().getHand().toString())
 
     ################ UTILITY METHODS ##################
 

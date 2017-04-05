@@ -15,3 +15,4 @@ class OpenEndedDraw(Draw.Draw):
 
     def checkRep(self):
         assert len(self.getCards()) == 4
+

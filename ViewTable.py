@@ -9,7 +9,7 @@ class ViewTable:
     __betView = None
 
     def __init__(self, master):
-        frame = Frame(master, anchor=SE) #set height and width of Frame relative to MasterFrame
+        frame = Frame(master) #set height and width of Frame relative to MasterFrame
         frame.pack()
         self.button = Button(frame,
                              text="QUIT", fg="red",

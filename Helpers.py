@@ -55,49 +55,6 @@ def isStraight(cards):
     assert len(cards) == 5
     return True if(cards[4].getHighValue() - cards[0].getHighValue() == 4) or (cards[4].getLowValue() - cards[0].getLowValue() == 4) else False
 
-#def getStraightOuts(cards):
-
-#def isGutShotDraw():
-
-#def isOpenEndedDraw():
-
-
-def extractPattern(cards):
-    pattern = ''
-    for x in range(len(cards)):
-        value = getConnectionFactor(cards[x+1], cards[x])
-        pattern += str(value)
-
-    print(pattern)
-    return pattern
-
-#can pass 5-6 cards, must remove pairs beforehand
-def analyzeStraightDraws(cards):
-    assert len(cards) in [5, 6]
-
-    straights = []
-    gutters = []
-    doubleGutters = []
-    openEnders = []
-
-    sortedHigh = highSort(cards, False)
-    sortedLow = lowSort(cards, False)
-
-    patternHigh = extractPattern(sortedHigh)
-    patternLow = extractPattern(sortedLow)
-
-    if pattern == '111':
-
-        print()
-    elif pattern == '121':
-        print()
-    elif pattern == '2112':
-        print()
-    elif pattern == '1111':
-        print()
-
-
-
 
 
 
@@ -152,7 +109,7 @@ def sortBestHands(hands):
 
 #helper method for determining the equity distribution in split pots
 def calculateEquitySplit(winnerCount):
-    equity = 100 / winnerCount
+    equity = 1 / winnerCount
     return equity
 
 #returns the winning BestHand object, takes a array of 5 Cards (board) and an array of objs of type PreflopHand (hands)
@@ -187,6 +144,95 @@ def determineWinner(board, hands):
     }
 
 
+
+#def getStraightOuts(cards):
+
+#def isGutShotDraw():
+
+#def isOpenEndedDraw():
+
+
+def getConnectionFactor(card1, card2):
+    high = abs(card1.getHighValue() - card2.getHighValue())
+    low = abs(card1.getLowValue() - card2.getLowValue())
+    return high if high < low else low
+
+def extractPattern(cards):
+    pattern = ''
+    for x in range(len(cards)):
+        try:
+            value = getConnectionFactor(cards[x+1], cards[x])
+            pattern += str(value)
+        except IndexError:
+            break
+
+    print(pattern)
+    return pattern
+
+
+
+
+
+#should be passed a List of 5-card slices, pattern-based approach
+def analyzeStraightDraws(cards):
+    straights = []
+    gutters = []
+    doubleGutters = []
+    openEnders = []
+
+    suit = getRelevantSuit(cards)
+    cards = removePairs(cards, suit) #used to remove Pairs which interfere in Straight calculations
+
+    if len(cards) < 5:
+        return
+
+    low = lowSort(cards, False)
+    high = highSort(cards, False)
+
+    highPattern = extractPattern(high)
+    lowPattern = extractPattern(low)
+
+    if '111' in highPattern:
+        print('open ender')
+    elif pattern == '121':
+        print('gutter')
+    elif pattern == '2112':
+        print('double gutter')
+    elif pattern == '1111':
+        print('straight')
+
+import HandStraight
+
+#can be passed any number of cards, set-based approach
+def analyzeStraights(availableCards):
+    straights = []
+    oneOuters = []
+    twoOuters = []
+    backdoorOneOuters = []
+    backdoorTwoOuters = []
+
+    suit = getRelevantSuit(availableCards)
+    cards = removePairs(availableCards, suit) #used to remove Pairs which interfere in Straight calculations
+    cardTypes = {c.getType() for c in cards}
+
+    for key, value in Data.straights.items():
+        if len(value & cardTypes) == 5:
+            value = int(key[0])
+            straightCards = []
+            for c in cards:
+                if c.getType() in cardTypes:
+                    straightCards.append(c)
+            straight = HandStraight.Straight(straightCards, value)
+
+            #ensures no duplicate straights are added
+            if not inCollection(straight, straights):
+                straights.append(straight)
+
+        elif len(value & cardTypes) == 4:
+            value = int(key[0])
+
+
+
 import Board, Data
 
 #Ace-high straight
@@ -213,7 +259,16 @@ board12 = Board.Board(
     Data.five_hearts,
     Data.jack_spades)
 
+cards13 = [
+    Data.six_spades,
+    Data.seven_spades,
+    Data.three_clubs,
+    Data.four_diamonds,
+    Data.five_hearts,
+    Data.jack_spades]
 
+
+analyzeStraights(cards13)
 
 
 #printCards(highSort(board10.getCards(), True))

@@ -17,6 +17,18 @@ handRankings = {
     'C': 1
 }
 
+drawRankings = {
+    'SetFH': 9,
+    'TPFH': 8,
+    'Flush': 7,
+    'OpenEnder': 6,
+    'Gutshot': 5,
+    'BackdoorFD': 4,
+    'BackdoorOE': 3,
+    'Overcard': 2,
+    'BackdoorGutshot': 1
+}
+
 options = {
     'toPrint': False,
     'checkDraws': False
@@ -323,12 +335,38 @@ class HandAnalyzer:
 
     def checkForPairDraw(self):
         draws = []
+
+
+
         if len(draws) >= 1:
             for d in draws:
                 self.__bestHand.addDraw(d)
 
     def checkForStraightDraw(self):
-        print()
+        suit = Helpers.getRelevantSuit(self.__availableCards)
+        cards = Helpers.removePairs(self.__availableCards, suit) #used to remove Pairs which interfere in Straight calculations
+
+        straights = []
+        gutters = []
+        doubleGutters = []
+        openEnders = []
+
+        lowSort = Helpers.lowSort(cards, False)
+        highSort = Helpers.highSort(cards, False)
+
+
+
+
+
+        #if pattern == '111':
+        #    print()
+        #elif pattern == '121':
+        #    print()
+        #elif pattern == '2112':
+        #    print()
+        #elif pattern == '1111':
+        #    print()
+
 
     def checkForFlushDraw(self):
         print()
@@ -347,6 +385,9 @@ class HandAnalyzer:
             self.checkForFlushDraw()
         if currentValue <= 5: #flush
             print()
+
+
+
 
 
     ################ CALCULATING OUTS TO IMPROVE #####################

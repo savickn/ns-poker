@@ -11,6 +11,8 @@ class Seat:
         self.__right = right
         self.__left = left
 
+
+
     ################ HELPER METHODS #################
 
     #maybe change to getActiveLeft where it finds the nearest person that is Active
@@ -61,4 +63,9 @@ class Seat:
         return '{player} sitting in Seat-{id}... Left = Seat-{lid}, Right = Seat-{rid}'.format(player=player, id=self.__id, lid=self.__left.getId(), rid=self.__right.getId())
 
     def checkRep(self):
+        print()
+
+    ################# GRAPHICS ##############
+
+    def draw(self):
         print()

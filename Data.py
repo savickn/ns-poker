@@ -267,4 +267,37 @@ cards['Two'] = [
     two_hearts
 ]
 
+s = {}
+
+s['1-5'] = {1, 2, 3, 4, 5}
+s['2-6'] = {2, 3, 4, 5, 6}
+s['3-7'] = {3, 4, 5, 6, 7}
+s['4-8'] = {4, 5, 6, 7, 8}
+s['5-9'] = {5, 6, 7, 8, 9}
+s['6-T'] = {6, 7, 8, 9, 10}
+s['7-J'] = {7, 8, 9, 10, 11}
+s['8-Q'] = {8, 9, 10, 11, 12}
+s['9-K'] = {9, 10, 11, 12, 13}
+s['T-A'] = {10, 11, 12, 13, 14}
+
+
+straights = {}
+
+
+straights['5-High'] = {'Ace', 'Two', 'Three', 'Four', 'Five'}
+straights['6-High'] = {'Two', 'Three', 'Four', 'Five', 'Six'}
+straights['7-High'] = {'Three', 'Four', 'Five', 'Six', 'Seven'}
+straights['8-High'] = {'Four', 'Five', 'Six', 'Seven', 'Eight'}
+straights['9-High'] = {'Five', 'Six', 'Seven', 'Eight', 'Nine'}
+straights['T-High'] = {'Six', 'Seven', 'Eight', 'Nine', 'Ten'}
+straights['J-High'] = {'Seven', 'Eight', 'Nine', 'Ten', 'Jack'}
+straights['Q-High'] = {'Eight', 'Nine', 'Ten', 'Jack', 'Queen'}
+straights['K-High'] = {'Nine', 'Ten', 'Jack', 'Queen', 'King'}
+straights['A-High'] = {'Ten', 'Jack', 'Queen', 'King', 'Ace'}
+
+
+
+
+
+
 
