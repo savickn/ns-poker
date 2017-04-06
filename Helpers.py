@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-import HandAnalyzer, HandBest
+import HandAnalyzer, HandBest, Data
 
 #returns the most common suit in a collection of cards (relies on the fact that only only flush can be made at a time)
 #can be used to remove irrelevant pair cards when checking for straights and straight flushes
@@ -50,36 +50,26 @@ def removePairs(cards, suit):
             filtered.append(c)
     return filtered
 
-#must be passed 5 sorted cards, WORKING
-def isStraight(cards):
-    assert len(cards) == 5
-    return True if(cards[4].getHighValue() - cards[0].getHighValue() == 4) or (cards[4].getLowValue() - cards[0].getLowValue() == 4) else False
+#helper for checking if all elements in a collection have the same suit
+def isSameSuit(cards):
+    suit = cards[0].getSuit()
+    for c in cards:
+        if c.getSuit() != suit:
+            return False
+    return True
 
-
-
-
-#helper for checking if a collection of cards makes a flush
+#checks for Flush
 def isFlush(cards):
-    if len(cards) < 5:
-        return False
-    suit = cards[0].getSuit()
-    for c in cards:
-        if c.getSuit() == suit:
-            continue
-        else:
-            return False
-    return True
+    return True if len(cards) >= 5 and isSameSuit(cards) else False
 
+#checks for Flush Draw
 def isFlushDraw(cards):
-    if len(cards) != 4:
-        return False
-    suit = cards[0].getSuit()
-    for c in cards:
-        if c.getSuit() == suit:
-            continue
-        else:
-            return False
-    return True
+    return True if len(cards) == 4 and isSameSuit(cards) else False
+
+#checks for Backdoor Flush Draw
+def isBackdoorFlushDraw(cards):
+    return True if len(cards) == 3 and isSameSuit(cards) else False
+
 
 #sorts based on a card's highValue field (highest value to lowest if reverse=True and vice versa), WORKING
 def highSort(cards, reverse):
@@ -91,21 +81,17 @@ def lowSort(cards, reverse):
     sorted_cards = sorted(cards, key=lambda card: card.getLowValue(), reverse=reverse)
     return sorted_cards
 
+#used to sort BestHand objects, not working
+def sortBestHands(hands):
+    sortedHands = sorted(hands, key=lambda hand: hand.getPrimary(), reverse=True)
+    return sortedHands
+
 #checks if a Hand (e.g. HandQuads or HandFlush) is in a collection (based on Hand.__id), WORKING
 def inCollection(hand, collection):
     for h in collection:
         if h == hand:
             return True
     return False
-
-def printCards(cards):
-    for card in cards:
-        print(card.toString())
-
-#used to sort BestHand objects, not working
-def sortBestHands(hands):
-    sortedHands = sorted(hands, key=lambda hand: hand.getPrimary(), reverse=True)
-    return sortedHands
 
 #helper method for determining the equity distribution in split pots
 def calculateEquitySplit(winnerCount):
@@ -145,11 +131,11 @@ def determineWinner(board, hands):
 
 
 
-#def getStraightOuts(cards):
 
-#def isGutShotDraw():
-
-#def isOpenEndedDraw():
+#must be passed 5 sorted cards, WORKING
+def isStraight(cards):
+    assert len(cards) == 5
+    return True if(cards[4].getHighValue() - cards[0].getHighValue() == 4) or (cards[4].getLowValue() - cards[0].getLowValue() == 4) else False
 
 
 def getConnectionFactor(card1, card2):
@@ -165,13 +151,8 @@ def extractPattern(cards):
             pattern += str(value)
         except IndexError:
             break
-
     print(pattern)
     return pattern
-
-
-
-
 
 #should be passed a List of 5-card slices, pattern-based approach
 def analyzeStraightDraws(cards):
@@ -192,6 +173,8 @@ def analyzeStraightDraws(cards):
     highPattern = extractPattern(high)
     lowPattern = extractPattern(low)
 
+    pattern = None
+
     if '111' in highPattern:
         print('open ender')
     elif pattern == '121':
@@ -206,6 +189,9 @@ import HandStraight
 #can be passed any number of cards, set-based approach
 def analyzeStraights(availableCards):
     straights = []
+    straightOuts = []
+    backdoorOuts = []
+
     oneOuters = []
     twoOuters = []
     backdoorOneOuters = []
@@ -214,50 +200,32 @@ def analyzeStraights(availableCards):
     suit = getRelevantSuit(availableCards)
     cards = removePairs(availableCards, suit) #used to remove Pairs which interfere in Straight calculations
     cardTypes = {c.getType() for c in cards}
+    print(cardTypes)
 
-    for key, value in Data.straights.items():
-        if len(value & cardTypes) == 5:
+    for key, values in Data.straights.items():
+        if len(values & cardTypes) == 5:
             value = int(key[0])
-            straightCards = []
-            for c in cards:
-                if c.getType() in cardTypes:
-                    straightCards.append(c)
+            straightCards = [c for c in cards if c.getType() in values]
             straight = HandStraight.Straight(straightCards, value)
 
             #ensures no duplicate straights are added
             if not inCollection(straight, straights):
                 straights.append(straight)
 
-        elif len(value & cardTypes) == 4:
-            value = int(key[0])
+        elif len(values & cardTypes) == 4:
+            out = values - cardTypes
+            if out not in straightOuts:
+                straightOuts.append(out)
 
+        elif len(values & cardTypes) == 3:
+            drawOuts = values - cardTypes
+            for o in drawOuts:
+                if o not in backdoorOuts:
+                    backdoorOuts.append(o)
 
+    print(straightOuts)
+    print(backdoorOuts)
 
-import Board, Data
-
-#Ace-high straight
-board10 = Board.Board(
-    Data.king_spades,
-    Data.ace_clubs,
-    Data.queen_diamonds,
-    Data.ten_hearts,
-    Data.jack_spades)
-
-#Ace-low straight
-board11 = Board.Board(
-    Data.two_spades,
-    Data.three_clubs,
-    Data.four_diamonds,
-    Data.five_hearts,
-    Data.jack_spades)
-
-#straight with A-high
-board12 = Board.Board(
-    Data.six_spades,
-    Data.three_clubs,
-    Data.four_diamonds,
-    Data.five_hearts,
-    Data.jack_spades)
 
 cards13 = [
     Data.six_spades,
@@ -380,13 +348,13 @@ analyzeStraights(cards13)
 #         return False
 
 #returns true if two cards are within 1 value of each other
-def isConnected(card1, card2):
-    highDiff = abs(card1.getHighValue() - card2.getHighValue())
-    lowDiff = abs(card1.getLowValue() - card2.getLowValue())
-    return True if (highDiff == 1) or (lowDiff == 1) else False
+#def isConnected(card1, card2):
+#    highDiff = abs(card1.getHighValue() - card2.getHighValue())
+#    lowDiff = abs(card1.getLowValue() - card2.getLowValue())
+#    return True if (highDiff == 1) or (lowDiff == 1) else False
 
-def getConnectionFactor(card1, card2):
-    highDiff = abs(card1.getHighValue() - card2.getHighValue())
-    lowDiff = abs(card1.getLowValue() - card2.getLowValue())
-    return highDiff if highDiff < lowDiff else lowDiff
+#def getConnectionFactor(card1, card2):
+#    highDiff = abs(card1.getHighValue() - card2.getHighValue())
+#    lowDiff = abs(card1.getLowValue() - card2.getLowValue())
+#    return highDiff if highDiff < lowDiff else lowDiff
 

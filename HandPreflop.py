@@ -12,6 +12,11 @@ class HoldemHand(PreflopHand):
         self.__card1 = cards[0]
         self.__card2 = cards[1]
 
+    def __str__(self):
+        return 'Holdem Hand: {card1}, {card2}'.format(card1=self.__card1, card2=self.__card2)
+
+    ########### GETTERS ############
+
     def getCards(self):
         cards = [self.__card1, self.__card2]
         return cards
@@ -27,10 +32,7 @@ class HoldemHand(PreflopHand):
     def isPaired(self):
         return True if self.__card1.getHighValue() == self.__card2.getHighValue() else False
 
-    ############# UTILITY METHODS ###########
-
-    def toString(self):
-        return 'Holdem Hand: {card1}, {card2}'.format(card1=self.__card1.toString(), card2=self.__card2.toString())
+    ############# GRAPHICS ###########
 
     def draw(self):
         self.__card1.draw()

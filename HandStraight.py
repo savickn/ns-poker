@@ -1,7 +1,7 @@
 __author__ = 'Nick'
 
 import Hand
-import Helpers
+#import Helpers
 
 class Straight(Hand.Hand):
 
@@ -20,4 +20,4 @@ class Straight(Hand.Hand):
 
     def checkRep(self):
         assert len(self.getCards()) == self.getLength()
-        assert Helpers.isStraight(self.getCards())
+        #assert Helpers.isStraight(self.getCards())

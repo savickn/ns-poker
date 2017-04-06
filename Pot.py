@@ -15,6 +15,11 @@ class Pot:
             'RIVER': []
         } #ordered list of Action objects
 
+    def __str__(self):
+        return '########### POT ########### \n ' \
+               'POT: {pot} \n ' \
+               '{contrib}'.format(pot=self.__pot, contrib=self.__contributions)
+
     ############ GETTERS AND SETTERS ############
 
     def getPot(self):
@@ -60,15 +65,7 @@ class Pot:
         self.__pot += amount
         #if amount > self.__lastBet:
         #    self.__lastBet = amount
-        self.printAsString()
-        print(action.getActor().toString())
-        print(action.getActor().getHand().toString())
+        print(self)
+        print(action.getActor())
+        print(action.getActor().getHand())
 
-    ################ UTILITY METHODS ##################
-
-    def printAsString(self):
-        print('####### CONTRIBUTIONS ########')
-        print(self.__contributions)
-        print('Pot: {pot}'.format(pot=self.__pot))
-        #for key, value in self.__contributions:
-        #    print('{player} has invested {amount}'.format(player=key, amount=value))

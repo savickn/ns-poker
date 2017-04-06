@@ -58,6 +58,9 @@ class Card:
 
         self.checkRep()
 
+    def __str__(self):
+        return '{type} of {suit}'.format(type = self.__type, suit = self.__suit)
+
     #used to check if two Cards are identical (e.g. Js == Js but Jh != Js), not working
     #def __eq__(self, other):
     #    return self.getId() == other.getId()
@@ -113,8 +116,4 @@ class Card:
     def setSprite(self):
         self.__sprite = Avatar.Avatar('/path/to/picture')
 
-    ########## UTILITY ###########
-
-    def toString(self):
-        return '{type} of {suit}'.format(type = self.__type, suit = self.__suit)
 

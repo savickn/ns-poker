@@ -154,26 +154,31 @@ class Poker:
 
     ############ Posting SB/BB/Ante ############
 
-    def postBB(self):
+    #watch out for infinite loop when there are not enough active players (maybe throw Exception if 'getNearestLeftSeat' returns same player)
+    def postBB(self, activePlayers):
         bb = self.__bb.getPlayer()
         response = bb.removeFromStack(self.__bbStake)
         if response['COMPLETE']:
             action = ActionPostBB.PostBB(bb, response['AMOUNT'])
             self.__pot.handleAction(action)
         else:
+            activePlayers.remove(bb)
             self.__bb = self.__bb.getNearestLeftSeatWithActivePlayer() #sets a new BB
             self.__fp = self.__bb.getNearestLeftSeatWithActivePlayer() #sets a new FP immediately left of the new BB
-            self.postBB() #calls postBB until the BB is posted or an Exception is thrown
+            self.postBB(activePlayers) #calls postBB until the BB is posted or an Exception is thrown
+        return activePlayers
 
-    def postSB(self):
+    def postSB(self, activePlayers):
         sb = self.__sb.getPlayer()
         response = sb.removeFromStack(self.__sbStake)
         if response['COMPLETE']:
             action = ActionPostSB.PostSB(sb, response['AMOUNT'])
             self.__pot.handleAction(action)
         else:
+            activePlayers.remove(sb)
             self.rotatePlayers()
-            self.postSB() #calls postBB until the BB is posted or an Exception is thrown
+            self.postSB(activePlayers) #calls postBB until the BB is posted or an Exception is thrown
+        return activePlayers
 
     def postAnte(self, activePlayers):
         for player in activePlayers:
@@ -252,7 +257,7 @@ class Poker:
     def run(self):
         while self.__gameState == 'RUNNING':
             activePlayers = self.__table.getActivePlayers()
-            if len(activePlayers) < 2:
+            if not self.areReady(activePlayers):
                 self.__gameState = 'WAITING'
                 print('Waiting for Players')
             self.startRound(activePlayers)
@@ -260,22 +265,30 @@ class Poker:
 
     #acts as a single hand
     def startRound(self, activePlayers):
+        activePlayers = activePlayers
         board = None
         deck = Deck.Deck()
         deck.shuffleDeck()
         self.__pot = Pot.Pot(self.__bbStake)
         self.__pot.registerActivePlayers(activePlayers)
 
-        self.generateHands(activePlayers)
-
         if self.__ante > 0:
             activePlayers = self.postAnte(activePlayers)
-        self.postSB()
-        self.postBB()
+        activePlayers = self.postSB(activePlayers)
+        activePlayers = self.postBB(activePlayers)
 
+        if not self.areReady(activePlayers):
+            self.__gameState = 'Waiting'
+            return
+
+        self.generateHands(activePlayers)
 
         print('#### PREFLOP BETTING ####')
         self.preFlopBetting()
+
+        if len(activePlayers) < 2:
+            self.handleEndgame()
+            return
 
         print('####### FLOP ########')
         self.generateFlop()
@@ -283,11 +296,19 @@ class Poker:
         print('#### FLOP BETTING ####')
         self.postFlopBetting()
 
+        if len(activePlayers) < 2:
+            self.handleEndgame()
+            return
+
         print('####### TURN ########')
         self.generateTurn()
         self.__board.printAsString()
         print('#### FLOP BETTING ####')
         self.postFlopBetting()
+
+        if len(activePlayers) < 2:
+            self.handleEndgame()
+            return
 
         print('####### RIVER ########')
         self.generateRiver()
@@ -297,7 +318,6 @@ class Poker:
 
         print('####### POST-ROUND ANALYSIS #######')
         self.handleEndgame()
-        return
 
     def handleEndgame(self):
         #activePlayers = self.__table.getPlayersToAnalyze()
@@ -320,8 +340,8 @@ class Poker:
 
     ############## Game State Manager ##############
 
-    def areReady(self):
-        readyCounter = len(self.__table.getActivePlayers())
+    def areReady(self, activePlayers):
+        readyCounter = len(activePlayers)
         return True if readyCounter >= 2 else False
 
     #used to add a Player object to the Table

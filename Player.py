@@ -37,6 +37,12 @@ class Player:
         #self.__sbRange = options['SB'] if options['SB'] else []
         #self.__bbRange = options['BB'] if options['BB'] else []
 
+    def __str__(self):
+        return '########## PLAYER ########## \n' \
+               'Name: {name} \n' \
+               'Stack: {stack} \n' \
+               'Status: {status}'.format(name=self.__account, stack=self.__stack, status=self.__status)
+
     ############ Helper Methods ##############
 
     #for preflop play
@@ -112,7 +118,6 @@ class Player:
     def selectAction(self, state):
         #draw user input frame
         #count down clock from 30 seconds using 'state.timer'
-        print(self.toString())
 
         #populates list of potential Actions
         actions = self.populateActions(state)
@@ -126,9 +131,7 @@ class Player:
             actionSelection = int(input(actionString))
             if actionSelection in range(len(actions)):
                 break
-
         action = actions[actionSelection]
-        print(action)
 
         #creates new Action object based on user input
         amount = None
@@ -153,9 +156,6 @@ class Player:
         return action
 
     ############ GRAPHICS #############
-
-    def toString(self):
-        return '{name} - {stack}'.format(name=self.__account, stack=self.__stack)
 
     def drawHand(self):
         self.__hand.draw()
