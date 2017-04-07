@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Deck
+import Deck
 
 def print_cards(cards):
     for card in cards:

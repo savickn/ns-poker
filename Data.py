@@ -281,6 +281,9 @@ s['9-K'] = {9, 10, 11, 12, 13}
 s['T-A'] = {10, 11, 12, 13, 14}
 
 
+import HandStraight
+
+
 straights = {}
 
 

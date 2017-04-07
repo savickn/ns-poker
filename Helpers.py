@@ -130,8 +130,6 @@ def determineWinner(board, hands):
     }
 
 
-
-
 #must be passed 5 sorted cards, WORKING
 def isStraight(cards):
     assert len(cards) == 5
@@ -223,28 +221,12 @@ def analyzeStraights(availableCards):
                 if o not in backdoorOuts:
                     backdoorOuts.append(o)
 
-    print(straightOuts)
-    print(backdoorOuts)
 
 
-cards13 = [
-    Data.six_spades,
-    Data.seven_spades,
-    Data.three_clubs,
-    Data.four_diamonds,
-    Data.five_hearts,
-    Data.jack_spades]
-
-
-analyzeStraights(cards13)
 
 
 #printCards(highSort(board10.getCards(), True))
 #printCards(lowSort(board10.getCards(), True))
-
-
-
-
 
 
 #def getCollectionDiff(col1, col2):

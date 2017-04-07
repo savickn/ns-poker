@@ -336,8 +336,6 @@ class HandAnalyzer:
     def checkForPairDraw(self):
         draws = []
 
-
-
         if len(draws) >= 1:
             for d in draws:
                 self.__bestHand.addDraw(d)
@@ -353,9 +351,6 @@ class HandAnalyzer:
 
         lowSort = Helpers.lowSort(cards, False)
         highSort = Helpers.highSort(cards, False)
-
-
-
 
 
         #if pattern == '111':

@@ -6,13 +6,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1d4f1a2e-1919-4f2d-9255-c74382f13011" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Card.py" afterPath="$PROJECT_DIR$/Card.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/HandPreflop.py" afterPath="$PROJECT_DIR$/HandPreflop.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/HandStraight.py" afterPath="$PROJECT_DIR$/HandStraight.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Test Scripts/check_for_straight2.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Data.py" afterPath="$PROJECT_DIR$/Data.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/HandAnalyzer.py" afterPath="$PROJECT_DIR$/HandAnalyzer.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Helpers.py" afterPath="$PROJECT_DIR$/Helpers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Player.py" afterPath="$PROJECT_DIR$/Player.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/PokerGame.py" afterPath="$PROJECT_DIR$/PokerGame.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pot.py" afterPath="$PROJECT_DIR$/Pot.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Test Scripts/check_for_straight.py" afterPath="$PROJECT_DIR$/Test Scripts/check_for_straight.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="PokerCalculator.iws" />
@@ -37,11 +35,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="PokerGame.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="PokerGame.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PokerGame.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.36315086" vertical-offset="4913" max-vertical-offset="6528">
-              <caret line="364" column="0" selection-start-line="364" selection-start-column="0" selection-end-line="364" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="4913" max-vertical-offset="6528">
+              <caret line="341" column="0" selection-start-line="341" selection-start-column="0" selection-end-line="341" selection-end-column="0" />
               <folding>
                 <element signature="e#21#34#0" expanded="true" />
                 <element signature="e#2952#3605#0" expanded="false" />
@@ -59,8 +57,8 @@
       <file leaf-file-name="HandPreflop.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/HandPreflop.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="272" max-vertical-offset="1734">
-              <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1734">
+              <caret line="21" column="4" selection-start-line="21" selection-start-column="4" selection-end-line="21" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -69,8 +67,8 @@
       <file leaf-file-name="HandAnalyzer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/HandAnalyzer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2669" max-vertical-offset="5491">
-              <caret line="338" column="0" selection-start-line="338" selection-start-column="0" selection-end-line="338" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2788" max-vertical-offset="5406">
+              <caret line="352" column="49" selection-start-line="352" selection-start-column="49" selection-end-line="352" selection-end-column="49" />
               <folding>
                 <element signature="e#21#56#0" expanded="true" />
                 <element signature="e#2892#4404#0" expanded="false" />
@@ -82,11 +80,21 @@
                 <element signature="e#8481#9308#0" expanded="false" />
                 <element signature="e#9450#9977#0" expanded="false" />
                 <element signature="e#10219#12083#0" expanded="false" />
-                <element signature="e#13985#14293#0" expanded="false" />
-                <element signature="e#14332#15188#0" expanded="false" />
-                <element signature="e#15233#15609#0" expanded="false" />
-                <element signature="e#15648#15795#0" expanded="false" />
+                <element signature="e#13980#14288#0" expanded="false" />
+                <element signature="e#14327#15183#0" expanded="false" />
+                <element signature="e#15228#15604#0" expanded="false" />
+                <element signature="e#15643#15790#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Draw.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Draw.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="98" max-vertical-offset="578">
+              <caret line="26" column="83" selection-start-line="26" selection-start-column="83" selection-end-line="26" selection-end-column="83" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -101,11 +109,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Data.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Data.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="5032" max-vertical-offset="5253">
-              <caret line="296" column="0" selection-start-line="296" selection-start-column="0" selection-end-line="296" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.2413793" vertical-offset="4709" max-vertical-offset="5304">
+              <caret line="284" column="0" selection-start-line="284" selection-start-column="0" selection-end-line="284" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -114,8 +122,18 @@
       <file leaf-file-name="Helpers.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Helpers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="799" max-vertical-offset="6222">
-              <caret line="71" column="0" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1819" max-vertical-offset="5916">
+              <caret line="130" column="0" selection-start-line="130" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="check_for_straight2.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Test Scripts/check_for_straight2.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="1020">
+              <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
               <folding />
             </state>
           </provider>
@@ -127,20 +145,6 @@
             <state vertical-scroll-proportion="0.0" vertical-offset="646" max-vertical-offset="2108">
               <caret line="62" column="0" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PokerTable.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/PokerTable.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1887" max-vertical-offset="2652">
-              <caret line="150" column="0" selection-start-line="150" selection-start-column="0" selection-end-line="150" selection-end-column="0" />
-              <folding>
-                <element signature="e#21#32#0" expanded="true" />
-                <element signature="e#678#815#0" expanded="false" />
-                <element signature="e#952#1530#0" expanded="false" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -157,16 +161,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Seat.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Seat.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="1309">
-              <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="Git.Settings">
@@ -175,8 +169,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Test Scripts/tests_comparisons.py" />
-        <option value="$PROJECT_DIR$/Board.py" />
         <option value="$PROJECT_DIR$/Hand.py" />
         <option value="$PROJECT_DIR$/HandTP.py" />
         <option value="$PROJECT_DIR$/HandTrips.py" />
@@ -214,18 +206,20 @@
         <option value="$PROJECT_DIR$/Action.py" />
         <option value="$PROJECT_DIR$/CalculatorWinner.py" />
         <option value="$PROJECT_DIR$/DrawOpenEnded.py" />
-        <option value="$PROJECT_DIR$/HandAnalyzer.py" />
-        <option value="$PROJECT_DIR$/Data.py" />
         <option value="$PROJECT_DIR$/Seat.py" />
         <option value="$PROJECT_DIR$/PokerTable.py" />
         <option value="$PROJECT_DIR$/ViewTable.py" />
         <option value="$PROJECT_DIR$/HandStraight.py" />
         <option value="$PROJECT_DIR$/Card.py" />
-        <option value="$PROJECT_DIR$/Helpers.py" />
         <option value="$PROJECT_DIR$/Pot.py" />
         <option value="$PROJECT_DIR$/Player.py" />
-        <option value="$PROJECT_DIR$/HandPreflop.py" />
         <option value="$PROJECT_DIR$/PokerGame.py" />
+        <option value="$PROJECT_DIR$/Test Scripts/check_for_straight.py" />
+        <option value="$PROJECT_DIR$/Test Scripts/check_for_straight2.py" />
+        <option value="$PROJECT_DIR$/Helpers.py" />
+        <option value="$PROJECT_DIR$/HandPreflop.py" />
+        <option value="$PROJECT_DIR$/HandAnalyzer.py" />
+        <option value="$PROJECT_DIR$/Data.py" />
       </list>
     </option>
   </component>
@@ -258,6 +252,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -292,7 +287,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -328,7 +322,7 @@
       <recent name="C:\Users\Nick\Coding\PycharmProjects\PokerCalculator" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.PokerGame">
+  <component name="RunManager" selected="Python.check_for_straight2">
     <configuration default="false" name="PokerGame" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -347,25 +341,6 @@
       <RunnerSettings RunnerId="PyDebugRunner" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PyDebugRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="PokerTable" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="PokerCalculator" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/PokerTable.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
@@ -420,6 +395,25 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="PokerCalculator" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ViewTable.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="check_for_straight2" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Test Scripts" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="PokerCalculator" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Test Scripts/check_for_straight2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <RunnerSettings RunnerId="PythonRunner" />
@@ -636,18 +630,18 @@
       <item index="2" class="java.lang.String" itemvalue="Python.CalculatorEquity" />
       <item index="3" class="java.lang.String" itemvalue="Python.tests_analyzer" />
       <item index="4" class="java.lang.String" itemvalue="Python.PokerGame" />
-      <item index="5" class="java.lang.String" itemvalue="Python.PokerTable" />
-      <item index="6" class="java.lang.String" itemvalue="Python.Pot" />
-      <item index="7" class="java.lang.String" itemvalue="Python.Player" />
-      <item index="8" class="java.lang.String" itemvalue="Python.ViewTable" />
+      <item index="5" class="java.lang.String" itemvalue="Python.Pot" />
+      <item index="6" class="java.lang.String" itemvalue="Python.Player" />
+      <item index="7" class="java.lang.String" itemvalue="Python.ViewTable" />
+      <item index="8" class="java.lang.String" itemvalue="Python.check_for_straight2" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.PokerGame" />
-        <item index="1" class="java.lang.String" itemvalue="Python.Pot" />
-        <item index="2" class="java.lang.String" itemvalue="Python.ViewTable" />
-        <item index="3" class="java.lang.String" itemvalue="Python.Player" />
-        <item index="4" class="java.lang.String" itemvalue="Python.PokerTable" />
+        <item index="0" class="java.lang.String" itemvalue="Python.check_for_straight2" />
+        <item index="1" class="java.lang.String" itemvalue="Python.PokerGame" />
+        <item index="2" class="java.lang.String" itemvalue="Python.Pot" />
+        <item index="3" class="java.lang.String" itemvalue="Python.ViewTable" />
+        <item index="4" class="java.lang.String" itemvalue="Python.Player" />
       </list>
     </recent_temporary>
   </component>
@@ -675,18 +669,18 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32947233" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32947233" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3989704" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32947233" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32947233" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3989704" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -719,23 +713,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Player.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1070" max-vertical-offset="3145">
-          <caret line="163" column="0" selection-start-line="163" selection-start-column="0" selection-end-line="163" selection-end-column="0" />
-          <folding>
-            <element signature="e#21#41#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/HandPair.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4827586" vertical-offset="0" max-vertical-offset="493">
-          <caret line="14" column="24" selection-start-line="14" selection-start-column="24" selection-end-line="14" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/HandQuads.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.4827586" vertical-offset="0" max-vertical-offset="493">
@@ -796,13 +773,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.20689656" vertical-offset="459" max-vertical-offset="952">
           <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Draw.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.92083335" vertical-offset="0" max-vertical-offset="578">
-          <caret line="26" column="83" selection-start-line="26" selection-start-column="83" selection-end-line="26" selection-end-column="83" />
         </state>
       </provider>
     </entry>
@@ -1013,11 +983,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1887" max-vertical-offset="2652">
           <caret line="150" column="0" selection-start-line="150" selection-start-column="0" selection-end-line="150" selection-end-column="0" />
-          <folding>
-            <element signature="e#21#32#0" expanded="true" />
-            <element signature="e#678#815#0" expanded="false" />
-            <element signature="e#952#1530#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1025,46 +990,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="1309">
           <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/HandAnalyzer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2669" max-vertical-offset="5491">
-          <caret line="338" column="0" selection-start-line="338" selection-start-column="0" selection-end-line="338" selection-end-column="0" />
-          <folding>
-            <element signature="e#21#56#0" expanded="true" />
-            <element signature="e#2892#4404#0" expanded="false" />
-            <element signature="e#4485#5026#0" expanded="false" />
-            <element signature="e#5111#6259#0" expanded="false" />
-            <element signature="e#6384#6606#0" expanded="false" />
-            <element signature="e#6701#6947#0" expanded="false" />
-            <element signature="e#8196#8341#0" expanded="false" />
-            <element signature="e#8481#9308#0" expanded="false" />
-            <element signature="e#9450#9977#0" expanded="false" />
-            <element signature="e#10219#12083#0" expanded="false" />
-            <element signature="e#13985#14293#0" expanded="false" />
-            <element signature="e#14332#15188#0" expanded="false" />
-            <element signature="e#15233#15609#0" expanded="false" />
-            <element signature="e#15648#15795#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4573" max-vertical-offset="5253">
-          <caret line="296" column="0" selection-start-line="296" selection-start-column="0" selection-end-line="296" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Helpers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="799" max-vertical-offset="6222">
-          <caret line="71" column="0" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1094,18 +1019,41 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Test Scripts/check_for_straight.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.13793103" vertical-offset="0" max-vertical-offset="2567">
+          <caret line="4" column="23" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Helpers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1819" max-vertical-offset="5916">
+          <caret line="130" column="0" selection-start-line="130" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/HandPreflop.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1734">
-          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <caret line="21" column="4" selection-start-line="21" selection-start-column="4" selection-end-line="21" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Draw.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="578">
+          <caret line="26" column="83" selection-start-line="26" selection-start-column="83" selection-end-line="26" selection-end-column="83" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/PokerGame.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.36315086" vertical-offset="4913" max-vertical-offset="6528">
-          <caret line="364" column="0" selection-start-line="364" selection-start-column="0" selection-end-line="364" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="5474" max-vertical-offset="6528">
+          <caret line="341" column="0" selection-start-line="341" selection-start-column="0" selection-end-line="341" selection-end-column="0" />
           <folding>
             <element signature="e#21#34#0" expanded="true" />
             <element signature="e#2952#3605#0" expanded="false" />
@@ -1116,6 +1064,45 @@
             <element signature="e#7483#7606#0" expanded="false" />
             <element signature="e#7645#7770#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/HandAnalyzer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2788" max-vertical-offset="5406">
+          <caret line="352" column="49" selection-start-line="352" selection-start-column="49" selection-end-line="352" selection-end-column="49" />
+          <folding>
+            <element signature="e#21#56#0" expanded="true" />
+            <element signature="e#2892#4404#0" expanded="false" />
+            <element signature="e#4485#5026#0" expanded="false" />
+            <element signature="e#5111#6259#0" expanded="false" />
+            <element signature="e#6384#6606#0" expanded="false" />
+            <element signature="e#6701#6947#0" expanded="false" />
+            <element signature="e#8196#8341#0" expanded="false" />
+            <element signature="e#8481#9308#0" expanded="false" />
+            <element signature="e#9450#9977#0" expanded="false" />
+            <element signature="e#10219#12083#0" expanded="false" />
+            <element signature="e#13980#14288#0" expanded="false" />
+            <element signature="e#14327#15183#0" expanded="false" />
+            <element signature="e#15228#15604#0" expanded="false" />
+            <element signature="e#15643#15790#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Test Scripts/check_for_straight2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="1020">
+          <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2413793" vertical-offset="4709" max-vertical-offset="5304">
+          <caret line="284" column="0" selection-start-line="284" selection-start-column="0" selection-end-line="284" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
