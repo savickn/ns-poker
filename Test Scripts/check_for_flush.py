@@ -1,70 +1,55 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Deck
+import Data, Helpers, HandFlush
 
 flush_hand = [
-    Deck.ace_hearts,
-    Deck.king_hearts,
-    Deck.queen_hearts,
-    Deck.ten_hearts,
-    Deck.nine_hearts,
-    Deck.eight_hearts,
-    Deck.six_hearts
+    Data.ace_hearts,
+    Data.king_hearts,
+    Data.queen_hearts,
+    Data.ten_hearts,
+    Data.nine_hearts,
+    Data.eight_hearts,
+    Data.six_hearts
 ]
 
 no_flush_hand = [
-    Deck.ace_hearts,
-    Deck.king_spades,
-    Deck.queen_diamonds,
-    Deck.ten_hearts,
-    Deck.nine_spades,
-    Deck.eight_diamonds,
-    Deck.six_hearts
+    Data.ace_hearts,
+    Data.king_spades,
+    Data.queen_diamonds,
+    Data.ten_hearts,
+    Data.nine_spades,
+    Data.eight_diamonds,
+    Data.six_hearts
 ]
 
-def calculate_high_cards(relevant_cards, remaining_cards) :
-    _relevant_cards = relevant_cards
-    _remaining_cards = remaining_cards
-    number_of_cards = len(relevant_cards) + len(remaining_cards)
-    assert(number_of_cards > 4)
-
-    _remaining_cards.sort(key=lambda card: card.getHighValue(), reverse=True)
-
-    while len(_relevant_cards) < 5 :
-        _relevant_cards.append(_remaining_cards.pop(0))
-
-    assert len(_relevant_cards) == 5
-    assert len(_remaining_cards) == number_of_cards - len(_relevant_cards)
-
-    return _relevant_cards
-
-def print_cards(cards):
-    for card in cards:
-        print(card.toString())
-
-def check_for_flush(cards):
+def analyzeFlushes(cards):
     assert len(cards) in range(5, 8)
-    made_hand = []
+    flushes = []
+    flushDraws = []
+    flushBackdoorDraws = []
 
     spades = []
     clubs = []
     diamonds = []
     hearts = []
 
-    for parent_card in cards:
-        if(parent_card.getSuit() == 'Spades'):
-            spades.append(parent_card)
-        elif(parent_card.getSuit() == 'Hearts'):
-            hearts.append(parent_card)
-        elif(parent_card.getSuit() == 'Clubs'):
-            clubs.append(parent_card)
-        elif(parent_card.getSuit() == 'Diamonds'):
-            diamonds.append(parent_card)
+    for c in cards:
+        if(c.getSuit() == 'Spades'):
+            spades.append(c)
+        elif(c.getSuit() == 'Hearts'):
+            hearts.append(c)
+        elif(c.getSuit() == 'Clubs'):
+            clubs.append(c)
+        elif(c.getSuit() == 'Diamonds'):
+            diamonds.append(c)
         else:
             raise Exception('This card has an invalid suit.')
 
     if(len(spades) >= 5):
-        made_hand = calculate_high_cards([], spades)
+        flushes.append(HandFlush.Flush(spades))
+    elif(len(spades) == 4 and len(cards) < 7):
+        flushDraws.append(s)
+
     elif(len(clubs) >= 5):
         made_hand = calculate_high_cards([], clubs)
     elif(len(hearts) >= 5):

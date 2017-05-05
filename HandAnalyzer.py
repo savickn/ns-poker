@@ -80,7 +80,8 @@ class HandAnalyzer:
         self.checkRep()
 
         self.analyzePairedHands()
-        self.analyzeStraights()
+        #self.analyzeStraights()
+        self.analyzeStraights2()
         self.analyzeFlushes()
         self.calculateBestHand()
         if checkDraws:
@@ -340,27 +341,44 @@ class HandAnalyzer:
             for d in draws:
                 self.__bestHand.addDraw(d)
 
-    def checkForStraightDraw(self):
+    def analyzeStraights2(self):
         suit = Helpers.getRelevantSuit(self.__availableCards)
         cards = Helpers.removePairs(self.__availableCards, suit) #used to remove Pairs which interfere in Straight calculations
+        cardTypes = {c.getType() for c in cards}
 
-        straights = []
-        gutters = []
-        doubleGutters = []
-        openEnders = []
+        straightOuts = []
+        backdoorOuts = []
 
-        lowSort = Helpers.lowSort(cards, False)
-        highSort = Helpers.highSort(cards, False)
+        for key, values in Data.straights.items():
+            if len(values & cardTypes) == 5:
+                value = int(key[0])
+                straightCards = [c for c in cards if c.getType() in values]
+                straight = HandStraight.Straight(straightCards, value)
 
+                #ensures no duplicate straights are added
+                if not Helpers.inCollection(straight, self.__straights):
+                    self.__straights.append(straight)
 
-        #if pattern == '111':
-        #    print()
-        #elif pattern == '121':
-        #    print()
-        #elif pattern == '2112':
-        #    print()
-        #elif pattern == '1111':
-        #    print()
+            elif len(values & cardTypes) == 4:
+                out = values - cardTypes
+                for o in out:
+                    if o not in straightOuts:
+                        straightOuts.append(o)
+                        if o in backdoorOuts:
+                            backdoorOuts.remove(o)
+
+            elif len(values & cardTypes) == 3:
+                drawOuts = values - cardTypes
+                for o in drawOuts:
+                    if o not in backdoorOuts and o not in straightOuts:
+                        backdoorOuts.append(o)
+
+        print(straightOuts)
+        print(backdoorOuts)
+
+        #used to check for straight flushes
+        if len(self.__straights) > 0:
+            self.checkForStraightFlushes()
 
 
     def checkForFlushDraw(self):

@@ -222,7 +222,21 @@ def analyzeStraights(availableCards):
                     backdoorOuts.append(o)
 
 
+def calculate_high_cards(relevant_cards, remaining_cards) :
+    _relevant_cards = relevant_cards
+    _remaining_cards = remaining_cards
+    number_of_cards = len(relevant_cards) + len(remaining_cards)
+    assert(number_of_cards > 4)
 
+    _remaining_cards.sort(key=lambda card: card.getHighValue(), reverse=True)
+
+    while len(_relevant_cards) < 5 :
+        _relevant_cards.append(_remaining_cards.pop(0))
+
+    assert len(_relevant_cards) == 5
+    assert len(_remaining_cards) == number_of_cards - len(_relevant_cards)
+
+    return _relevant_cards
 
 
 #printCards(highSort(board10.getCards(), True))

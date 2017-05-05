@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-import Card
+import Card, HandStraight
 
 ace_hearts = Card.Card('Ace', 'Hearts', 14, {'low_value': 1})
 king_hearts = Card.Card('King', 'Hearts', 13)
@@ -298,7 +298,16 @@ straights['Q-High'] = {'Eight', 'Nine', 'Ten', 'Jack', 'Queen'}
 straights['K-High'] = {'Nine', 'Ten', 'Jack', 'Queen', 'King'}
 straights['A-High'] = {'Ten', 'Jack', 'Queen', 'King', 'Ace'}
 
-
+#straights['5-High'] = HandStraight.Straight([ace_clubs, two_hearts, three_clubs, four_spades, five_hearts], 5)
+#straights['6-High'] = HandStraight.Straight([two_hearts, three_clubs, four_spades, five_hearts, six_clubs], 6)
+#straights['7-High'] = HandStraight.Straight([two_hearts, three_clubs, four_spades, five_hearts, six_clubs], 6)
+#straights['8-High'] = {'Four', 'Five', 'Six', 'Seven', 'Eight'}
+#straights['9-High'] = {'Five', 'Six', 'Seven', 'Eight', 'Nine'}
+#straights['T-High'] = {'Six', 'Seven', 'Eight', 'Nine', 'Ten'}
+#straights['J-High'] = {'Seven', 'Eight', 'Nine', 'Ten', 'Jack'}
+#straights['Q-High'] = {'Eight', 'Nine', 'Ten', 'Jack', 'Queen'}
+#straights['K-High'] = {'Nine', 'Ten', 'Jack', 'Queen', 'King'}
+#straights['A-High'] = {'Ten', 'Jack', 'Queen', 'King', 'Ace'}
 
 
 

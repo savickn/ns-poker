@@ -34,6 +34,12 @@ class Hand:
 
         self.checkRep()
 
+    def __str__(self):
+        rep = None
+        for c in self.getCards():
+            rep = c.toString() if rep is None else rep + ', {card}'.format(card=c.toString())
+        return rep
+
     #used to check if a particular hand already exists in a collection
     def __eq__(self, other):
         return True if self.__identifier == other.getIdentifier() else False

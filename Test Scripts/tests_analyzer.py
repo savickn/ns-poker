@@ -128,7 +128,7 @@ board13 = Board.Board(
 printHighCards = False
 printPairedHands = False
 printFlushes = False
-printStraights = False
+printStraights = True
 
 ha1 = HandAnalyzer.HandAnalyzer(hand, board1, printHighCards)
 assert isinstance(ha1.getBestHand().getPrimary(), HandHC.HighCards)

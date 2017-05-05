@@ -52,7 +52,7 @@ class Board:
     def toString(self):
         string = ''
         for card in self.getCards():
-            string += '{card}, '.format(card = card.toString())
+            string += '{card}, '.format(card=card)
         #add method to remove trailing , from string output
         return string
 
