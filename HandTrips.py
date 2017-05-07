@@ -3,8 +3,8 @@ __author__ = 'Nick'
 import Hand
 
 class Trips(Hand.Hand):
-    def __init__(self, cards, value):
-        super().__init__(cards, value, 3, 'T')
+    def __init__(self, cards):
+        super().__init__(cards, cards[0].getHighValue(), 'T')
         self.checkRep()
 
     def compare(self, t2):

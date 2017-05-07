@@ -4,8 +4,8 @@ import Hand
 
 class Quads(Hand.Hand):
 
-    def __init__(self, cards, value):
-        super().__init__(cards, value, 4, 'Q')
+    def __init__(self, cards):
+        super().__init__(cards, cards[0].getHighValue(), 'Q')
         self.checkRep()
 
     def compare(self, q2):

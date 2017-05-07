@@ -287,20 +287,9 @@ import HandStraight
 straights = {}
 
 
-straights['5-High'] = {'Ace', 'Two', 'Three', 'Four', 'Five'}
-straights['6-High'] = {'Two', 'Three', 'Four', 'Five', 'Six'}
-straights['7-High'] = {'Three', 'Four', 'Five', 'Six', 'Seven'}
-straights['8-High'] = {'Four', 'Five', 'Six', 'Seven', 'Eight'}
-straights['9-High'] = {'Five', 'Six', 'Seven', 'Eight', 'Nine'}
-straights['T-High'] = {'Six', 'Seven', 'Eight', 'Nine', 'Ten'}
-straights['J-High'] = {'Seven', 'Eight', 'Nine', 'Ten', 'Jack'}
-straights['Q-High'] = {'Eight', 'Nine', 'Ten', 'Jack', 'Queen'}
-straights['K-High'] = {'Nine', 'Ten', 'Jack', 'Queen', 'King'}
-straights['A-High'] = {'Ten', 'Jack', 'Queen', 'King', 'Ace'}
-
-#straights['5-High'] = HandStraight.Straight([ace_clubs, two_hearts, three_clubs, four_spades, five_hearts], 5)
-#straights['6-High'] = HandStraight.Straight([two_hearts, three_clubs, four_spades, five_hearts, six_clubs], 6)
-#straights['7-High'] = HandStraight.Straight([two_hearts, three_clubs, four_spades, five_hearts, six_clubs], 6)
+#straights['5-High'] = {'Ace', 'Two', 'Three', 'Four', 'Five'}
+#straights['6-High'] = {'Two', 'Three', 'Four', 'Five', 'Six'}
+#straights['7-High'] = {'Three', 'Four', 'Five', 'Six', 'Seven'}
 #straights['8-High'] = {'Four', 'Five', 'Six', 'Seven', 'Eight'}
 #straights['9-High'] = {'Five', 'Six', 'Seven', 'Eight', 'Nine'}
 #straights['T-High'] = {'Six', 'Seven', 'Eight', 'Nine', 'Ten'}
@@ -308,6 +297,17 @@ straights['A-High'] = {'Ten', 'Jack', 'Queen', 'King', 'Ace'}
 #straights['Q-High'] = {'Eight', 'Nine', 'Ten', 'Jack', 'Queen'}
 #straights['K-High'] = {'Nine', 'Ten', 'Jack', 'Queen', 'King'}
 #straights['A-High'] = {'Ten', 'Jack', 'Queen', 'King', 'Ace'}
+
+straights['5-High'] = HandStraight.Straight([ace_clubs, two_hearts, three_clubs, four_spades, five_hearts], 5)
+straights['6-High'] = HandStraight.Straight([two_hearts, three_clubs, four_spades, five_hearts, six_clubs], 6)
+straights['7-High'] = HandStraight.Straight([three_clubs, four_spades, five_hearts, six_clubs, seven_hearts], 7)
+straights['8-High'] = HandStraight.Straight([four_spades, five_hearts, six_clubs, seven_hearts, eight_diamonds], 8)
+straights['9-High'] = HandStraight.Straight([five_hearts, six_clubs, seven_hearts, eight_diamonds, nine_clubs], 9)
+straights['T-High'] = HandStraight.Straight([six_clubs, seven_hearts, eight_diamonds, nine_clubs, ten_spades], 10)
+straights['J-High'] = HandStraight.Straight([seven_hearts, eight_diamonds, nine_clubs, ten_spades, jack_hearts], 11)
+straights['Q-High'] = HandStraight.Straight([eight_diamonds, nine_clubs, ten_spades, jack_hearts, queen_diamonds], 12)
+straights['K-High'] = HandStraight.Straight([nine_clubs, ten_spades, jack_hearts, queen_diamonds, king_spades], 13)
+straights['A-High'] = HandStraight.Straight([ten_spades, jack_hearts, queen_diamonds, king_spades, ace_clubs], 14)
 
 
 

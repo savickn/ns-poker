@@ -129,12 +129,10 @@ def determineWinner(board, hands):
         'EQUITY': equitySplit
     }
 
-
 #must be passed 5 sorted cards, WORKING
 def isStraight(cards):
     assert len(cards) == 5
     return True if(cards[4].getHighValue() - cards[0].getHighValue() == 4) or (cards[4].getLowValue() - cards[0].getLowValue() == 4) else False
-
 
 def getConnectionFactor(card1, card2):
     high = abs(card1.getHighValue() - card2.getHighValue())

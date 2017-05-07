@@ -12,11 +12,11 @@ def analyzeStraights(availableCards):
     cards = Helpers.removePairs(availableCards, suit) #used to remove Pairs which interfere in Straight calculations
     cardTypes = {c.getType() for c in cards}
 
-    for key, values in Data.straights.items():
+    for k, v in Data.straights.items():
+        values = {c.getType() for c in v.getCards()}
         if len(values & cardTypes) == 5:
-            value = int(key[0])
             straightCards = [c for c in cards if c.getType() in values]
-            straight = HandStraight.Straight(straightCards, value)
+            straight = HandStraight.Straight(straightCards, v.getPrimaryValue())
 
             #ensures no duplicate straights are added
             if not Helpers.inCollection(straight, straights):

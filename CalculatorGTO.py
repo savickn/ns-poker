@@ -44,6 +44,14 @@ class GtoSolver:
         self.__madeHands = self.analyzeBoard() #an array of BestHand objects
         self.checkRep()
 
+    #poker pot odds
+    def calculatePotOdds(self, bet, pot):
+        return bet/(pot + bet)
+
+    #percentage chance to make a hand by the next street
+    def calculateOutPercentage(self, outs, liveCards):
+        return outs/liveCards
+
     #for determining which hands to use for calling bets (e.g. getTopX(50) for calling pot-size bet)
     def getTopX(self, x):
         cutoff = math.ceil(len(self.__madeHands)/(100/x))
@@ -62,6 +70,13 @@ class GtoSolver:
     def determineScareCards(self):
         print()
 
+    #used to determine which range is ahead in a specific situation (e.g. BB-call has lots of SCs and suited Aces while SB-call has very few)
+    def calculateStrongRange(self, board, r1, r2):
+        print()
+
+    #used to determine calling/raising/folding ranges of BB
+    def bbRangeBuilder(self):
+        print()
 
     #for determining value/bluff proportions (e.g. 66/33 Value to Bluff ratio on the River)
     def getValueBluffRange(self, state, betSize):
@@ -107,8 +122,8 @@ r = Range.Range(selected)
 
 gto = GtoSolver(r, b)
 best50 = gto.getTopX(10)
-#for x in best50:
-#    x.printAsString()
+for x in best50:
+    x.printAsString()
 
 
 

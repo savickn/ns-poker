@@ -4,9 +4,12 @@ import Hand
 import Helpers
 
 class Flush(Hand.Hand):
-    def __init__(self, cards, value):
-        super().__init__(cards, value, 5, 'F')
+    def __init__(self, cards):
+        super().__init__(cards, max([c.getHighValue() for c in cards]), 'F')
         self.checkRep()
+
+    def __str__(self):
+        return 'Flush: ' + super().__str__()
 
     def compare(self, f2):
         for c1, c2 in self, f2:

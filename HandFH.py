@@ -5,7 +5,7 @@ import Hand
 class FullHouse(Hand.Hand):
 
     def __init__(self, trips, pair):
-        super().__init__(trips.getCards() + pair.getCards(), trips.getPrimaryValue(), 5, 'B')
+        super().__init__(trips.getCards() + pair.getCards(), trips.getPrimaryValue(), 'B')
         self.__secondaryValue = pair.getPrimaryValue() #from the Pair
         self.checkRep()
 

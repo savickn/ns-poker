@@ -6,7 +6,7 @@ class TwoPair(Hand.Hand):
     __secondaryValue = None #from the lowest Pair
 
     def __init__(self, highPair, lowPair):
-        super().__init__(highPair.getCards() + lowPair.getCards(), highPair.getPrimaryValue(), 4, 'W')
+        super().__init__(highPair.getCards() + lowPair.getCards(), highPair.getPrimaryValue(), 'W')
         self.__secondaryValue = lowPair.getPrimaryValue()
         self.checkRep()
 

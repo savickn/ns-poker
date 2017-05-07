@@ -4,8 +4,8 @@ import Hand, Deck
 
 class Pair(Hand.Hand):
 
-    def __init__(self, cards, value):
-        super().__init__(cards, value, 2, 'P')
+    def __init__(self, cards):
+        super().__init__(cards, cards[0].getHighValue(), 'P')
         self.checkRep()
 
     def compare(self, p2):

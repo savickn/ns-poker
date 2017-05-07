@@ -22,7 +22,21 @@ no_flush_hand = [
     Data.six_hearts
 ]
 
-def analyzeFlushes(cards):
+#Helper function for extracting the best possible flush
+def extractBestFlush(cards):
+    cards.sort(key=lambda card: card.getHighValue(), reverse=True)
+    return HandFlush.Flush(cards[:5])
+
+def analyzeSuit(cards, checkDraws):
+    if len(cards) >= 5:
+        f = extractBestFlush(cards)
+    elif len(cards) == 4 and checkDraws:
+        __flushDraws.append()
+    elif len(cards) == 3 and checkDraws:
+        __backdoorFDs.append()
+
+#extracts all possible flushes from availableCards (required to calc possible straight_flushes)
+def analyzeFlushes(cards, checkDraws=False):
     assert len(cards) in range(5, 8)
     flushes = []
     flushDraws = []
@@ -33,36 +47,25 @@ def analyzeFlushes(cards):
     diamonds = []
     hearts = []
 
-    for c in cards:
-        if(c.getSuit() == 'Spades'):
-            spades.append(c)
-        elif(c.getSuit() == 'Hearts'):
-            hearts.append(c)
-        elif(c.getSuit() == 'Clubs'):
-            clubs.append(c)
-        elif(c.getSuit() == 'Diamonds'):
-            diamonds.append(c)
+    for card in cards:
+        if(card.getSuit() == 'Spades'):
+            spades.append(card)
+        elif(card.getSuit() == 'Hearts'):
+            hearts.append(card)
+        elif(card.getSuit() == 'Clubs'):
+            clubs.append(card)
+        elif(card.getSuit() == 'Diamonds'):
+            diamonds.append(card)
         else:
             raise Exception('This card has an invalid suit.')
 
-    if(len(spades) >= 5):
-        flushes.append(HandFlush.Flush(spades))
-    elif(len(spades) == 4 and len(cards) < 7):
-        flushDraws.append(s)
+    analyzeSuit(spades, checkDraws)
+    analyzeSuit(clubs, checkDraws)
+    analyzeSuit(diamonds, checkDraws)
+    analyzeSuit(hearts, checkDraws)
 
-    elif(len(clubs) >= 5):
-        made_hand = calculate_high_cards([], clubs)
-    elif(len(hearts) >= 5):
-        made_hand = calculate_high_cards([], hearts)
-    elif(len(diamonds) >= 5 ):
-        made_hand = calculate_high_cards([], diamonds)
-    else:
-        print('This hand does not make a flush.')
-
-    return made_hand
-
-flush = check_for_flush(flush_hand)
-print_cards(flush)
+flush = analyzeFlushes(flush_hand)
+print(flush)
 print('-----------')
-no_flush = check_for_flush(no_flush_hand)
-print_cards(no_flush)
+no_flush = analyzeFlushes(no_flush_hand)
+print(no_flush)

@@ -6,7 +6,7 @@ import Hand
 class Straight(Hand.Hand):
 
     def __init__(self, cards, value):
-        super().__init__(cards, value, 5, 'S')
+        super().__init__(cards, value, 'S')
         self.checkRep()
 
     #used to compare two hands of the same Ranking
