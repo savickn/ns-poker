@@ -31,6 +31,8 @@ def getRelevantSuit(cards):
     else:
         return 'Diamonds'
 
+
+
 #used to remove Pairs before checking for straights
 def removePairs(cards, suit):
     filtered = []
@@ -50,48 +52,12 @@ def removePairs(cards, suit):
             filtered.append(c)
     return filtered
 
-#helper for checking if all elements in a collection have the same suit
-def isSameSuit(cards):
-    suit = cards[0].getSuit()
-    for c in cards:
-        if c.getSuit() != suit:
-            return False
-    return True
-
-#checks for Flush
-def isFlush(cards):
-    return True if len(cards) >= 5 and isSameSuit(cards) else False
-
-#checks for Flush Draw
-def isFlushDraw(cards):
-    return True if len(cards) == 4 and isSameSuit(cards) else False
-
-#checks for Backdoor Flush Draw
-def isBackdoorFlushDraw(cards):
-    return True if len(cards) == 3 and isSameSuit(cards) else False
-
-
-#sorts based on a card's highValue field (highest value to lowest if reverse=True and vice versa), WORKING
-def highSort(cards, reverse):
-    sorted_cards = sorted(cards, key=lambda card: card.getHighValue(), reverse=reverse)
-    return sorted_cards
-
-#sorts based on a card's lowValue field, WORKING
-def lowSort(cards, reverse):
-    sorted_cards = sorted(cards, key=lambda card: card.getLowValue(), reverse=reverse)
-    return sorted_cards
 
 #used to sort BestHand objects, not working
 def sortBestHands(hands):
     sortedHands = sorted(hands, key=lambda hand: hand.getPrimary(), reverse=True)
     return sortedHands
 
-#checks if a Hand (e.g. HandQuads or HandFlush) is in a collection (based on Hand.__id), WORKING
-def inCollection(hand, collection):
-    for h in collection:
-        if h == hand:
-            return True
-    return False
 
 #helper method for determining the equity distribution in split pots
 def calculateEquitySplit(winnerCount):
@@ -129,112 +95,6 @@ def determineWinner(board, hands):
         'EQUITY': equitySplit
     }
 
-#must be passed 5 sorted cards, WORKING
-def isStraight(cards):
-    assert len(cards) == 5
-    return True if(cards[4].getHighValue() - cards[0].getHighValue() == 4) or (cards[4].getLowValue() - cards[0].getLowValue() == 4) else False
-
-def getConnectionFactor(card1, card2):
-    high = abs(card1.getHighValue() - card2.getHighValue())
-    low = abs(card1.getLowValue() - card2.getLowValue())
-    return high if high < low else low
-
-def extractPattern(cards):
-    pattern = ''
-    for x in range(len(cards)):
-        try:
-            value = getConnectionFactor(cards[x+1], cards[x])
-            pattern += str(value)
-        except IndexError:
-            break
-    print(pattern)
-    return pattern
-
-#should be passed a List of 5-card slices, pattern-based approach
-def analyzeStraightDraws(cards):
-    straights = []
-    gutters = []
-    doubleGutters = []
-    openEnders = []
-
-    suit = getRelevantSuit(cards)
-    cards = removePairs(cards, suit) #used to remove Pairs which interfere in Straight calculations
-
-    if len(cards) < 5:
-        return
-
-    low = lowSort(cards, False)
-    high = highSort(cards, False)
-
-    highPattern = extractPattern(high)
-    lowPattern = extractPattern(low)
-
-    pattern = None
-
-    if '111' in highPattern:
-        print('open ender')
-    elif pattern == '121':
-        print('gutter')
-    elif pattern == '2112':
-        print('double gutter')
-    elif pattern == '1111':
-        print('straight')
-
-import HandStraight
-
-#can be passed any number of cards, set-based approach
-def analyzeStraights(availableCards):
-    straights = []
-    straightOuts = []
-    backdoorOuts = []
-
-    oneOuters = []
-    twoOuters = []
-    backdoorOneOuters = []
-    backdoorTwoOuters = []
-
-    suit = getRelevantSuit(availableCards)
-    cards = removePairs(availableCards, suit) #used to remove Pairs which interfere in Straight calculations
-    cardTypes = {c.getType() for c in cards}
-    print(cardTypes)
-
-    for key, values in Data.straights.items():
-        if len(values & cardTypes) == 5:
-            value = int(key[0])
-            straightCards = [c for c in cards if c.getType() in values]
-            straight = HandStraight.Straight(straightCards, value)
-
-            #ensures no duplicate straights are added
-            if not inCollection(straight, straights):
-                straights.append(straight)
-
-        elif len(values & cardTypes) == 4:
-            out = values - cardTypes
-            if out not in straightOuts:
-                straightOuts.append(out)
-
-        elif len(values & cardTypes) == 3:
-            drawOuts = values - cardTypes
-            for o in drawOuts:
-                if o not in backdoorOuts:
-                    backdoorOuts.append(o)
-
-
-def calculate_high_cards(relevant_cards, remaining_cards) :
-    _relevant_cards = relevant_cards
-    _remaining_cards = remaining_cards
-    number_of_cards = len(relevant_cards) + len(remaining_cards)
-    assert(number_of_cards > 4)
-
-    _remaining_cards.sort(key=lambda card: card.getHighValue(), reverse=True)
-
-    while len(_relevant_cards) < 5 :
-        _relevant_cards.append(_remaining_cards.pop(0))
-
-    assert len(_relevant_cards) == 5
-    assert len(_remaining_cards) == number_of_cards - len(_relevant_cards)
-
-    return _relevant_cards
 
 
 #printCards(highSort(board10.getCards(), True))

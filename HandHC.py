@@ -21,3 +21,5 @@ class HighCards(Hand.Hand):
 
     def checkRep(self):
         assert len(self.getCards()) == self.getLength()
+
+

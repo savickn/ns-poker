@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-from PokerCalculator import Deck
+import Deck
 
 simple_straight_hand = [
     Deck.king_spades,

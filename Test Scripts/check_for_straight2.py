@@ -1,6 +1,45 @@
 __author__ = 'Nick'
 
 import HandStraight, Helpers, Data
+from collections import deque
+
+from Helpers import Helpers, GeneralHelpers, StraightHelpers
+
+simple_straight = [
+    Data.king_spades,
+    Data.queen_clubs,
+    Data.jack_spades,
+    Data.ten_spades,
+    Data.ace_hearts,
+]
+
+complex_straight = [
+    Data.ace_hearts,
+    Data.four_spades,
+    Data.five_clubs,
+    Data.three_spades,
+    Data.two_spades
+]
+
+multi_straight = [
+    Data.eight_clubs,
+    Data.seven_spades,
+    Data.queen_clubs,
+    Data.jack_spades,
+    Data.ten_spades,
+    Data.nine_diamonds,
+    Data.six_hearts
+]
+
+straight_draw = [
+    Data.ace_clubs,
+    Data.three_clubs,
+    Data.five_spades,
+    Data.king_hearts,
+    Data.queen_diamonds,
+    Data.jack_clubs
+]
+
 
 #can be passed any number of cards, set-based approach
 def analyzeStraights(availableCards):
@@ -19,7 +58,7 @@ def analyzeStraights(availableCards):
             straight = HandStraight.Straight(straightCards, v.getPrimaryValue())
 
             #ensures no duplicate straights are added
-            if not Helpers.inCollection(straight, straights):
+            if not GeneralHelpers.inCollection(straight, straights):
                 straights.append(straight)
 
         elif len(values & cardTypes) == 4:
@@ -40,13 +79,37 @@ def analyzeStraights(availableCards):
     print(straightOuts)
     print(backdoorOuts)
 
-cards13 = [
-    Data.ace_spades,
-    Data.five_spades,
-    Data.three_clubs,
-    Data.queen_clubs,
-    Data.king_hearts,
-    Data.jack_spades]
 
 
-analyzeStraights(cards13)
+analyzeStraights(simple_straight)
+analyzeStraights(complex_straight)
+analyzeStraights(multi_straight)
+analyzeStraights(straight_draw)
+
+
+
+
+def check_for_straight(cards):
+    assert len(cards) in range(5, 8)
+    sorted_cards = deque(sort_cards(cards, False))
+    list_length = len(sorted_cards)
+
+    relevant_cards = []
+
+    it = 0
+    while it < list_length:
+        if isConnectedCollection(sorted_cards):
+            straight = list(sorted_cards)
+            relevant_cards = straight[-5:]
+            break
+        else:
+            sorted_cards.rotate(1)
+            it += 1
+
+    for card in relevant_cards:
+        print(card.toString())
+
+    if len(relevant_cards) == 5:
+        return True
+    else:
+        return False

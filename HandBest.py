@@ -24,6 +24,17 @@ class HandBest:
 
         self.checkRep()
 
+    def __str__(self):
+        print('### BEST HAND ###')
+        print(self.__primary)
+        print(self.__secondary)
+
+        cards = self.__primary.getCards() + self.__secondary.getCards() if self.__secondary else self.__primary.getCards()
+        for c in cards:
+            print(c.toString())
+
+        print(self.__startingHand)
+
     #accepts a list of Cards and determines if they are contained with '__primary' and '__secondary', potentially glitchy when playing the Board
     def __contains__(self, cards):
         bestCards = self.__primary.getCards() + self.__secondary.getCards() if self.__secondary else self.__primary.getCards()

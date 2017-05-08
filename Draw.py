@@ -21,6 +21,9 @@ class Draw:
     def getOuts(self):
         return self.__outs
 
+    def countOuts(self):
+        return len(self.__outs)
+
     ############# UTILITY METHODS #############
 
     def checkRep(self):
