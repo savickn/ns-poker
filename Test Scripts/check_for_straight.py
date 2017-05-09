@@ -1,9 +1,9 @@
 __author__ = 'Nick'
 
-import HandStraight, Helpers, Data
-from collections import deque
+import HandStraight, Data
+from Helpers import GeneralHelpers, StraightHelpers
 
-from Helpers import Helpers, GeneralHelpers, StraightHelpers
+from collections import deque
 
 simple_straight = [
     Data.king_spades,
@@ -47,8 +47,8 @@ def analyzeStraights(availableCards):
     straightOuts = []
     backdoorOuts = []
 
-    suit = Helpers.getRelevantSuit(availableCards)
-    cards = Helpers.removePairs(availableCards, suit) #used to remove Pairs which interfere in Straight calculations
+    suit = StraightHelpers.getRelevantSuit(availableCards)
+    cards = StraightHelpers.removePairs(availableCards, suit) #used to remove Pairs which interfere in Straight calculations
     cardTypes = {c.getType() for c in cards}
 
     for k, v in Data.straights.items():
@@ -80,7 +80,6 @@ def analyzeStraights(availableCards):
     print(backdoorOuts)
 
 
-
 analyzeStraights(simple_straight)
 analyzeStraights(complex_straight)
 analyzeStraights(multi_straight)
@@ -88,17 +87,20 @@ analyzeStraights(straight_draw)
 
 
 
+####################### ALTERNATIVE APPROACHES #########################
 
-def check_for_straight(cards):
+
+#should be passed a List of 5-card slices, connection-based approach
+def analyzeStraightsByConnection(cards):
     assert len(cards) in range(5, 8)
-    sorted_cards = deque(sort_cards(cards, False))
+    sorted_cards = deque(GeneralHelpers.highSort(cards, False))
     list_length = len(sorted_cards)
 
     relevant_cards = []
 
     it = 0
     while it < list_length:
-        if isConnectedCollection(sorted_cards):
+        if StraightHelpers.isConnectedCollection(sorted_cards):
             straight = list(sorted_cards)
             relevant_cards = straight[-5:]
             break
@@ -113,3 +115,34 @@ def check_for_straight(cards):
         return True
     else:
         return False
+
+
+#should be passed a List of 5-card slices, pattern-based approach
+def analyzeStraightsByPattern(cards):
+    straights = []
+    gutters = []
+    doubleGutters = []
+    openEnders = []
+
+    suit = StraightHelpers.getRelevantSuit(cards)
+    cards = StraightHelpers.removePairs(cards, suit) #used to remove Pairs which interfere in Straight calculations
+
+    if len(cards) < 5:
+        return
+
+    low = GeneralHelpers.lowSort(cards, False)
+    high = GeneralHelpers.highSort(cards, False)
+
+    highPattern = StraightHelpers.extractPattern(high)
+    lowPattern = StraightHelpers.extractPattern(low)
+
+    pattern = None
+
+    if '111' in highPattern:
+        print('open ender')
+    elif pattern == '121':
+        print('gutter')
+    elif pattern == '2112':
+        print('double gutter')
+    elif pattern == '1111':
+        print('straight')

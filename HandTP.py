@@ -10,6 +10,9 @@ class TwoPair(Hand.Hand):
         self.__secondaryValue = lowPair.getPrimaryValue()
         self.checkRep()
 
+    def __str__(self):
+        return 'Two Pair: {cards}'.format(cards=super().__str__())
+
     def compare(self, w2):
         if self.getPrimaryValue() > w2.getPrimaryValue():
             return True

@@ -8,6 +8,9 @@ class Pair(Hand.Hand):
         super().__init__(cards, cards[0].getHighValue(), 'P')
         self.checkRep()
 
+    def __str__(self):
+        return 'Pair: {cards}'.format(cards=super().__str__())
+
     def compare(self, p2):
         if self.getPrimaryValue() > p2.getPrimaryValue():
             return True

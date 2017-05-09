@@ -8,6 +8,9 @@ class Quads(Hand.Hand):
         super().__init__(cards, cards[0].getHighValue(), 'Q')
         self.checkRep()
 
+    def __str__(self):
+        return 'Quads: {cards}'.format(cards=super().__str__())
+
     def compare(self, q2):
         if self.getPrimaryValue() > q2.getPrimaryValue():
             return True

@@ -1,7 +1,7 @@
 __author__ = 'Nick'
 
 import Hand
-#import Helpers
+from Helpers import FlushHelpers
 
 class StraightFlush(Hand.Hand):
 
@@ -10,7 +10,7 @@ class StraightFlush(Hand.Hand):
         self.checkRep()
 
     def __str__(self):
-        return 'Straight Flush: ' + super().__str__()
+        return 'Straight Flush: {cards}'.format(cards=super().__str__())
 
     def compare(self, z2):
         if self.getPrimaryValue() > z2.getPrimaryValue():
@@ -23,6 +23,6 @@ class StraightFlush(Hand.Hand):
     def checkRep(self):
         assert len(self.getCards()) == self.getLength()
         #assert Helpers.isStraight(self.getCards())
-        #assert Helpers.isFlush(self.getCards())
+        assert FlushHelpers.isFlush(self.getCards())
 
 

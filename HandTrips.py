@@ -7,6 +7,9 @@ class Trips(Hand.Hand):
         super().__init__(cards, cards[0].getHighValue(), 'T')
         self.checkRep()
 
+    def __str__(self):
+        return 'Trips: {cards}'.format(cards=super().__str__())
+
     def compare(self, t2):
         if self.getPrimaryValue() > t2.getPrimaryValue():
             return True

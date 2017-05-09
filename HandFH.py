@@ -9,6 +9,9 @@ class FullHouse(Hand.Hand):
         self.__secondaryValue = pair.getPrimaryValue() #from the Pair
         self.checkRep()
 
+    def __str__(self):
+        return 'Full House: {cards}'.format(cards=super().__str__())
+
     def compare(self, z2):
         if self.getPrimaryValue() > z2.getPrimaryValue():
             return True

@@ -1,7 +1,7 @@
 __author__ = 'Nick'
 
 import Hand
-import Helpers
+from Helpers import FlushHelpers
 
 class Flush(Hand.Hand):
     def __init__(self, cards):
@@ -9,7 +9,7 @@ class Flush(Hand.Hand):
         self.checkRep()
 
     def __str__(self):
-        return 'Flush: ' + super().__str__()
+        return 'Flush: {cards}'.format(cards=super().__str__())
 
     def compare(self, f2):
         for c1, c2 in self, f2:
@@ -23,7 +23,7 @@ class Flush(Hand.Hand):
 
     def checkRep(self):
         assert len(self.getCards()) == self.getLength()
-        assert Helpers.isFlush(self.getCards())
+        assert FlushHelpers.isFlush(self.getCards())
 
     def toString(self):
         string = 'Flush: '

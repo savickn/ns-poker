@@ -1,13 +1,16 @@
 __author__ = 'Nick'
 
 import Hand
-#import Helpers
+#import StraightHelpers
 
 class Straight(Hand.Hand):
 
     def __init__(self, cards, value):
         super().__init__(cards, value, 'S')
         self.checkRep()
+
+    def __str__(self):
+        return 'Straight: {cards}'.format(cards=super().__str__())
 
     #used to compare two hands of the same Ranking
     def compare(self, s2):

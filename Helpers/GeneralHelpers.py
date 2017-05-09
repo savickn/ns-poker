@@ -1,12 +1,12 @@
 __author__ = 'Nick'
 
 #sorts based on a card's highValue field (highest value to lowest if reverse=True and vice versa), WORKING
-def highSort(cards, reverse):
+def highSort(cards, reverse=True):
     sorted_cards = sorted(cards, key=lambda card: card.getHighValue(), reverse=reverse)
     return sorted_cards
 
 #sorts based on a card's lowValue field, WORKING
-def lowSort(cards, reverse):
+def lowSort(cards, reverse=True):
     sorted_cards = sorted(cards, key=lambda card: card.getLowValue(), reverse=reverse)
     return sorted_cards
 

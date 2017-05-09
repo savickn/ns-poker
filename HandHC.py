@@ -8,6 +8,9 @@ class HighCards(Hand.Hand):
         super().__init__(cards, max([c.getHighValue() for c in cards]), 'C')
         self.checkRep()
 
+    def __str__(self):
+        return 'High Cards: {cards}'.format(cards=super().__str__())
+
     #used to compare two hands of the same Ranking
     def compare(self, h2):
         for c1, c2 in zip(self.getCards(), h2.getCards()):
@@ -21,5 +24,4 @@ class HighCards(Hand.Hand):
 
     def checkRep(self):
         assert len(self.getCards()) == self.getLength()
-
 

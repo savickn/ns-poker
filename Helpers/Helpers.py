@@ -2,56 +2,6 @@ __author__ = 'Nick'
 
 import HandAnalyzer, HandBest, Data
 
-#returns the most common suit in a collection of cards (relies on the fact that only only flush can be made at a time)
-#can be used to remove irrelevant pair cards when checking for straights and straight flushes
-def getRelevantSuit(cards):
-    spades = 0
-    clubs = 0
-    hearts = 0
-    diamonds = 0
-
-    for card in cards:
-        if card.getSuit() == 'Spades':
-            spades += 1
-        elif card.getSuit() == 'Diamonds':
-            diamonds += 1
-        elif card.getSuit() == 'Hearts':
-            hearts += 1
-        elif card.getSuit() == 'Clubs':
-            clubs += 1
-        else:
-            raise Exception('This card has an invalid suit.')
-
-    if (spades >= hearts) and (spades >= clubs) and (spades >= diamonds):
-        return 'Spades'
-    elif (clubs >= hearts) and (clubs >= spades) and (clubs >= diamonds):
-        return 'Clubs'
-    elif (hearts >= clubs) and (hearts >= spades) and (hearts >= diamonds):
-        return 'Hearts'
-    else:
-        return 'Diamonds'
-
-
-
-#used to remove Pairs before checking for straights
-def removePairs(cards, suit):
-    filtered = []
-    #adds cards of relevant suit to the filtered cards
-    for c in cards:
-        if c.getSuit() == suit:
-            filtered.append(c)
-    for c in cards:
-        if c in filtered: #skips suited cards
-            continue
-        isPaired = False
-        for c2 in filtered:
-            if c.getHighValue() == c2.getHighValue():
-                isPaired = True
-                break
-        if not isPaired:
-            filtered.append(c)
-    return filtered
-
 
 #used to sort BestHand objects, not working
 def sortBestHands(hands):

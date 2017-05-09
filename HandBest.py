@@ -26,14 +26,9 @@ class HandBest:
 
     def __str__(self):
         print('### BEST HAND ###')
-        print(self.__primary)
-        print(self.__secondary)
-
-        cards = self.__primary.getCards() + self.__secondary.getCards() if self.__secondary else self.__primary.getCards()
-        for c in cards:
-            print(c.toString())
-
-        print(self.__startingHand)
+        return '# {primary} \n' \
+               '# {secondary} \n' \
+               '# {preflop}'.format(primary=self.__primary.__str__(), secondary=self.__secondary.__str__(), preflop=self.__startingHand.__str__())
 
     #accepts a list of Cards and determines if they are contained with '__primary' and '__secondary', potentially glitchy when playing the Board
     def __contains__(self, cards):
