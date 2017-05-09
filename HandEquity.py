@@ -7,6 +7,9 @@ class Equity:
         self.__count = 0
         self.__equity = 0
 
+    def __str__(self):
+        return '{hand}-{equity}'.format(hand=self.__hand.__str__(), equity=self.getEquity())
+
     def getHand(self):
         return self.__hand
 
@@ -16,6 +19,3 @@ class Equity:
     def updateEquity(self, equity):
         self.__equity += equity
         self.__count += 1
-
-    def toString(self):
-        return '{hand}-{equity}'.format(hand=self.__hand.toString(), equity=self.getEquity())

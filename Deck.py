@@ -18,6 +18,12 @@ class Deck:
         if generateHands:
             self.generateHoldemHandCombos() #used to populate 'preflopHands'
 
+    def __str__(self):
+        rep = None
+        for c in self.__cards:
+            rep = c.toString() if rep is None else rep + ', {card}'.format(card=c.toString())
+        return 'Deck -- {length}: {cards}'.format(length=self.__length, cards=rep)
+
     def shuffleDeck(self):
         self.__cards = Deck.shuffle(self.__cards)
 
@@ -43,8 +49,8 @@ class Deck:
 
     #used to retrieve the top card (either for Dealing a Hand or Burning)
     def getTopCard(self):
-        card =  self.__cards.pop(0)
-        self.__length = len(self.__cards)
+        card = self.__cards.pop(0)
+        self.__length -= 1
         return card
 
     ############# HAND COMBINATORICS #################

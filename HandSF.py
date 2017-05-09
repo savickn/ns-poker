@@ -10,7 +10,7 @@ class StraightFlush(Hand.Hand):
         self.checkRep()
 
     def __str__(self):
-        return 'Straight Flush: {cards}'.format(cards=super().__str__())
+        return 'Straight Flush -- {value}: {cards}'.format(cards=super().__str__(), value=self.getPrimaryValue())
 
     def compare(self, z2):
         if self.getPrimaryValue() > z2.getPrimaryValue():

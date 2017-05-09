@@ -10,6 +10,11 @@ def lowSort(cards, reverse=True):
     sorted_cards = sorted(cards, key=lambda card: card.getLowValue(), reverse=reverse)
     return sorted_cards
 
+#used to sort BestHand objects, not working
+def sortBestHands(hands):
+    sortedHands = sorted(hands, key=lambda hand: hand.getPrimary(), reverse=True)
+    return sortedHands
+
 #checks if a Hand (e.g. HandQuads or HandFlush) is in a collection (based on Hand.__id), WORKING
 def inCollection(hand, collection):
     for h in collection:

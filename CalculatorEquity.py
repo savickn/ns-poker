@@ -10,13 +10,13 @@ import HandPreflop, Board, Data, Deck, HandAnalyzer, HandEquity, HandBest
 class EquityCalculator:
     __equitySplit = None
 
-    def __init__(self, hands, board=[], iterations=1000):
-        self.__board = board #must be list of Cards
+    def __init__(self, hands, board=None, iterations=1000):
+        self.__board = board #must be a Board object
         self.__iterations = iterations
         self.__equities = [] #nust contain Equity objs
 
         dead_cards = []
-        for c in board:
+        for c in board.getCards():
             dead_cards.append(c)
         for hand in hands:
             self.__equities.append(HandEquity.Equity(hand))
@@ -41,14 +41,12 @@ class EquityCalculator:
         winner = None
         winnerCount = 0
         for key, value in analyzers.items():
-            #value.getBestHand().printAsString()
             if not winner:
                 winner = value.getBestHand()
                 winnerCount = 1
             else:
                 v = value.getBestHand()
                 w = HandBest.HandBest.compare(v, winner)
-                #w = v.compare(winner)
                 if w == 0:
                     winnerCount += 1
                 elif w == 1:
@@ -58,6 +56,11 @@ class EquityCalculator:
         self.__equitySplit = self.calculateEquitySplit(winnerCount)
         return winner #should be of type BestHand
 
+        #return {
+        #    'WINNER': winner, #should be of type BestHand
+        #    'EQUITY': equitySplit
+        #}
+
     #updates a hand's equity via its Equity object
     def updateEquity(self, eqObj, equity):
         eqObj.updateEquity(equity)
@@ -66,7 +69,7 @@ class EquityCalculator:
         print('### Equities ###')
         print('EQ SPLIT: {split}'.format(split=self.__equitySplit))
         for eq in self.__equities:
-            print(eq.toString())
+            print(eq)
 
     #main function for determining equity
     def run(self):
@@ -76,11 +79,12 @@ class EquityCalculator:
 
         for x in range(self.__iterations):
             deck = Deck.Deck(self.__deadCards)
-            Deck.shuffleDeck()
-            board = Board.Board.generateBoard(deck, self.__board) #creates a new Board before each iteration
-            #board.printAsString()
+            deck.shuffleDeck()
+            board = Board.Board.generateBoard(deck, self.__board.getCards()) #creates a new Board before each iteration
+            print(board)
 
             winner = self.determineWinner(board, hands) #sets 'equitySplit' and returns winning BestHand
+            print(winner)
             for eq in self.__equities:
                 if eq.getHand().getCards() in winner:
                     self.updateEquity(eq, self.__equitySplit)
@@ -108,8 +112,8 @@ hand5 = HandPreflop.HoldemHand([Data.queen_hearts, Data.jack_clubs]) #QhJc
 hand6 = HandPreflop.HoldemHand([Data.ace_hearts, Data.seven_clubs]) #Ah7c
 
 #glitchy when comparing 'hand1' and 'hand6'
-#comparison = EquityCalculator([hand1, hand6], board2.getCards(), 1000)
-#comparison.run()
+comparison = EquityCalculator([hand1, hand6], board2, 2)
+comparison.run()
 
 
 

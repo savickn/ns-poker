@@ -1,8 +1,8 @@
 __author__ = 'Nick'
 
-import Board, HandPreflop, HandBest
+import Board, HandPreflop, HandBest, Data
 import HandPair, HandTP, HandTrips, HandStraight, HandFlush, HandFH, HandQuads, HandSF, HandHC
-import Helpers, Data
+from Helpers import GeneralHelpers, FlushHelpers, StraightHelpers
 from collections import deque
 from operator import attrgetter
 
@@ -102,7 +102,7 @@ class HandAnalyzer:
     ############ ANALYSIS METHODS #############
 
     #used to create Pairs, Trips, and Quad hands if possible
-    def checkForPTQ(self):
+    def analyzePTQ(self):
         for card in self.__availableCards:
             temp_hand = [card]
 
@@ -115,19 +115,19 @@ class HandAnalyzer:
 
             if len(temp_hand) == 2:
                 pair = HandPair.Pair(temp_hand)
-                if not Helpers.inCollection(pair, self.__pairs):
+                if not GeneralHelpers.inCollection(pair, self.__pairs):
                     #print('{card} makes a pair.'.format(card=card.toString()))
                     self.__pairs.append(pair)
 
             elif len(temp_hand) == 3:
                 trips = HandTrips.Trips(temp_hand)
-                if not Helpers.inCollection(trips, self.__trips):
+                if not GeneralHelpers.inCollection(trips, self.__trips):
                     #print('{card} makes trips.'.format(card=card.toString()))
                     self.__trips.append(trips)
 
             elif len(temp_hand) == 4:
                 quads = HandQuads.Quads(temp_hand)
-                if not Helpers.inCollection(quads, self.__quads):
+                if not GeneralHelpers.inCollection(quads, self.__quads):
                     #print('{card} makes quads.'.format(card=card.toString()))
                     self.__quads.append(quads)
             else:
@@ -187,7 +187,7 @@ class HandAnalyzer:
 
     #extracts all pairs/trips/quads from availableCards, can maybe be optimized better
     def analyzePairedHands(self):
-        self.checkForPTQ()
+        self.analyzePTQ()
 
         if (len(self.__trips) == 2) or (len(self.__trips) > 0 and len(self.__pairs) > 0):
             self.checkForFullHouse()
@@ -198,13 +198,13 @@ class HandAnalyzer:
     #used to create StraightFlush hands if possible
     def checkForStraightFlushes(self):
         for s in self.__straights:
-            if Helpers.isFlush(s.getCards()):
+            if FlushHelpers.isFlush(s.getCards()):
                 self.__straightFlushes.append(HandSF.StraightFlush(s.getCards(), s.getPrimaryValue()))
 
     #used to check for Straights and StraightDraws
     def analyzeStraights(self, checkDraws=False):
-        suit = Helpers.getRelevantSuit(self.__availableCards)
-        cards = Helpers.removePairs(self.__availableCards, suit) #used to remove Pairs which interfere in Straight calculations
+        suit = StraightHelpers.getRelevantSuit(self.__availableCards)
+        cards = StraightHelpers.removePairs(self.__availableCards, suit) #used to remove Pairs which interfere in Straight calculations
         cardTypes = {c.getType() for c in cards}
 
         straightOuts = []
@@ -217,7 +217,7 @@ class HandAnalyzer:
                 straight = HandStraight.Straight(straightCards, v.getPrimaryValue())
 
                 #ensures no duplicate straights are added
-                if not Helpers.inCollection(straight, self.__straights):
+                if not GeneralHelpers.inCollection(straight, self.__straights):
                     self.__straights.append(straight)
 
             if len(values & cardTypes) == 4 and checkDraws is True:
@@ -422,10 +422,8 @@ class HandAnalyzer:
             print(c.toString())
 
     def printBestHand(self):
-        print('############# BEST HAND ############')
-        self.__bestHand.printAsString()
-        #print(self.__bestHand)
-        print('############# END OF ANALYSIS ##############')
+        print(self.__bestHand)
+        print('############# END OF ANALYSIS ############## \n')
 
 
 

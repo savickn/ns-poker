@@ -15,6 +15,12 @@ class Board:
         self.__turn = card4
         self.__river = card5
 
+    def __str__(self):
+        rep = None
+        for c in self.getCards():
+            rep = c.toString() if rep is None else rep + ', {card}'.format(card=c.toString())
+        return 'Board: ' + rep
+
     #takes a Deck obj and a list of existing cards and returns a completed Board object
     @staticmethod
     def generateBoard(deck, board):
@@ -48,17 +54,6 @@ class Board:
         assert len(self.getCards()) is 5
 
     ############# UTILITY METHODS ##################
-
-    def toString(self):
-        string = ''
-        for card in self.getCards():
-            string += '{card}, '.format(card=card)
-        #add method to remove trailing , from string output
-        return string
-
-    def printAsString(self):
-        print('### BOARD ###')
-        print(self.toString())
 
     def draw(self):
         for card in self.getCards():
