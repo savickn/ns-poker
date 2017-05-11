@@ -38,28 +38,20 @@ class EquityCalculator:
             analyzers['hand' + str(it)] = HandAnalyzer.HandAnalyzer(hand, board, False)
             it += 1
 
-        winner = None
-        winnerCount = 0
+        winners = []
         for key, value in analyzers.items():
-            if not winner:
-                winner = value.getBestHand()
-                winnerCount = 1
+            if len(winners) == 0:
+                winners = [value.getBestHand()]
             else:
                 v = value.getBestHand()
-                w = HandBest.HandBest.compare(v, winner)
+                w = HandBest.HandBest.compare(v, winners[0])
                 if w == 0:
-                    winnerCount += 1
+                    winners.append(v)
                 elif w == 1:
-                    winner = v
-                    winnerCount = 1
+                    winners = [v]
 
-        self.__equitySplit = self.calculateEquitySplit(winnerCount)
-        return winner #should be of type BestHand
-
-        #return {
-        #    'WINNER': winner, #should be of type BestHand
-        #    'EQUITY': equitySplit
-        #}
+        self.__equitySplit = self.calculateEquitySplit(len(winners))
+        return winners #should be an array of BestHands
 
     #updates a hand's equity via its Equity object
     def updateEquity(self, eqObj, equity):
@@ -83,10 +75,13 @@ class EquityCalculator:
             board = Board.Board.generateBoard(deck, self.__board.getCards()) #creates a new Board before each iteration
             print(board)
 
-            winner = self.determineWinner(board, hands) #sets 'equitySplit' and returns winning BestHand
-            print(winner)
+            winners = self.determineWinner(board, hands) #sets 'equitySplit' and returns winning BestHand
             for eq in self.__equities:
-                if eq.getHand().getCards() in winner:
+                matched = False
+                for w in winners:
+                    if HandBest.HandBest.matchesWinningHand(w, eq.getHand(), board):
+                        matched = True
+                if matched:
                     self.updateEquity(eq, self.__equitySplit)
                 else:
                     self.updateEquity(eq, 0)
@@ -109,10 +104,10 @@ hand2 = HandPreflop.HoldemHand([Data.ten_hearts, Data.ten_diamonds]) #ThTd
 hand3 = HandPreflop.HoldemHand([Data.jack_hearts, Data.nine_hearts]) #J9h
 hand4 = HandPreflop.HoldemHand([Data.six_spades, Data.five_spades]) #65s
 hand5 = HandPreflop.HoldemHand([Data.queen_hearts, Data.jack_clubs]) #QhJc
-hand6 = HandPreflop.HoldemHand([Data.ace_hearts, Data.seven_clubs]) #Ah7c
+hand6 = HandPreflop.HoldemHand([Data.ace_hearts, Data.seven_spades]) #Ah7c
 
 #glitchy when comparing 'hand1' and 'hand6'
-comparison = EquityCalculator([hand1, hand6], board2, 2)
+comparison = EquityCalculator([hand1, hand6], board2, 1000)
 comparison.run()
 
 

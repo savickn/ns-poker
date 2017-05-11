@@ -8,7 +8,11 @@ class Draw:
         self.__cards = cards #list of Card objects
         self.__outs = outs #list of Card objects that will create a MadeHand
 
-        #self.__nut = None #will this hand make the nut-flush/straight, must be Boolean, probably not needed cuz can find the resulting BestHand in the ordered list of BestHands
+    def __str__(self):
+        rep = None
+        for c in self.getOuts():
+            rep = c.toString() if rep is None else rep + ', {card}'.format(card=c.toString())
+        return '# Outs: {cards} \n'.format(cards=rep)
 
     ############ SETTERS AND GETTERS ###########
 

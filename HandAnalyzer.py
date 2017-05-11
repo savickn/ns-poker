@@ -2,6 +2,7 @@ __author__ = 'Nick'
 
 import Board, HandPreflop, HandBest, Data
 import HandPair, HandTP, HandTrips, HandStraight, HandFlush, HandFH, HandQuads, HandSF, HandHC
+import DrawFlush, DrawBackdoorFlush, DrawGutshot, DrawOpenEnded, DrawPair, DrawFullHouse
 from Helpers import GeneralHelpers, FlushHelpers, StraightHelpers
 from collections import deque
 from operator import attrgetter
@@ -220,7 +221,7 @@ class HandAnalyzer:
                 if not GeneralHelpers.inCollection(straight, self.__straights):
                     self.__straights.append(straight)
 
-            if len(values & cardTypes) == 4 and checkDraws is True:
+            elif len(values & cardTypes) == 4 and checkDraws is True:
                 out = values - cardTypes
                 for o in out:
                     if o not in straightOuts:
@@ -234,6 +235,20 @@ class HandAnalyzer:
                     if o not in backdoorOuts and o not in straightOuts:
                         backdoorOuts.append(o)
 
+            if straightOuts == 2:
+                oe = DrawOpenEnded.OpenEndedDraw(cards, straightOuts)
+                if oe not in self.__openEndedDraws:
+                    self.__openEndedDraws.append(oe)
+            elif straightOuts == 1:
+                gd = DrawGutshot.GutshotDraw(cards, straightOuts)
+                if gd not in self.__gutterDraws:
+                    self.__gutterDraws.append(gd)
+
+            if backdoorOuts > 0:
+                oe = DrawOpenEnded.OpenEndedDraw(cards, straightOuts)
+                if oe not in self.__openEndedDraws:
+                    self.__openEndedDraws.append(oe)
+
         #used to check for straight flushes
         if len(self.__straights) > 0:
             self.checkForStraightFlushes()
@@ -243,16 +258,22 @@ class HandAnalyzer:
         cards.sort(key=lambda card: card.getHighValue(), reverse=True)
         self.__flushes.append(HandFlush.Flush(cards[:5]))
 
-    def analyzeSuit(self, cards, checkDraws):
+    def analyzeSuit(self, cards, data, checkDraws):
         if len(cards) >= 5:
-            self.extractBestFlush(cards)
+            f = self.extractBestFlush(cards)
         elif len(cards) == 4 and checkDraws:
-            self.__flushDraws.append()
+            data['draws'].append(DrawFlush.FlushDraw(cards, cards[0].getSuit()))
         elif len(cards) == 3 and checkDraws:
-            self.__backdoorFDs.append()
+            data['backdoorDraws'].append(DrawBackdoorFlush.BackdoorFlushDraw(cards, cards[0].getSuit()))
+        return data
 
     #extracts all possible flushes from availableCards (required to calc possible straight_flushes)
-    def analyzeFlushes(self, checkDraws=False):
+    def analyzeFlushes(self, checkDraws=True):
+        data = {
+            'draws': [],
+            'backdoorDraws': []
+        }
+
         spades = []
         clubs = []
         diamonds = []
@@ -270,10 +291,13 @@ class HandAnalyzer:
             else:
                 raise Exception('This card has an invalid suit.')
 
-        self.analyzeSuit(spades, checkDraws)
-        self.analyzeSuit(clubs, checkDraws)
-        self.analyzeSuit(diamonds, checkDraws)
-        self.analyzeSuit(hearts, checkDraws)
+        data = self.analyzeSuit(spades, data, checkDraws)
+        data = self.analyzeSuit(clubs, data, checkDraws)
+        data = self.analyzeSuit(diamonds, data, checkDraws)
+        data = self.analyzeSuit(hearts, data, checkDraws)
+
+        self.__flushDraws = data['draws']
+        self.__backdoorFDs = data['backdoorDraws']
 
     #fills a given hand with high cards and returns the resulting 5 card hand... working
     def calculateHighCards(self, cards, length):
@@ -301,46 +325,47 @@ class HandAnalyzer:
             for s in self.__straightFlushes:
                 if s.getPrimaryValue() > sf.getPrimaryValue():
                     sf = s
-            self.__bestHand = HandBest.HandBest(self.__hand, sf)
+            self.__bestHand = HandBest.HandBest(sf)
             return
 
         if len(self.__quads) > 0:
             highCards = self.calculateHighCards(self.__quads[0].getCards(), self.__quads[0].getLength())
-            self.__bestHand = HandBest.HandBest(self.__hand, self.__quads[0], highCards)
+            self.__bestHand = HandBest.HandBest(self.__quads[0], highCards)
             return
 
         if len(self.__fullHouses) > 0:
-            self.__bestHand = HandBest.HandBest(self.__hand, self.__fullHouses[0])
+            self.__bestHand = HandBest.HandBest(self.__fullHouses[0])
             return
 
         if len(self.__flushes) > 0:
-            self.__bestHand = HandBest.HandBest(self.__hand, self.__flushes[0])
+            print(self.__flushes)
+            self.__bestHand = HandBest.HandBest(self.__flushes[0])
             return
 
         if len(self.__straights) > 0:
-            self.__bestHand = HandBest.HandBest(self.__hand, self.__straights[0])
+            self.__bestHand = HandBest.HandBest(self.__straights[0])
             return
 
         if len(self.__trips) > 0:
             highCards = self.calculateHighCards(self.__trips[0].getCards(), self.__trips[0].getLength())
-            self.__bestHand = HandBest.HandBest(self.__hand, self.__trips[0], highCards)
+            self.__bestHand = HandBest.HandBest(self.__trips[0], highCards)
             return
 
         if len(self.__twoPairs) > 0:
             highCards = self.calculateHighCards(self.__twoPairs[0].getCards(), self.__twoPairs[0].getLength())
-            self.__bestHand = HandBest.HandBest(self.__hand, self.__twoPairs[0], highCards)
+            self.__bestHand = HandBest.HandBest(self.__twoPairs[0], highCards)
             return
 
         if len(self.__pairs) > 0:
             pair = self.__pairs[0]
             highCards = self.calculateHighCards(pair.getCards(), pair.getLength())
-            self.__bestHand = HandBest.HandBest(self.__hand, pair, highCards)
+            self.__bestHand = HandBest.HandBest(pair, highCards)
             return
 
         #sets highCards if no higher hand is made (e.g. not even a Pair)
         if self.__bestHand is None:
             highCards = self.calculateHighCards([], 0)
-            self.__bestHand = HandBest.HandBest(self.__hand, highCards)
+            self.__bestHand = HandBest.HandBest(highCards)
 
     ################ DETERMINE DRAWS FOR BEST HAND ###################
 
@@ -365,9 +390,6 @@ class HandAnalyzer:
             self.checkForFlushDraw()
         if currentValue <= 5: #flush
             print()
-
-
-
 
 
     ################ CALCULATING OUTS TO IMPROVE #####################

@@ -209,3 +209,11 @@ def printAsString(self):
 #    lowDiff = abs(card1.getLowValue() - card2.getLowValue())
 #    return highDiff if highDiff < lowDiff else lowDiff
 
+class HandBest:
+    #accepts a list of Cards and determines if they are contained with '__primary' and '__secondary', potentially glitchy when playing the Board
+    def __contains__(self, cards):
+        bestCards = self.__primary.getCards() + self.__secondary.getCards() if self.__secondary else self.__primary.getCards()
+        for c1 in cards:
+            if c1 in bestCards:
+                return True
+        return False

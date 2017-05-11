@@ -14,7 +14,7 @@ class Equity:
         return self.__hand
 
     def getEquity(self):
-        return self.__equity/self.__count
+        return self.__equity/self.__count if self.__count > 0 else 0
 
     def updateEquity(self, equity):
         self.__equity += equity

@@ -2,7 +2,7 @@ __author__ = 'Nick'
 
 import Data, Board, HandPreflop, HandBest, HandAnalyzer
 import HandPair, HandTP, HandTrips, HandStraight, HandFlush, HandFH, HandQuads, HandSF, HandHC
-
+import DrawFlush, DrawBackdoorFlush, DrawGutshot, DrawOpenEnded
 
 hand = HandPreflop.HoldemHand(
     [Data.ace_spades,
@@ -128,7 +128,9 @@ board13 = Board.Board(
 printHighCards = False
 printPairedHands = False
 printFlushes = False
-printStraights = True
+printStraights = False
+
+###################### MADE HANDS ######################
 
 ha1 = HandAnalyzer.HandAnalyzer(hand, board1, printHighCards)
 assert isinstance(ha1.getBestHand().getPrimary(), HandHC.HighCards)
@@ -169,4 +171,35 @@ assert isinstance(ha12.getBestHand().getPrimary(), HandStraight.Straight)
 ha13 = HandAnalyzer.HandAnalyzer(hand, board13, printStraights)
 assert isinstance(ha13.getBestHand().getPrimary(), HandSF.StraightFlush)
 
+################## DRAWS ##################
+
+hand3 = HandPreflop.HoldemHand(
+    [Data.ace_spades,
+    Data.seven_spades])
+
+#flush draw
+board14 = Board.Board(
+    Data.six_spades,
+    Data.three_clubs,
+    Data.four_diamonds,
+    Data.five_hearts,
+    Data.jack_spades)
+
+#backdoor flush draw
+board15 = Board.Board(
+    Data.eight_spades,
+    Data.four_diamonds,
+    Data.king_diamonds,
+    Data.three_diamonds,
+    Data.three_hearts)
+
+printPDs = False
+printFDs = True
+printSDs = False
+
+ha14 = HandAnalyzer.HandAnalyzer(hand3, board14, printFDs)
+assert isinstance(ha14.getBestHand().getPrimary(), DrawFlush.FlushDraw)
+
+ha15 = HandAnalyzer.HandAnalyzer(hand3, board15, printFDs)
+assert isinstance(ha15.getBestHand().getPrimary(), DrawBackdoorFlush.BackdoorFlushDraw)
 

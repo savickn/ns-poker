@@ -1,6 +1,6 @@
 __author__ = 'Nick'
 
-import Data, Helpers, HandFlush
+import Data, HandFlush, DrawFlush, DrawBackdoorFlush
 
 flush_hand = [
     Data.ace_hearts,
@@ -22,25 +22,37 @@ no_flush_hand = [
     Data.six_hearts
 ]
 
+fd = [
+    Data.ace_diamonds,
+    Data.king_diamonds,
+    Data.ten_diamonds,
+    Data.four_diamonds
+]
+
+
+
 #Helper function for extracting the best possible flush
 def extractBestFlush(cards):
     cards.sort(key=lambda card: card.getHighValue(), reverse=True)
     return HandFlush.Flush(cards[:5])
 
-def analyzeSuit(cards, checkDraws):
+def analyzeSuit(cards, data, checkDraws):
     if len(cards) >= 5:
         f = extractBestFlush(cards)
+        data['flushes'].append(f)
     elif len(cards) == 4 and checkDraws:
-        __flushDraws.append()
+        data['draws'].append(DrawFlush.FlushDraw(cards, cards[0].getSuit()))
     elif len(cards) == 3 and checkDraws:
-        __backdoorFDs.append()
+        data['backdoorDraws'].append(DrawBackdoorFlush.BackdoorFlushDraw(cards, cards[0].getSuit()))
+    return data
 
 #extracts all possible flushes from availableCards (required to calc possible straight_flushes)
 def analyzeFlushes(cards, checkDraws=False):
-    assert len(cards) in range(5, 8)
-    flushes = []
-    flushDraws = []
-    flushBackdoorDraws = []
+    data = {
+        'flushes': [],
+        'draws': [],
+        'backdoorDraws': []
+    }
 
     spades = []
     clubs = []
@@ -59,13 +71,19 @@ def analyzeFlushes(cards, checkDraws=False):
         else:
             raise Exception('This card has an invalid suit.')
 
-    analyzeSuit(spades, checkDraws)
-    analyzeSuit(clubs, checkDraws)
-    analyzeSuit(diamonds, checkDraws)
-    analyzeSuit(hearts, checkDraws)
+    data = analyzeSuit(spades, data, checkDraws)
+    data = analyzeSuit(clubs, data, checkDraws)
+    data = analyzeSuit(diamonds, data, checkDraws)
+    data = analyzeSuit(hearts, data, checkDraws)
 
-flush = analyzeFlushes(flush_hand)
-print(flush)
-print('-----------')
-no_flush = analyzeFlushes(no_flush_hand)
-print(no_flush)
+    for f in data['flushes']:
+        print(f)
+    for fd in data['draws']:
+        print(fd)
+    for bfd in data['backdoorDraws']:
+        print(bfd)
+
+#analyzeFlushes(flush_hand)
+#analyzeFlushes(no_flush_hand, True)
+analyzeFlushes(fd, True)
+
